@@ -81,7 +81,7 @@ public class PricePackageDAO extends DBContext {
             //  lọc ra các bản ghi PricePackage với tên name duy nhất (không trùng nhau).
             // Mỗi name chỉ lấy 1 bản ghi đại diện (bản ghi có pricePackageID nhỏ nhất).
             String sql = "SELECT * FROM PricePackage WHERE pricePackageID IN ( "
-                    + "SELECT MIN(pricePackageID) FROM PricePackage GROUP BY name )";
+                         + "SELECT MIN(pricePackageID) FROM PricePackage GROUP BY name )";
 
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -246,7 +246,8 @@ public class PricePackageDAO extends DBContext {
 
     // Thêm PricePackage mới, trả về ID
     public int addPricePackage(PricePackage pkg) {
-        String sql = "INSERT INTO PricePackage (courseID, name, accessDuration, listPrice, salePrice, description, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO PricePackage (courseID, name, accessDuration, listPrice, salePrice, description, status) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?)";
         int generatedId = -1;
         try (
              PreparedStatement ps = connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
