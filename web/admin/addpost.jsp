@@ -27,7 +27,7 @@
         <link rel="shortcut icon" type="image/x-icon" href="<%=request.getContextPath()%>/admin/assets/images/favicon.png" />
 
         <!-- PAGE TITLE HERE ============================================= -->
-        <title>Posts List</title>
+        <title>Add New Post</title>
 
         <!-- MOBILE SPECIFIC ============================================= -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -63,7 +63,7 @@
 
     </head>
     <body class="ttr-opened-sidebar ttr-pinned-sidebar">
-              <header class="ttr-header">
+        <header class="ttr-header">
             <div class="ttr-header-wrapper">
                 <!--sidebar menu toggler start -->
                 <div class="ttr-toggle-sidebar ttr-material-button">
@@ -76,9 +76,9 @@
                     <div>
                         <a href="index.jsp" class="ttr-logo">
                             <img alt="" class="ttr-logo-mobile"
-                                src="assets/images/logo-mobile.png" width="30" height="30">
+                                 src="assets/images/logo-mobile.png" width="30" height="30">
                             <img alt="" class="ttr-logo-desktop"
-                                src="assets/images/logo-white.png" width="160" height="27">
+                                 src="assets/images/logo-white.png" width="160" height="27">
                         </a>
                     </div>
                 </div>
@@ -88,7 +88,7 @@
                     <ul class="ttr-header-navigation">
                         <li>
                             <a href="home"
-                                class="ttr-material-button ttr-submenu-toggle">HOME</a>
+                               class="ttr-material-button ttr-submenu-toggle">HOME</a>
                         </li>
                         <li>
                             <a href="#" class="ttr-material-button ttr-submenu-toggle">QUICK
@@ -190,8 +190,8 @@
                         <li>
                             <a href="#" class="ttr-material-button ttr-submenu-toggle"><span
                                     class="ttr-user-avatar"><img alt=""
-                                        src="assets/images/testimonials/pic3.jpg" width="32"
-                                        height="32"></span></a>
+                                                             src="assets/images/testimonials/pic3.jpg" width="32"
+                                                             height="32"></span></a>
                             <div class="ttr-header-submenu">
                                 <ul>
                                     <li><a href="user-profile.jsp">My profile</a></li>
@@ -239,7 +239,7 @@
                     <form class="ttr-search-form">
                         <div class="ttr-search-input-wrapper">
                             <input type="text" name="qq" placeholder="search something..."
-                                class="ttr-search-input">
+                                   class="ttr-search-input">
                             <button type="submit" name="search" class="ttr-search-submit"><i
                                     class="ti-arrow-right"></i></button>
                         </div>
@@ -277,9 +277,15 @@
                             </a>
                         </li>
                         <li>
-                            <a href="postslist.jsp" class="ttr-material-button">
+                            <a href="postcontroller" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-book"></i></span>
                                 <span class="ttr-label">Posts List</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="slidercontroller" class="ttr-material-button">
+                                <span class="ttr-icon"><i class="ti-book"></i></span>
+                                <span class="ttr-label">Sliders List</span>
                             </a>
                         </li>
                         <li>
@@ -360,7 +366,7 @@
                 <div class="row">
                     <div class="col-lg-12 m-b30">
                         <div class="widget-box">
-                            <form method="POST" action="postcontroller" class="post-form">
+                            <form method="POST" action="postcontroller" class="post-form" enctype="multipart/form-data">
                                 <input type="hidden" name="action" value="add">
 
                                 <div class="db-breadcrumb">
@@ -379,29 +385,30 @@
 
                                 <div class="form-group">
                                     <label for="title">Title</label>
-                                    <input type="text" class="form-control" id="title" name="title" required>
+                                    <input type="text" class="form-control" id="title" name="title" value="${oldTitle}" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="briefInfo">Brief Info</label>
-                                    <textarea class="form-control" id="briefInfo" name="briefInfo" rows="3" required></textarea>
+                                    <textarea class="form-control" id="briefInfo" name="briefInfo" rows="3" required>${oldBriefInfo}</textarea>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="description">Description</label>
-                                    <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+                                    <textarea class="form-control" id="description" name="description" rows="5" required>${oldDescription}</textarea>
                                 </div> 
                                 <div class="form-group">
-                                    <label for="thumbnail">Thumbnail URL</label>
-                                    <input type="text" class="form-control" id="thumbnail" name="thumbnail" required>
-                                    <small class="form-text text-muted">Enter the URL of the thumbnail image</small>
+                                    <label for="thumbnail">Thumbnail Image</label>
+                                    <input type="file" class="form-control" id="thumbnail" name="thumbnail" accept="image/*" required>
+                                    <small class="form-text text-muted">Upload an image file (JPG, PNG, etc.)</small>
+                                    <img style="width:250px ;height: auto" src="#" hidden alt="img" id="imagePreview" class="post-thumbnail">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="category">Category</label>
                                     <select class="form-control" id="category" name="category" required>
                                         <c:forEach var="category" items="${categories}">
-                                            <option value="${category.postCategoryID}">
+                                            <option value="${category.postCategoryID}" ${category.postCategoryID == oldCategory ? 'selected' : ''}>
                                                 ${category.postCategoryName}
                                             </option>
                                         </c:forEach>
@@ -411,14 +418,14 @@
                                 <div class="form-group">
                                     <label for="status">Status</label>
                                     <select class="form-control" id="status" name="status" required>
-                                        <option value="Active">Active</option>
-                                        <option value="Inactive">Inactive</option>
+                                        <option value="Active" ${oldStatus == 'Active' ? 'selected' : ''}>Active</option>
+                                        <option value="Inactive" ${oldStatus == 'Inactive' ? 'selected' : ''}>Inactive</option>
                                     </select>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="feature" name="feature">
+                                        <input type="checkbox" class="custom-control-input" id="feature" name="feature" ${oldFeature ? 'checked' : ''}>
                                         <label class="custom-control-label" for="feature">Feature this post</label>
                                     </div>
                                 </div>
@@ -449,5 +456,25 @@
         <script src="<%=request.getContextPath()%>/admin/assets/js/functions.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/vendors/chart/chart.min.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/js/admin.js"></script>
+        <script>
+
+            // Preview image when URL changes
+            document.getElementById('thumbnail').addEventListener('input', function () {
+                var preview = document.getElementById('imagePreview');
+                const file = this.files[0];
+                preview.src = URL.createObjectURL(file);
+                preview.hidden = false;
+            });
+
+            document.getElementById("thumbnail").addEventListener("change", function () {
+                const file = this.files[0];
+                if (file && !file.type.startsWith("image/")) {
+                    alert("Chỉ được chọn file ảnh (.jpg, .png, .gif, ...)!");
+                    this.value = ""; // Clear file input
+                    var preview = document.getElementById('imagePreview');
+                    preview.hidden = true;
+                }
+            });
+        </script> 
     </body>
 </html> 

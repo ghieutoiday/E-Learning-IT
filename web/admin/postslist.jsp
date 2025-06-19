@@ -307,7 +307,7 @@
                 white-space: nowrap;
                 margin-right: 10px;
             }
-           
+
 
         </style>
     </head>
@@ -327,9 +327,9 @@
                     <div>
                         <a href="index.jsp" class="ttr-logo">
                             <img alt="" class="ttr-logo-mobile"
-                                src="assets/images/logo-mobile.png" width="30" height="30">
+                                 src="assets/images/logo-mobile.png" width="30" height="30">
                             <img alt="" class="ttr-logo-desktop"
-                                src="assets/images/logo-white.png" width="160" height="27">
+                                 src="assets/images/logo-white.png" width="160" height="27">
                         </a>
                     </div>
                 </div>
@@ -339,7 +339,7 @@
                     <ul class="ttr-header-navigation">
                         <li>
                             <a href="home"
-                                class="ttr-material-button ttr-submenu-toggle">HOME</a>
+                               class="ttr-material-button ttr-submenu-toggle">HOME</a>
                         </li>
                         <li>
                             <a href="#" class="ttr-material-button ttr-submenu-toggle">QUICK
@@ -441,8 +441,8 @@
                         <li>
                             <a href="#" class="ttr-material-button ttr-submenu-toggle"><span
                                     class="ttr-user-avatar"><img alt=""
-                                        src="assets/images/testimonials/pic3.jpg" width="32"
-                                        height="32"></span></a>
+                                                             src="assets/images/testimonials/pic3.jpg" width="32"
+                                                             height="32"></span></a>
                             <div class="ttr-header-submenu">
                                 <ul>
                                     <li><a href="user-profile.jsp">My profile</a></li>
@@ -490,7 +490,7 @@
                     <form class="ttr-search-form">
                         <div class="ttr-search-input-wrapper">
                             <input type="text" name="qq" placeholder="search something..."
-                                class="ttr-search-input">
+                                   class="ttr-search-input">
                             <button type="submit" name="search" class="ttr-search-submit"><i
                                     class="ti-arrow-right"></i></button>
                         </div>
@@ -531,6 +531,12 @@
                             <a href="postcontroller" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-book"></i></span>
                                 <span class="ttr-label">Posts List</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="slidercontroller" class="ttr-material-button">
+                                <span class="ttr-icon"><i class="ti-book"></i></span>
+                                <span class="ttr-label">Sliders List</span>
                             </a>
                         </li>
                         <li>
@@ -609,159 +615,159 @@
 
         <!-- Main container -->
         <main class="ttr-wrapper">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12 m-b30">
-                    <div class="widget-box">
-                        <div class="wc-title">
-                            <div class="db-breadcrumb">
-                                <h4 class="breadcrumb-title" style="font-size: 24px;">Posts List</h4>
-                                <ul class="db-breadcrumb-list">
-                                    <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
-                                    <li>Posts List</li>
-                                </ul>
-                            </div>
-                            <div class="top-bar">
-                                <div class="search-container">
-                                    <form action="postcontroller" method="GET" class="d-flex">
-                                        <input type="text" name="search" value="${param.search}" placeholder="Search by title..." class="search-input" />
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12 m-b30">
+                        <div class="widget-box">
+                            <div class="wc-title">
+                                <div class="db-breadcrumb">
+                                    <h4 class="breadcrumb-title" style="font-size: 24px;">Posts List</h4>
+                                    <ul class="db-breadcrumb-list">
+                                        <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
+                                        <li>Posts List</li>
+                                    </ul>
+                                </div>
+                                <div class="top-bar">
+                                    <div class="search-container">
+                                        <form action="postcontroller" method="GET" class="d-flex">
+                                            <input type="text" name="search" value="${param.search}" placeholder="Search by title..." class="search-input" />
+                                            <input type="hidden" name="page" value="1" />
+                                            <button type="submit" class="btn btn-warning search">Search</button>
+                                        </form>
+                                        <a href="postcontroller?action=showAddForm" class="btn btn-warning btn-add-post">Add Post</a>
+                                    </div>
+                                </div>
+
+                                <!-- Filters -->
+                                <div class="filters">
+                                    <form action="postcontroller" method="GET" class="d-flex align-items-center text-black" style="color: black;">
+                                        <select name="sortBy" class="sort-select">
+                                            <option value="" disabled selected hidden>Sort by</option>
+                                            <option style="color: black;" value="title" ${param.sortBy eq 'title' ? 'selected' : ''}>Title</option>
+                                            <option value="category" ${param.sortBy eq 'category' ? 'selected' : ''}>Category</option>
+                                            <option value="author" ${param.sortBy eq 'author' ? 'selected' : ''}>Author</option>
+                                            <option value="date" ${param.sortBy eq 'date' ? 'selected' : ''}>Date</option>
+                                            <option value="status" ${param.sortBy eq 'status' ? 'selected' : ''}>Status</option>
+                                            <option value="feature" ${param.sortBy eq 'feature' ? 'selected' : ''}>Feature</option>
+                                        </select>
+
+                                        <select name="category" class="sort-select">
+                                            <option value="" disabled selected hidden>Category</option>
+                                            <c:forEach var="category" items="${categories}">
+                                                <option value="${category.postCategoryID}" ${param.category eq category.postCategoryID ? 'selected' : ''}>
+                                                    ${category.postCategoryName}
+                                                </option>
+                                            </c:forEach>
+                                        </select>
+
+                                        <select name="author" class="sort-select">
+                                            <option value="" disabled selected hidden>Author</option>
+                                            <c:forEach var="author" items="${authors}">
+                                                <option value="${author.userID}" ${param.author eq author.userID ? 'selected' : ''}>
+                                                    ${author.fullName}
+                                                </option>
+                                            </c:forEach>
+                                        </select>
+
+                                        <select name="status" class="sort-select">
+                                            <option value="" disabled selected hidden>Status</option>
+                                            <option value="active" ${param.status eq 'active' ? 'selected' : ''}>Active</option>
+                                            <option value="inactive" ${param.status eq 'inactive' ? 'selected' : ''}>Inactive</option>
+                                        </select>
+
+                                        <select name="feature" class="sort-select">
+                                            <option value="" disabled selected hidden>Feature</option>
+                                            <option value="true" ${param.feature eq 'true' ? 'selected' : ''}>Yes</option>
+                                            <option value="false" ${param.feature eq 'false' ? 'selected' : ''}>No</option>
+                                        </select>
+
                                         <input type="hidden" name="page" value="1" />
-                                        <button type="submit" class="btn btn-warning search">Search</button>
+                                        <input type="hidden" name="search" value="${param.search}" />
+                                        <button type="submit" class="btn btn-warning">Apply Filters</button>
+                                        <a href="postcontroller" class="btn btn-warning reset">Reset Filters</a>
                                     </form>
-                                    <a href="postcontroller?action=showAddForm" class="btn btn-warning btn-add-post">Add Post</a>
                                 </div>
                             </div>
 
-                            <!-- Filters -->
-                            <div class="filters">
-                                <form action="postcontroller" method="GET" class="d-flex align-items-center text-black" style="color: black;">
-                                    <select name="sortBy" class="sort-select">
-                                        <option value="" disabled selected hidden>Sort by</option>
-                                        <option style="color: black;" value="title" ${param.sortBy eq 'title' ? 'selected' : ''}>Title</option>
-                                        <option value="category" ${param.sortBy eq 'category' ? 'selected' : ''}>Category</option>
-                                        <option value="author" ${param.sortBy eq 'author' ? 'selected' : ''}>Author</option>
-                                        <option value="date" ${param.sortBy eq 'date' ? 'selected' : ''}>Date</option>
-                                        <option value="status" ${param.sortBy eq 'status' ? 'selected' : ''}>Status</option>
-                                        <option value="feature" ${param.sortBy eq 'feature' ? 'selected' : ''}>Feature</option>
-                                    </select>
-
-                                    <select name="category" class="sort-select">
-                                        <option value="" disabled selected hidden>Category</option>
-                                        <c:forEach var="category" items="${categories}">
-                                            <option value="${category.postCategoryID}" ${param.category eq category.postCategoryID ? 'selected' : ''}>
-                                                ${category.postCategoryName}
-                                            </option>
-                                        </c:forEach>
-                                    </select>
-
-                                    <select name="author" class="sort-select">
-                                        <option value="" disabled selected hidden>Author</option>
-                                        <c:forEach var="author" items="${authors}">
-                                            <option value="${author.userID}" ${param.author eq author.userID ? 'selected' : ''}>
-                                                ${author.fullName}
-                                            </option>
-                                        </c:forEach>
-                                    </select>
-
-                                    <select name="status" class="sort-select">
-                                        <option value="" disabled selected hidden>Status</option>
-                                        <option value="active" ${param.status eq 'active' ? 'selected' : ''}>Active</option>
-                                        <option value="inactive" ${param.status eq 'inactive' ? 'selected' : ''}>Inactive</option>
-                                    </select>
-
-                                    <select name="feature" class="sort-select">
-                                        <option value="" disabled selected hidden>Feature</option>
-                                        <option value="true" ${param.feature eq 'true' ? 'selected' : ''}>Yes</option>
-                                        <option value="false" ${param.feature eq 'false' ? 'selected' : ''}>No</option>
-                                    </select>
-
-                                    <input type="hidden" name="page" value="1" />
-                                    <input type="hidden" name="search" value="${param.search}" />
-                                    <button type="submit" class="btn btn-warning">Apply Filters</button>
-                                    <a href="postcontroller" class="btn btn-warning reset">Reset Filters</a>
-                                </form>
-                            </div>
-                        </div>
-
-                        <div class="widget-inner">
-                            <div class="card-courses-list admin-courses">
-                                <table border="1">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Thumbnail</th>
-                                            <th>Title</th>
-                                            <th>Category</th>
-                                            <th>Owner</th>
-                                            <th>Create Date</th> 
-                                            <th>Status</th>
-                                            <th>Feature</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach var="post" items="${posts}" varStatus="loop">
-                                            <tr> 
-                                                <td>${post.postID}</td>
-                                                <td><img src="${post.thumbnail}" alt="Thumbnail" style="width: 50px; height: 50px; object-fit: cover;"></td>
-                                                <td>${post.title}</td>
-                                                <td>${post.postCategory.postCategoryName}</td>
-                                                <td>${post.owner.fullName}</td>
-                                                <td><fmt:formatDate value="${post.createDate}" pattern="dd/MM/yyyy"/></td> 
-                                                <td>
-                                                    <span class="status">
-                                                        <span class="dot ${post.status eq 'Active' ? 'active' : 'inactive'}"></span>
-                                                        ${post.status}
-                                                    </span>
-                                                </td>
-                                                <td>${post.feature ? 'Yes' : 'No'}</td>
-                                                <td class="action-buttons">
-                                                    <a href="postcontroller?action=view&id=${post.postID}">View</a>
-                                                    <a href="postcontroller?action=showEditForm&id=${post.postID}">Edit</a>
-                                                    <a href="postcontroller?action=delete&id=${post.postID}" onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
-                                                </td>
+                            <div class="widget-inner">
+                                <div class="card-courses-list admin-courses">
+                                    <table border="1">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Thumbnail</th>
+                                                <th>Title</th>
+                                                <th>Category</th>
+                                                <th>Owner</th>
+                                                <th>Create Date</th> 
+                                                <th>Status</th>
+                                                <th>Feature</th>
+                                                <th>Action</th>
                                             </tr>
+                                        </thead>
+                                        <tbody>
+                                            <c:forEach var="post" items="${posts}" varStatus="loop">
+                                                <tr> 
+                                                    <td>${post.postID}</td>
+                                                    <td><img src="assets/images/post/${post.thumbnail}" alt="Thumbnail" style="width: 50px; height: 50px; object-fit: cover;"></td>
+                                                    <td>${post.title}</td>
+                                                    <td>${post.postCategory.postCategoryName}</td>
+                                                    <td>${post.owner.fullName}</td>
+                                                    <td><fmt:formatDate value="${post.createDate}" pattern="dd/MM/yyyy"/></td> 
+                                                    <td>
+                                                        <span class="status">
+                                                            <span class="dot ${post.status eq 'Active' ? 'active' : 'inactive'}"></span>
+                                                            ${post.status}
+                                                        </span>
+                                                    </td>
+                                                    <td>${post.feature ? 'Yes' : 'No'}</td>
+                                                    <td class="action-buttons">
+                                                        <a href="postcontroller?action=view&id=${post.postID}">View</a>
+                                                        <a href="postcontroller?action=showEditForm&id=${post.postID}">Edit</a>
+                                                        <a href="postcontroller?action=delete&id=${post.postID}" onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Pagination -->
+                                <div class="pagination-bx rounded-sm gray clearfix">
+                                    <ul class="pagination">
+                                        <c:if test="${currentPage > 1}">
+                                            <li class="previous">
+                                                <a href="postcontroller?page=${currentPage - 1}${not empty param.search ? '&search='.concat(param.search) : ''}${not empty param.sortBy ? '&sortBy='.concat(param.sortBy) : ''}${not empty param.category ? '&category='.concat(param.category) : ''}${not empty param.author ? '&author='.concat(param.author) : ''}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.feature ? '&feature='.concat(param.feature) : ''}">
+                                                    <i class="ti-arrow-left"></i> Prev
+                                                </a>
+                                            </li>
+                                        </c:if>
+
+                                        <c:forEach begin="1" end="${totalPages}" var="i">
+                                            <li class="${currentPage == i ? 'active' : ''}">
+                                                <a href="postcontroller?page=${i}${not empty param.search ? '&search='.concat(param.search) : ''}${not empty param.sortBy ? '&sortBy='.concat(param.sortBy) : ''}${not empty param.category ? '&category='.concat(param.category) : ''}${not empty param.author ? '&author='.concat(param.author) : ''}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.feature ? '&feature='.concat(param.feature) : ''}">${i}</a>
+                                            </li>
                                         </c:forEach>
-                                    </tbody>
-                                </table>
-                            </div>
 
-                            <!-- Pagination -->
-                            <div class="pagination-bx rounded-sm gray clearfix">
-                                <ul class="pagination">
-                                    <c:if test="${currentPage > 1}">
-                                        <li class="previous">
-                                            <a href="postcontroller?page=${currentPage - 1}${not empty param.search ? '&search='.concat(param.search) : ''}${not empty param.sortBy ? '&sortBy='.concat(param.sortBy) : ''}${not empty param.category ? '&category='.concat(param.category) : ''}${not empty param.author ? '&author='.concat(param.author) : ''}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.feature ? '&feature='.concat(param.feature) : ''}">
-                                                <i class="ti-arrow-left"></i> Prev
-                                            </a>
-                                        </li>
-                                    </c:if>
-
-                                    <c:forEach begin="1" end="${totalPages}" var="i">
-                                        <li class="${currentPage == i ? 'active' : ''}">
-                                            <a href="postcontroller?page=${i}${not empty param.search ? '&search='.concat(param.search) : ''}${not empty param.sortBy ? '&sortBy='.concat(param.sortBy) : ''}${not empty param.category ? '&category='.concat(param.category) : ''}${not empty param.author ? '&author='.concat(param.author) : ''}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.feature ? '&feature='.concat(param.feature) : ''}">${i}</a>
-                                        </li>
-                                    </c:forEach>
-
-                                    <c:if test="${currentPage < totalPages}">
-                                        <li class="next">
-                                            <a href="postcontroller?page=${currentPage + 1}${not empty param.search ? '&search='.concat(param.search) : ''}${not empty param.sortBy ? '&sortBy='.concat(param.sortBy) : ''}${not empty param.category ? '&category='.concat(param.category) : ''}${not empty param.author ? '&author='.concat(param.author) : ''}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.feature ? '&feature='.concat(param.feature) : ''}">
-                                                Next <i class="ti-arrow-right"></i>
-                                            </a>
-                                        </li>
-                                    </c:if>
-                                </ul>
+                                        <c:if test="${currentPage < totalPages}">
+                                            <li class="next">
+                                                <a href="postcontroller?page=${currentPage + 1}${not empty param.search ? '&search='.concat(param.search) : ''}${not empty param.sortBy ? '&sortBy='.concat(param.sortBy) : ''}${not empty param.category ? '&category='.concat(param.category) : ''}${not empty param.author ? '&author='.concat(param.author) : ''}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.feature ? '&feature='.concat(param.feature) : ''}">
+                                                    Next <i class="ti-arrow-right"></i>
+                                                </a>
+                                            </li>
+                                        </c:if>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         </main>
         <div class="ttr-overlay"></div>
 
         <!-- External JavaScripts -->
-         <script src="<%=request.getContextPath()%>/admin/assets/js/jquery.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/js/jquery.min.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
