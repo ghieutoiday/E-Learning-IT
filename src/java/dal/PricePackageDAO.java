@@ -223,6 +223,61 @@ public class PricePackageDAO extends DBContext {
         return rowEffect;
     }
     
+    // hàm update pricePackage
+    public void updatePricePackageRegistration(PricePackage pricePackage) {
+        String sql = "UPDATE PricePackage SET "
+                + "[name] = ?, "
+                + "[listPrice] = ?, "
+                + "[salePrice] = ? "
+                + "WHERE [pricePackageID] = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, pricePackage.getName());
+            st.setDouble(2, pricePackage.getListPrice());
+            st.setDouble(3, pricePackage.getSalePrice());
+            st.setInt(4, pricePackage.getPricePackageID());
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error in updatePricePackage: " + e.getMessage());
+        }
+    }
+    
+    
+
+    // Thêm PricePackage mới, trả về ID
+    public int addPricePackage(PricePackage pkg) {
+        String sql = "INSERT INTO PricePackage (courseID, name, accessDuration, listPrice, salePrice, description, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        int generatedId = -1;
+        try (
+             PreparedStatement ps = connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+            
+            ps.setInt(1, pkg.getCourse().getCourseID());
+            ps.setString(2, pkg.getName());
+            
+            if (pkg.getAccessDuration() >0) {
+                ps.setInt(3, pkg.getAccessDuration());
+            } else {
+                ps.setNull(3, java.sql.Types.INTEGER);
+            }
+            ps.setDouble(4, pkg.getListPrice());
+            ps.setDouble(5, pkg.getSalePrice());
+            ps.setString(6, pkg.getDescription() != null ? pkg.getDescription() : "");
+            ps.setString(7, pkg.getStatus() != null ? pkg.getStatus() : "Active");
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        generatedId = rs.getInt(1);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return generatedId;
+    }
+    
     
 
 
