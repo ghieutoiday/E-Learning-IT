@@ -418,7 +418,7 @@
                                             <fmt:formatNumber var="formattedMinutes" value="${minutes}" minIntegerDigits="2" maxFractionDigits="0" />
                                             <c:set var="seconds" value="${a.duration mod 60}" />
                                             <fmt:formatNumber var="formattedSeconds" value="${seconds}" minIntegerDigits="2" maxFractionDigits="0" />
-                                            ${formattedMinutes}:${formattedSeconds}
+                                            &nbsp;&nbsp;&nbsp;${formattedMinutes}:${formattedSeconds}
                                         </span>
                                     </c:if>
                                     <c:if test="${empty a.duration}">
@@ -447,7 +447,7 @@
                                                         <fmt:formatNumber var="formattedMinutes" value="${minutes}" minIntegerDigits="2" maxFractionDigits="0" />
                                                         <c:set var="seconds" value="${subLesson.duration mod 60}" />
                                                         <fmt:formatNumber var="formattedSeconds" value="${seconds}" minIntegerDigits="2" maxFractionDigits="0" />
-                                                        ${formattedMinutes}:${formattedSeconds}
+                                                        &nbsp;&nbsp;&nbsp;${formattedMinutes}:${formattedSeconds}
                                                     </span>
                                                 </c:if>
                                                 <c:if test="${empty subLesson.duration}">
@@ -473,7 +473,7 @@
                         <div class="wc-title"><h4>Course Content</h4></div>
                         <div class="widget-inner">
                             <c:if test="${not empty requestScope.errorMessage}">
-                                <div id="errorMessage" class="text-red-500 mb-4">${requestScope.errorMessage}</div>
+                                <!--<div id="errorMessage" class="text-red-500 mb-4">${requestScope.errorMessage}</div>-->
                             </c:if>
                             <c:set var="b" value="${requestScope.chooseLesson}"/>
                             <c:choose>
@@ -927,6 +927,8 @@
                     setInterval(checkProgress, 1000);
                 }
 
+                //Khi video bắt đầu chạy thì tạo 1 bản ghi UserLessonProgress mới
+                //với status = InProgress
                 function onPlayerStateChange(event) {
                     console.log('Player state changed:', event.data);
                     if (event.data === YT.PlayerState.PLAYING && !hasStarted) {
@@ -948,7 +950,8 @@
                         });
                     }
                 }
-
+                
+                //Cho phép nút Next available
                 function updateNextButton(isLessonCompleted) {
                     if (isLessonCompleted && nextLessonID > 0) {
                         $('.video-container .next-button').replaceWith(
@@ -961,12 +964,14 @@
                         );
                     }
                 }
-
+                
+                //Cập nhật tiến độ UserLessonProgress sang Completed
                 function updateCompletedLessons(completedLessons) {
                     let $completedDisplay = $('.ttr-header-right .ttr-header-navigation li a i.fas.fa-tasks').parent();
                     $completedDisplay.html('<i class="fas fa-tasks"></i> ' + completedLessons + '/' + totalLessons + ' finished');
                 }
 
+                //Kiểm tra tiến độ video (checkProgress) để gửi AJAX khi xem 5% (completedVideo).
                 function checkProgress() {
                     if (player && player.getCurrentTime && !hasCompleted) {
                         var currentTime = player.getCurrentTime();

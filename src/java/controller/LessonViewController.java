@@ -30,17 +30,35 @@ public class LessonViewController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        //Tạm thời hardcode
         int userID = 5;
-        int courseID = 4;
+        
+        //Lấy courseID
+        String courseID_raw = request.getParameter("courseID");
+        int courseID = -1;
+        if (courseID_raw == null || courseID_raw.isBlank()) {
+            courseID = 4;
+        }
+        
+        try {
+            courseID = Integer.parseInt(courseID_raw);
+        } catch (NumberFormatException e) {
+            System.out.println(e.getMessage());
+        }
 
+        //Lấy 2 tham số này để hiển thị trên tranh tiến độ
         int completedLessons = LessonDAO.getInstance().getTotalNumberOfCompletedLessonInCourse(userID, courseID);
         int totalLessons = LessonDAO.getInstance().getTotalNumberOfLessonInCourse(courseID);
         request.setAttribute("completedLessons", completedLessons);
         request.setAttribute("totalLessons", totalLessons);
 
+        //List danh sách các bài học cha
         List<Lesson> listLessonTypeSubjectTopic = LessonDAO.getInstance().getAllSubjectTopicLesson(courseID);
         request.setAttribute("subjectTopicLesson", listLessonTypeSubjectTopic);
 
+        //Danh sách các bài học con tương ứng, dùng MAP với key là các bài học
+        //cha để truy vấn bên kia
         Map<Integer, List<Lesson>> subLessonsMap = new HashMap<>();
         for (Lesson topic : listLessonTypeSubjectTopic) {
             List<Lesson> subLessons = LessonDAO.getInstance().getAllLessonBySubjectTopicLesson(topic.getLessonID());
@@ -48,6 +66,7 @@ public class LessonViewController extends HttpServlet {
         }
         request.setAttribute("subLessonsMap", subLessonsMap);
 
+        //Lấy 1 lesson chi tiết mà người dùng chọn bên kia thông qua thanh siderbar
         String lessonID_raw = request.getParameter("lessonID");
         if (lessonID_raw == null || lessonID_raw.trim().isEmpty()) {
             request.setAttribute("errorMessage", "Lesson ID is required");

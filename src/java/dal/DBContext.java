@@ -43,8 +43,8 @@ public class DBContext {
     private Connection createConnection() throws SQLException {
         try {
             String user = "sa";
-            String pass = "123";
-            String url = "jdbc:sqlserver://DESKTOP-QCADS1N:1433;databaseName=CourseManagementDB;sendStringParametersAsUnicode=true;";
+            String pass = "123456";
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=CourseManagementDBNew";
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             return DriverManager.getConnection(url, user, pass);
         } catch (ClassNotFoundException e) {
