@@ -6,7 +6,6 @@
 <html lang="en">
 
     <head>
-
         <!-- META ============================================= -->
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -256,10 +255,51 @@
                 background-color: #0056b3;
             }
 
-
-
-
-
+            body {
+                background-color: #f8f9fa;
+            }
+            .registration-card {
+                max-width: 850px;
+                margin: auto;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+                border-radius: 16px;
+                padding: 30px;
+                background-color: #fff;
+            }
+            .form-label {
+                font-weight: 500;
+            }
+            .form-section-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-top: 25px;
+                margin-bottom: 10px;
+                color: #333; /* Default color for other section titles */
+            }
+            .btn-primary {
+                padding: 10px 20px;
+                font-size: 16px;
+                font-weight: 500;
+                background-color: #0d6efd;
+                border-color: #0d6efd;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.1s ease;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+            .btn-primary:hover {
+                background-color: #084298;
+                transform: translateY(-2px);
+            }
+            .btn-primary:active {
+                transform: translateY(0);
+            }
+            /* Specific style for "Course Registration" title */
+            .registration-card h3.text-primary.mb-0 {
+                color: #0d6efd; /* Match the color from the image */
+            }
         </style>
 
     </head>
@@ -439,7 +479,7 @@
                 <div class="page-banner ovbl-dark">
                     <div class="container">
                         <div class="page-banner-entry">
-                            <h1 class="text-white">New Course</h1>
+                            <h1 class="text-white">Registration</h1>
                         </div>
                     </div>
                 </div>
@@ -448,257 +488,124 @@
                     <div class="container">
                         <ul class="list-inline">
                             <li><a href="#">Home</a></li>
-                            <li>Registration List</li>
+                            <li>Registration</li>
                         </ul>
                     </div>
                 </div>
                 <!-- contact area -->
-                <div class="content-block">
-                    <div class="section-area section-sp1">
-                        <div class="container">
-                            <div class="action-bar">
-                                <a href="registrationsalercontroller?action=new" class="add-new-btn btn btn-primary">Add New</a>
-                            </div>
+                <div class="container py-5">
+                    <div class="registration-card">
 
-                            <div class="filter-bar">
-                                <form action="registrationsalercontroller" method="GET" class="filter-form">
-                                    <input type="text" name="emailSearch" placeholder="Search Email"
-                                           value="${param.emailSearch != null ? param.emailSearch : ''}"/>
+                        <c:if test="${not empty errorMessage}">
+                            <div style="color:red">${errorMessage}</div>
+                        </c:if>
 
-                                    <select name="courseName">
-                                        <option value="">All Courses</option>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3 class="text-primary mb-0">Add Registration</h3>
+                            <a href="registrationsalercontroller?action=new" class="btn btn-primary add-new-btn">Add New</a>
+                        </div>
+
+                        <form method="POST" action="registrationsalercontroller?action=new">
+                            <!-- Course -->
+                            <div class="form-section-title">Course Information</div>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label class="form-label">Course</label>
+                                    <select class="form-control" id="courseID" name="courseID" required>
+                                        <option value="">-- Select Course --</option> 
                                         <c:forEach var="course" items="${courseList}">
-                                            <option value="${course.courseName}" 
-                                                    ${param.courseName != null && param.courseName == course.courseName ? 'selected' : ''}>
+                                            <option value="${course.courseID}">
                                                 ${course.courseName}
                                             </option>
                                         </c:forEach>
                                     </select>
+                                </div>
+                            </div>
 
-                                    <select name="name">
-                                        <option value="">All Packages</option>
+                            <!-- Package Info -->
+                            <div class="form-section-title">Package Details</div>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Package Name</label>
+                                    <select class="form-control" id="packageNameSelect" name="packageName" required>
+                                        <option value="">-- Select Package Name --</option> 
                                         <c:forEach var="pkg" items="${packageList}">
-                                            <option value="${pkg.name}" ${name != null && name.equals(pkg.name) ? 'selected' : ''}>
+                                            <option value="${pkg.name}">
                                                 ${pkg.name}
                                             </option>
                                         </c:forEach>
                                     </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">List Price ($)</label>
+                                    <input type="number" class="form-control" name="listPrice" placeholder="e.g. 300" required />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Sale Price ($)</label>
+                                    <input type="number" class="form-control" name="salePrice" placeholder="e.g. 250" required />
+                                </div>
+                            </div>
 
-
-                                    <select name="validFrom">
-                                        <option value="">From</option>
-                                        <c:forEach var="fromDate" items="${fromDateList}">
-                                            <option value="${fromDate}" ${param.validFrom == fromDate ? 'selected' : ''}>${fromDate}</option>
-                                        </c:forEach>
+                            <!-- Learner Info -->
+                            <div class="form-section-title">Learner Information</div>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" name="fullName" class="form-control" required />
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Gender</label>
+                                    <select name="gender" class="form-select" required>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
                                     </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="email" class="form-control" required />
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Mobile</label>
+                                    <input type="text" name="mobile" class="form-control" />
+                                </div>
+                            </div>
 
-                                    <select name="validTo">
-                                        <option value="">To</option>
-                                        <c:forEach var="fromDate" items="${fromDateList}">
-                                            <option value="${fromDate}" ${param.validFrom == fromDate ? 'selected' : ''}>${fromDate}</option>
-                                        </c:forEach>
+                            <!-- Valid Time -->
+                            <div class="form-section-title">Validity Period</div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Valid From</label>
+                                    <input type="date" name="validFrom" class="form-control" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Valid To</label>
+                                    <input type="date" name="validTo" class="form-control" />
+                                </div>
+                            </div>
+
+                            <!-- Status & Notes -->
+                            <div class="form-section-title">Registration Status</div>
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Status</label>
+                                    <select name="status" class="form-select" required>
+                                        <option value="Submitted">Submitted</option>
+                                        <option value="Paid">Paid</option>
+                                        <option value="Cancelled">Cancelled</option>
                                     </select>
-
-
-                                    <select name="status">
-                                        <option value="">All Status</option>
-                                        <option value="Submitted" ${param.status == 'Submitted' ? 'selected' : ''}>Submitted</option>
-                                        <option value="Paid" ${param.status == 'Paid' ? 'selected' : ''}>Paid</option>
-                                        <option value="Cancelled" ${param.status == 'Cancelled' ? 'selected' : ''}>Cancelled</option>
-                                    </select>
-
-                                    <button type="submit">Apply Filter</button>
-                                </form>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Notes</label>
+                                    <input type="text" name="note" class="form-control"  />
+                                </div>
 
                             </div>
 
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=registrationID&sortOrder=${sortBy == 'registrationID' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'registrationID' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    ID
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'registrationID' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'registrationID' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=email&sortOrder=${sortBy == 'email' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'email' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Email
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'email' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'email' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=registrationTime&sortOrder=${sortBy == 'registrationTime' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'registrationTime' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Registration Time
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'registrationTime' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'registrationTime' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=courseName&sortOrder=${sortBy == 'courseName' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'courseName' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Subject
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'courseName' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'courseName' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=name&sortOrder=${sortBy == 'name' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'name' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Package
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'name' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'name' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=totalCost&sortOrder=${sortBy == 'totalCost' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'totalCost' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Total Cost
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'totalCost' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'totalCost' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=status&sortOrder=${sortBy == 'status' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'status' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Status
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'status' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'status' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=validFrom&sortOrder=${sortBy == 'validFrom' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'validFrom' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Valid From
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'validFrom' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'validFrom' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=validTo&sortOrder=${sortBy == 'validTo' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'validTo' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Valid To
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'validTo' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'validTo' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=fullName&sortOrder=${sortBy == 'fullName' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'fullName' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Last Update By
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'fullName' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'fullName' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    <!-- Example data rows -->
-                                    <c:forEach items="${listRegistrationBySaler}" var="Saler">
-                                        <tr>
-                                            <td>${Saler.registrationID}</td>
-                                            <td>${Saler.user.email}</td>
-                                            <td><fmt:formatDate value="${Saler.registrationTime}" pattern="dd-MM-yyyy"/></td>
-                                            <td>${Saler.course.courseName}</td>
-                                            <td>${Saler.pricePackage.name}</td>
-                                            <td>${Saler.totalCost}</td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${Saler.status == 'Submitted'}">
-                                                        <span class="status-submitted">Submitted</span>
-                                                    </c:when>
-                                                    <c:when test="${Saler.status == 'Paid'}">
-                                                        <span class="status-paid">Paid</span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="status-cancelled">Cancelled</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-
-                                            </td>
-                                            <td><fmt:formatDate value="${Saler.validFrom}" pattern="dd-MM-yyyy"/></td>
-                                            <td><fmt:formatDate value="${Saler.validTo}" pattern="dd-MM-yyyy"/></td>
-                                            <td>${Saler.lastUpdateBy.fullName}</td>
-                                            <td>
-                                                <span class="action-link">
-                                                    <a href="registrationsalercontroller?action=edit&registrationID=${Saler.registrationID}">Edit</a>&nbsp;&nbsp;
-                                                    <a href="registrationsalercontroller?action=detail&registrationID=${Saler.registrationID}">Detail</a>
-                                                </span>
-                                            </td>
-
-                                        </tr>
-                                    </c:forEach>
-                                    <!-- More rows can be populated dynamically -->
-                                </tbody>
-                            </table>
-                        </div>
+                            <!-- Submit -->
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">Save Registration</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -805,26 +712,28 @@
                                 <div class="col-lg-12 col-md-12 col-sm-12 text-center"> <a target="_blank" href="https://www.templateshub.net">Templates Hub</a></div>
                             </div>
                         </div>
-                        </footer>
-                        <!-- Footer END ==== -->
-                        <!-- scroll top button -->
-                        <button class="back-to-top fa fa-chevron-up" ></button>
                     </div>
-                    <!-- External JavaScripts -->
-                    <script src="assets/js/jquery.min.js"></script>
-                    <script src="assets/vendors/bootstrap/js/popper.min.js"></script>
-                    <script src="assets/vendors/bootstrap/js/bootstrap.min.js"></script>
-                    <script src="assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
-                    <script src="assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
-                    <script src="assets/vendors/magnific-popup/magnific-popup.js"></script>
-                    <script src="assets/vendors/counter/waypoints-min.js"></script>
-                    <script src="assets/vendors/counter/counterup.min.js"></script>
-                    <script src="assets/vendors/imagesloaded/imagesloaded.js"></script>
-                    <script src="assets/vendors/masonry/masonry.js"></script>
-                    <script src="assets/vendors/masonry/filter.js"></script>
-                    <script src="assets/vendors/owl-carousel/owl.carousel.js"></script>
-                    <script src="assets/js/functions.js"></script>
-                    <script src="assets/js/contact.js"></script>
-                    <script src='assets/vendors/switcher/switcher.js'></script>
-                    </body>
-                    </html>
+            </footer>
+            <!-- Footer END ==== -->
+            <!-- scroll top button -->
+            <button class="back-to-top fa fa-chevron-up" ></button>
+        </div>
+        <!-- External JavaScripts -->
+        <script src="assets/js/jquery.min.js"></script>
+        <script src="assets/vendors/bootstrap/js/popper.min.js"></script>
+        <script src="assets/vendors/bootstrap/js/bootstrap.min.js"></script>
+        <script src="assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
+        <script src="assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+        <script src="assets/vendors/magnific-popup/magnific-popup.js"></script>
+        <script src="assets/vendors/counter/waypoints-min.js"></script>
+        <script src="assets/vendors/counter/counterup.min.js"></script>
+        <script src="assets/vendors/imagesloaded/imagesloaded.js"></script>
+        <script src="assets/vendors/masonry/masonry.js"></script>
+        <script src="assets/vendors/masonry/filter.js"></script>
+        <script src="assets/vendors/owl-carousel/owl.carousel.js"></script>
+        <script src="assets/js/functions.js"></script>
+        <script src="assets/js/contact.js"></script>
+        <script src='assets/vendors/switcher/switcher.js'></script>
+
+    </body>
+</html>
