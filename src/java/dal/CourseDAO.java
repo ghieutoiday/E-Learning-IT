@@ -503,6 +503,52 @@ public class CourseDAO extends DBContext {
         return rowsAffected;
     }
 
+
+      // Lấy danh sách các khóa học nổi bật (feature = 1) và đang hoạt động (status = 'Active').
+      public List<Course> getCoursePageHome() {
+        List<Course> list = new ArrayList<>();
+        String sql = "SELECT c.[courseID]\n"
+                + "      ,c.[courseName]\n"
+                + "      ,c.[courseCategoryID]\n"
+                + "      ,c.[description]\n"
+                + "      ,c.[ownerID]\n"
+                + "      ,c.[status]\n"
+                + "      ,c.[numberOfLesson]\n"
+                + "      ,c.[createDate]\n"
+                + "      ,i.[thumbnail]\n"      
+             
+                + "  FROM [dbo].[Course] c\n"
+                + "  LEFT JOIN [dbo].[Image] i ON c.courseID = i.courseID\n"
+                   + "   WHERE c.[status] = 'Active' AND c.[feature] = 1 \n "
+                + "  order by c.[courseID]";
+
+        try {
+            CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
+            UserDAO userDao = new UserDAO();
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                CourseCategory courseCategory = courseCategoryDao.getCategoryById(rs.getInt("courseCategoryID"));
+                User user = userDao.getUser(rs.getInt("ownerID"));
+                String thumbnail = rs.getString("thumbnail");
+                Course course = new Course(rs.getInt("courseID"), 
+                    rs.getString("courseName"), 
+                    courseCategory,
+                    thumbnail,
+                    rs.getString("description"), 
+                    user, 
+                    rs.getString("status"), 
+                    rs.getInt("numberOfLesson"), 
+                    rs.getDate("createDate"));
+                list.add(course);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return list;
+    }
+
     public static void main(String[] args) {
         CourseDAO courseDao = new CourseDAO();
         Course course = courseDao.getCoureByCourseID(8);
