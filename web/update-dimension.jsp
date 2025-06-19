@@ -44,36 +44,6 @@
             .form-group {
                 margin-bottom: 15px;
             }
-            .form-group.checkbox-group {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 20px;
-                flex-wrap: wrap;
-            }
-            .form-group.checkbox-group label {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-            .form-group.checkbox-group input[type="number"] {
-                max-width: 100px;
-                margin-left: auto;
-            }
-            .form-group.owner-group {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-            .form-group.owner-group label {
-                margin: 0;
-            }
-            .form-group.owner-group input[type="text"] {
-                border: none;
-                background: transparent;
-                padding: 0;
-                flex: 1;
-            }
             .tabs {
                 display: flex;
                 border-bottom: 2px solid #ccc;
@@ -96,23 +66,17 @@
             .tab-content.active {
                 display: block;
             }
-            .overview-section {
-                display: flex;
-                justify-content: space-between;
+            .dimension-entry {
+                border: 1px solid #ccc;
+                padding: 20px;
                 margin-bottom: 20px;
+                border-radius: 5px;
+                background: #f9f9f9;
             }
-            .overview-left {
-                width: 48%;
-            }
-            .overview-right {
-                width: 48%;
-            }
-            .overview-right img {
-                width: 100%;
-                height: auto;
-            }
-            .description-section {
-                margin-bottom: 20px;
+            .dimension-entry label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
             }
             .save-btn {
                 background: #007bff;
@@ -121,74 +85,7 @@
                 border: none;
                 border-radius: 5px;
                 cursor: pointer;
-            }
-            .add-new-btn {
-                background: #28a745;
-                color: white;
-                padding: 8px 15px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                float: right;
-                margin-bottom: 15px;
-            }
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-bottom: 20px;
-            }
-            th, td {
-                border: 1px solid #ccc;
-                padding: 10px;
-                text-align: left;
-            }
-            th {
-                background: #007bff;
-                color: white;
-            }
-            .filter-section {
-                margin-bottom: 20px;
-                display: flex;
-                align-items: center;
-                gap: 15px;
-                flex-wrap: wrap;
-            }
-            .filter-section label {
-                margin-right: 15px;
-                display: flex;
-                align-items: center;
-                gap: 5px;
-            }
-            .filter-section input[type="number"] {
-                max-width: 100px;
-            }
-            .apply-btn {
-                background: #007bff;
-                color: white;
-                padding: 5px 10px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-            }
-            .pagination {
-                text-align: center;
-                margin-top: 20px;
-            }
-            .pagination a {
-                padding: 8px 12px;
-                margin: 0 5px;
-                text-decoration: none;
-                color: #007bff;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-            }
-            .pagination a.active {
-                background-color: #007bff;
-                color: #fff;
-                border: none;
-            }
-            .pagination a:hover {
-                background-color: #e9ecef;
+                margin-top: 10px;
             }
         </style>
     </head>
@@ -352,12 +249,13 @@
                             </div>
                         </div>
                     </div>
+                </div>
             </header>
             <div class="page-content bg-white">
                 <div class="page-banner ovbl-dark" style="background-image:url(assets/images/banner/banner2.jpg);">
                     <div class="container">
                         <div class="page-banner-entry">
-                            <h1 class="text-white">Subject / Course Details</h1>
+                            <h1 class="text-white">Subject / Course Dimensions</h1>
                         </div>
                     </div>
                 </div>
@@ -365,7 +263,7 @@
                     <div class="container">
                         <ul class="list-inline">
                             <li><a href="#">Home</a></li>
-                            <li>Courses Details</li>
+                            <li>Course Dimensions</li>
                         </ul>
                     </div>
                 </div>
@@ -373,202 +271,71 @@
                     <div class="section-area section-sp1">
                         <div class="container">
                             <div class="tabs">
-                                <div class="tab ${sessionScope.serviceActiveTab == 'overview' ? 'active' : ''}" data-tab="overview">
-                                    <a href="coursecontroller?action=detail&service=overview&id=${sessionScope.courseDetail.courseID}">Overview</a>
-                                </div>
-                                <div class="tab ${sessionScope.serviceActiveTab == 'dimension' ? 'active' : ''}" data-tab="dimension">
-                                    <a href="coursecontroller?action=detail&service=dimension&id=${sessionScope.courseDetail.courseID}">Dimension</a>
-                                </div>
-                                <div class="tab ${sessionScope.serviceActiveTab == 'pricepackage' ? 'active' : ''}" data-tab="pricepackage">
-                                    <a href="coursecontroller?action=detail&service=pricepackage&id=${sessionScope.courseDetail.courseID}">Price Package</a>
+                                <div class="tab active" data-tab="dimension">
+                                    <a href="coursecontroller?action=detail&service=dimension&id=${requestScope.idCourse}">Dimension</a>
                                 </div>
                             </div>
+                            <div id="dimension" class="tab-content active">
+                                <c:if test="${requestScope.currentAction == 'edit'}"> 
+                                    <form method="get" action="subjectdimensioncontroller" class="dimension-entry">
+                                        <input type="hidden" name="service" value="updatedimension">
 
-                            <c:if test="${sessionScope.serviceActiveTab == 'overview'}">
-                                <div id="overview" class="tab-content active">
-                                    <form action="coursecontroller" method="get">
-                                        <input type="hidden" name="service" value="updatecourse">
-                                        <input type="hidden" name="action" value="detail">
-                                        <input type="hidden" name="id" value="${sessionScope.courseDetail.courseID}">
-                                        <div class="overview-section">
-                                            <div class="overview-left">
-                                                <div class="form-group">
-                                                    <label>Subject Name</label>
-                                                    <input type="text" name="subjectName" placeholder="Subject Name" value="${sessionScope.courseDetail.courseName}">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Category Name</label>
-                                                    <select name="category">
-                                                        <c:forEach var="i" items="${sessionScope.courseCategoryList}">
-                                                            <option value="${i.courseCategoryName}"
-                                                                    <c:if test="${sessionScope.courseDetail.courseCategory == i.courseCategoryName}">selected</c:if> >
-                                                                ${i.courseCategoryName}
-                                                            </option>
-                                                        </c:forEach>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group checkbox-group">
-                                                    <label>
-                                                        Featured Subject <input type="checkbox" name="featuredSubject" value="1" <c:if test="${sessionScope.courseDetail.feature == 1}">checked</c:if>>
-                                                        </label>
-                                                        <label>
-                                                            Number of Lessons
-                                                            <input type="number" name="numberOfLessons" min="1" value="${sessionScope.courseDetail.numberOfLesson}" readonly>
-                                                    </label>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Status</label>
-                                                    <select name="status">
-                                                        <option value="Active" <c:if test="${sessionScope.courseDetail.status == 'Active'}">selected</c:if>>Active</option>
-                                                        <option value="Inactive" <c:if test="${sessionScope.courseDetail.status == 'Inactive'}">selected</c:if>>Inactive</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group owner-group">
-                                                        <label>Owner</label>
-                                                        <input type="text" name="owner" value="${sessionScope.courseDetail.owner}" readonly>
-                                                </div>
-                                            </div>
-                                            <div class="overview-right">
-                                                <img src="${sessionScope.courseDetail.thumbnail}" alt="Course Thumbnail">
-                                                <div class="form-group">
-                                                    <label>Thumbnail URL</label>
-                                                    <input type="text" name="thumbnailUrl" placeholder="Enter image URL" value="${sessionScope.courseDetail.thumbnail}">
-                                                </div>
-                                            </div>
+                                        <input type="hidden" name="action" value="edit">
+
+
+                                        <c:if test="${requestScope.currentAction == 'add'}"> 
+                                            <input type="hidden" name="action" value="add">
+                                        </c:if>
+
+                                        <input type="hidden" name="id" value="${sessionScope.sd.dimensionID}">
+                                        <input type="hidden" name="dimensionId" value="${sessionScope.sd.dimensionID}">
+                                        <input type="hidden" name="idCourseSd" value="${sessionScope.idCourseSd}">
+                                        <div class="form-group">
+                                            <label>ID</label>
+                                            <input type="text" name="dimensionID" value="${sessionScope.sd.dimensionID}" readonly>
                                         </div>
-                                        <div class="description-section">
-                                            <div class="form-group">
-                                                <label>Description</label>
-                                                <textarea name="description" rows="5" placeholder="Enter course description...">${sessionScope.courseDetail.description}</textarea>
-                                            </div>
+                                        <div class="form-group">
+                                            <label>Type</label>
+                                            <input type="text" name="type" value="${sessionScope.sd.type}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input type="text" name="name" value="${sessionScope.sd.name}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Description</label>
+                                            <textarea name="description" rows="4">${sessionScope.sd.description}</textarea>
                                         </div>
                                         <button type="submit" class="save-btn">Save</button>
                                     </form>
-                                </div>
-                            </c:if>
-
-                            <%-- Dimension Tab Content --%>
-                            <c:if test="${sessionScope.serviceActiveTab == 'dimension'}">
-                                <div id="dimension" class="tab-content active">
-                                    <%-- Form Add New --%>
-                                    <form method="get" action="subjectdimensioncontroller">
+                                </c:if> 
+                                <c:if test="${requestScope.currentAction == 'add'}">
+                                    <form method="get" action="subjectdimensioncontroller" class="dimension-entry">
                                         <input type="hidden" name="service" value="updatedimension">
-                                        <input type="hidden" name="action" value="detail">
-                                        <input type="hidden" name="id" value="${sessionScope.courseDetail.courseID}">
-                                        <a href="subjectdimensioncontroller?action=add&courseID=${sessionScope.courseDetail.courseID}" class="add-new-btn">Add New</a>
-                                    </form>
-
-
-                                    <form id="filterDimensionForm" method="get" action="coursecontroller">
-                                        <input type="hidden" name="service" value="dimension">
-                                        <input type="hidden" name="action" value="detail">
-                                        <input type="hidden" name="id" value="${sessionScope.courseIdOfDimension}"> 
-
-                                        <div class="filter-section">
-                                            <label><input type="checkbox" name="filter" class="dimension-filter" value="Id" <c:if test="${requestScope.idSubjectDimension != null}">checked</c:if>> ID</label>
-                                            <label><input type="checkbox" name="filter" class="dimension-filter" value="Type" <c:if test="${requestScope.typeSubjectDimension != null}">checked</c:if>> Type</label>
-                                            <label><input type="checkbox" name="filter" class="dimension-filter" value="Name" <c:if test="${requestScope.nameSubjectDimension != null}">checked</c:if>> Name</label>
-                                            <label><input type="checkbox" name="filter" class="dimension-filter" value="Description" <c:if test="${requestScope.descriptionSubjectDimension != null}">checked</c:if>> Description</label>
-                                            <label><input type="checkbox" name="filter" class="dimension-filter" value="Action" <c:if test="${requestScope.actionSubjectDimension != null}">checked</c:if>> Action</label>
-                                            <label>Row Display: <input type="number" name="rowDisplay" min="1" max="${sessionScope.totalDimension}" value="${sessionScope.currentRowDisplayDimension != null ? sessionScope.currentRowDisplayDimension : 2}"></label>
-                                            <button class="apply-btn" type="submit">Apply</button>
+                                       <input type="hidden" name="action" value="add">
+                                        <input type="hidden" name="id" value="${sessionScope.sd.dimensionID}">
+                                        <input type="hidden" name="dimensionId" value="${sessionScope.sd.dimensionID}">
+                                        <input type="hidden" name="courseID" value="${sessionScope.courseID}">
+                                        
+                                        <div class="form-group">
+                                            <label>Type</label>
+                                            <input type="text" name="type" value="">
                                         </div>
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input type="text" name="name" value="">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Description</label>
+                                            <textarea name="description" rows="4"></textarea>
+                                        </div>
+                                        <button type="submit" class="save-btn">Save</button>
                                     </form>
+                                </c:if>
 
 
-                                    <table id="dimension-table">
-                                        <thead>
-                                            <tr>
-                                                <c:forEach var="i" items="${sessionScope.funtionList}">
-                                                    <th class="col-type">${i}</th>
-                                                    </c:forEach>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <c:forEach var="i" items="${sessionScope.listSubjectDimension}">
-                                                <tr>
-                                                    <c:if test="${requestScope.idSubjectDimension != null}">
-                                                        <td class="col-type">${i.dimensionID}</td>
-                                                    </c:if>
-                                                    <c:if test="${requestScope.typeSubjectDimension != null}">
-                                                        <td class="col-type">${i.type}</td>
-                                                    </c:if>
-                                                    <c:if test="${requestScope.nameSubjectDimension != null}">
-                                                        <td class="col-type">${i.name}</td>
-                                                    </c:if>
-                                                    <c:if test="${requestScope.descriptionSubjectDimension != null}">
-                                                        <td class="col-type">${i.description}</td>
-                                                    </c:if>
-                                                    <c:if test="${requestScope.actionSubjectDimension != null}">
-                                                        <td class="col-type">
-                                                            <a href="subjectdimensioncontroller?action=edit&dimensionId=${i.dimensionID}">Edit</a>/
-                                                            <a href="subjectdimensioncontroller?action=delete&courseId=${sessionScope.courseDetail.courseID}&dimensionId=${i.dimensionID}">Delete</a>
-                                                        </td>
-                                                    </c:if>
-                                                </tr>
-                                            </c:forEach>
-                                        </tbody>
-                                    </table>
 
-                                    <%-- Phân trang --%>
-                                    <div class="pagination">
-                                        <c:forEach begin="1" end="${sessionScope.endPageDimension}" var="i">
-
-                                            <c:set var="filterParams" value=""/>
-                                            <c:forEach var="filterVal" items="${paramValues.filter}">
-                                                <c:set var="filterParams" value="${filterParams}&filter=${filterVal}"/>
-                                            </c:forEach>
-
-                                            <c:set var="rowDisplayParam" value=""/>
-                                            <c:if test="${param.rowDisplay != null}">
-                                                <c:set var="rowDisplayParam" value="&rowDisplay=${param.rowDisplay}"/>
-                                            </c:if>
-
-                                            <a href="coursecontroller?action=detail&service=dimension&id=${sessionScope.courseIdOfDimension}&pageDimension=${i}${filterParams}${rowDisplayParam}"
-                                               class="${sessionScope.currentIndexPageDimension == i ? 'active' : ''}">${i}</a>
-                                        </c:forEach>
-                                    </div>
-                                </div>
-                            </c:if>
-                            <%-- Price Package Tab Content --%>
-                            <c:if test="${sessionScope.serviceActiveTab == 'pricepackage'}">
-                                <div id="price-package" class="tab-content active">
-                                    <a href="pricepackagecontroller?action=add&courseId=${sessionScope.courseDetail.courseID}" class="add-new-btn">Add New</a>
-                                    <table id="price-table">
-                                        <thead>
-                                            <tr>
-                                                <th class="col-id">ID</th>
-                                                <th class="col-package">Package</th>
-                                                <th class="col-duration">Duration</th>
-                                                <th class="col-list-price">List Price</th>
-                                                <th class="col-sale-price">Sale Price</th>
-                                                <th class="col-sale-price">Status</th>
-                                                <th class="col-action">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <c:forEach var="i" items="${sessionScope.listPricePackage}"> 
-                                                <tr>
-                                                    <td class="col-id">${i.pricePackageID}</td>
-                                                    <td class="col-package">${i.name}</td>
-                                                    <td class="col-duration">${i.accessDuration}</td>
-                                                    <td class="col-list-price">${i.listPrice}</td>
-                                                    <td class="col-sale-price">${i.salePrice}</td>
-                                                    <td class="col-action">${i.status}</td>
-                                                    <td class="col-action">
-                                                        <a href="pricepackagecontroller?action=edit&courseId=${sessionScope.courseDetail.courseID}&pricepackageId=${i.pricePackageID}"">Edit</a>/
-                                                        <a href="pricepackagecontroller?action=delete&courseId=${sessionScope.courseDetail.courseID}&pricepackageId=${i.pricePackageID}">Delete</a></td>
-                                                </tr>
-                                            </c:forEach>
-                                        </tbody>
-                                    </table>
-                                    <div class="pagination">
-                                        <c:forEach begin="1" end="${sessionScope.endPagePrice}" var="i">
-                                            <a href="coursecontroller?action=detail&service=pricepackage&id=${sessionScope.courseIdOfPricePackage}&pagePricePackage=${i}" >${i}</a>
-                                        </c:forEach>
-                                    </div>
-                                </div>
-                            </c:if>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -692,5 +459,6 @@
             <script src="assets/js/functions.js"></script>
             <script src="assets/js/contact.js"></script>
             <script src="assets/vendors/switcher/switcher.js"></script>
+        </div>
     </body>
 </html>
