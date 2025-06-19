@@ -11,17 +11,19 @@ package model;
 public class Slider {
 
     private int sliderID;
-    private String title, image, backlink, status;
+    private String title, image, backlink, status, notes ,userID;
 
     public Slider() {
     }
 
-    public Slider(int sliderID, String title, String image, String backlink, String status) {
+    public Slider(int sliderID, String title, String image, String backlink, String status, String notes, String userID) {
         this.sliderID = sliderID;
         this.title = title;
         this.image = image;
         this.backlink = backlink;
         this.status = status;
+        this.notes = notes;
+        this.userID = userID;
     }
 
     public int getSliderID() {
@@ -64,6 +66,19 @@ public class Slider {
         this.status = status;
     }
 
-    
-    
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
 }

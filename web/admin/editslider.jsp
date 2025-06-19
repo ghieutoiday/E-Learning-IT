@@ -77,255 +77,92 @@
         <link class="skin" rel="stylesheet" type="text/css"
               href="<%=request.getContextPath()%>/admin/assets/css/color/color-1.css">
 
-
         <style>
-            /* CSS */
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #f5f5f5;
-                margin: 0;
-                padding: 0;
-            }
-
-            /* Container ch?nh */
-            .container-fluid {
-                padding: 20px;
-            }
-
             .widget-box {
                 background-color: #fff;
                 border-radius: 8px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                 padding: 20px;
-                margin-top: -10px
-            }
-
-            .top-bar {
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-                gap: 10px;
-                flex-wrap: nowrap;
-                margin-bottom: 15px;
-                padding-top: 0px;
-            }
-
-            .search-input {
-                flex: 1;
-                min-width: 70%;
-                /* ? Search d?i ra */
-                padding: 6px 12px;
-                font-size: 14px;
-            }
-
-            .btn-warning {
-                white-space: nowrap;
-                padding: 8px 19px;
-                font-size: 14px;
-                background-color: #f8c61b;
-                /* M?u v?ng nh? h?nh */
-                margin-left: 15px;
-
-
-            }
-
-            .sort-select {
-                width: 150px;
-                /* ? Sort by b?ng v?i chi?u r?ng c?a n?t Add Post */
-                padding: 6px 14px;
-                font-size: 14px;
-
-            }
-
-            .sort-by-select {
-                width: 150px;
-                text-align: center;
-            }
-
-
-            /* B? l?c */
-            .filters {
-                display: flex;
-                gap: 60px;
-
-            }
-
-            .filters select {
-                padding: 8px 8px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                background-color: #fff;
-                cursor: pointer;
-                font-size: 14px;
-                color: #555;
-                /* Ch? x?m ??m */
-                text-align: center;
-            }
-
-            .filters select option {
-                text-align: left;
-
-            }
-
-
-
-
-
-            .filters button {
-                white-space: nowrap;
-                padding: 8px 8px;
-                font-size: 14px;
-                background-color: #f8c61b;
-                /* M?u v?ng nh? h?nh */
-                margin-left: 15px;
-
-            }
-
-
-            /* B?ng danh s?ch b?i vi?t */
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-bottom: 20px;
-                border: 1px solid #ddd;
-                /* Vi?n b?ng */
-            }
-
-            table th,
-            table td {
-                padding: 12px;
-                text-align: center;
-                border: 1px solid #ddd;
-                /* Vi?n t?ng ? */
-                font-size: 14px;
-            }
-
-            table th {
-                background-color: #f0f0f0;
-                font-weight: bold;
-                color: #555;
-            }
-
-            table td {
-                vertical-align: middle;
-            }
-
-            table td img {
-                width: 50px;
-                height: 50px;
-                object-fit: cover;
-                border-radius: 4px;
-            }
-
-            /* Tr?ng th?i Active/Inactive */
-            .status {
-                display: inline-flex;
-                align-items: center;
-                gap: 5px;
-            }
-
-            .status .dot {
-                width: 10px;
-                height: 10px;
-                border-radius: 50%;
-                display: inline-block;
-            }
-
-            .status .dot.active {
-                background-color: #28a745;
-                /* M?u xanh l? cho Active */
-            }
-
-            .status .dot.inactive {
-                background-color: #dc3545;
-                /* M?u ?? cho Inactive */
-            }
-
-            /* N?t h?nh ??ng */
-            .action-buttons a {
-
-                text-decoration: none;
-                color: #007bff;
-                font-size: 14px;
-                margin-left: 5px;
-            }
-
-            .action-buttons a:hover {
-                text-decoration: underline;
-            }
-
-            /* Ph?n trang */
-            .pagination {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 10px;
                 margin-top: 20px;
             }
 
-            .pagination a,
-            .pagination span {
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+                color: #333;
+            }
+
+            .form-control {
+                width: 100%;
                 padding: 8px 12px;
                 border: 1px solid #ddd;
                 border-radius: 4px;
-                text-decoration: none;
                 font-size: 14px;
             }
 
-            .pagination a {
-                color: #007bff;
-                background-color: #fff;
-            }
-
-            .pagination span {
-                background-color: #007bff;
-                color: #fff;
+            .form-control:focus {
                 border-color: #007bff;
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
             }
 
-            .pagination a:hover {
-                background-color: #f0f0f0;
+            textarea.form-control {
+                min-height: 100px;
+                resize: vertical;
             }
 
-            .select {
-                display: block;
-            }
-
-            .option {
-                display: block;
-            }
-
-            .edit {
-                margin-left: 5px;
-            }
-
-            .status .dot {
-                width: 10px;
-                height: 10px;
-                border-radius: 50%;
+            .btn {
                 display: inline-block;
+                padding: 8px 16px;
+                border: none;
+                border-radius: 4px;
+                font-size: 14px;
+                font-weight: bold;
+                cursor: pointer;
+                text-decoration: none;
+                color: white;
             }
 
-            .status .dot.active {
-                background-color: #28a745;
+            .btn-primary {
+                background-color: #f8c61b;
+                color:black;
+                padding: 7px;
             }
 
-            .status .dot.inactive {
-                background-color: #dc3545;
+            .btn-secondary {
+                background-color: #f8c61b;
+                color:black;
             }
 
-            .row {
-                margin-left: -34px;
-                margin-right: -34px;
-                margin-top: -14px;
+            .btn:hover {
+                opacity: 0.9;
             }
 
-            .widget-box {
-                padding-bottom: 60px;
+            .preview-image {
+                max-width: 200px;
+                max-height: 200px;
+                margin-top: 10px;
+                border-radius: 4px;
             }
+            .widget-box .wc-title{
+                border-bottom: 0px solid rgba(0, 0, 0, 0.05);
+
+            }
+            .widget-box .widget-inner {
+                margin-top: -56px;
+            }
+            .container-fluid {
+                margin-top: -30px;
+            }
+
+
         </style>
     </head>
-
     <body class="ttr-opened-sidebar ttr-pinned-sidebar">
         <!-- Header -->
         <header class="ttr-header">
@@ -606,71 +443,83 @@
                 <!-- sidebar menu end -->
             </div>
         </div>
-        <!-- Left sidebar menu -->
-
-
 
         <!-- Main container -->
         <main class="ttr-wrapper">
             <div class="container-fluid">
-
                 <div class="row">
                     <div class="col-lg-12 m-b30">
                         <div class="widget-box">
-                            <div class="db-breadcrumb">
-                                <h4 class="breadcrumb-title" style="font-size: 24px;">Post Details</h4>
-                                <ul class="db-breadcrumb-list">
-                                    <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
-                                    <li>Post Details</li>
-                                </ul>
-                            </div>
-                            <div class="post-detail" style="margin-left: 5px;">
-                                <div class="post-header">
-                                    <h1>${post.title}</h1>
-                                    <div class="post-meta">
-                                        <p>
-                                            <i class="fa fa-user"></i> Author: ${post.owner.fullName} |
-                                            <i class="fa fa-folder"></i> Category: ${post.postCategory.postCategoryName} |
-                                            <i class="fa fa-calendar"></i> Created: <fmt:formatDate value="${post.createDate}" pattern="dd/MM/yyyy"/> |
-                                            <i class="fa fa-calendar"></i> Updated: <fmt:formatDate value="${post.updateDate}" pattern="dd/MM/yyyy"/>
-                                        </p>
-                                        <p>
-                                            <span class="status">
-                                                <span class="dot ${post.status eq 'Active' ? 'active' : 'inactive'}"></span>
-                                                ${post.status}
-                                            </span>
-
-                                            <c:if test="${post.feature}">
-                                                <span class="feature-badge">|| Featured</span>
-                                            </c:if>
-                                        </p>
-                                    </div>
+                            <div class="wc-title">
+                                <div class="db-breadcrumb">
+                                    <h4 class="breadcrumb-title" style="font-size: 24px;">Edit Slider</h4>
+                                    <ul class="db-breadcrumb-list">
+                                        <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
+                                        <li>Edit Slider</li>
+                                    </ul>
                                 </div>
+                            </div>
 
-                                <c:if test="${not empty post.thumbnail}">
-                                    <img src="assets/images/post/${post.thumbnail}" alt="${post.title}" class="post-thumbnail" style="width: 550px; height: auto">
+                            <div class="widget-inner">
+                                <c:if test="${not empty error}">
+                                    <div class="alert alert-danger" role="alert">
+                                        ${error}
+                                    </div>
                                 </c:if>
 
-                                <div class="post-content">
-                                    <h3>Brief Info</h3>
-                                    <p>${post.briefInfo}</p>
+                                <form action="slidercontroller" method="POST" class="edit-form" enctype="multipart/form-data">
+                                    <input type="hidden" name="action" value="edit">
+                                    <input type="hidden" name="id" value="${slider.sliderID}">
+                                    <input type="hidden" name="userID" value="${slider.userID}">
 
-                                    <h3>Description</h3>
-                                    <p>${post.description}</p>
-                                </div>
+                                    <div class="form-group">
+                                        <label for="title">Title</label>
+                                        <input type="text" class="form-control" id="title" name="title" value="${oldTitle != null ? oldTitle : slider.title}" required>
+                                    </div>
 
-                                <div class="mt-4">
-                                    <a href="postcontroller" class="btn btn-secondary">Back to Posts List
-                                    </a>
-                                    <a href="postcontroller?action=showEditForm&id=${post.postID}" class="btn btn-primary edit">Edit Post
-                                    </a>
-                                </div>
+                                    <div class="form-group">
+                                        <label for="image">Slider Image</label>
+                                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                                        <small class="form-text text-muted">Upload a new image file (JPG, PNG, etc.) or leave empty to keep current image</small>
+                                        <c:if test="${not empty slider.image}">
+                                            <div class="mt-2">
+                                                <p>Current image:</p>
+                                                <img id="imagePreview" style="width:250px ;height: auto" src="assets/images/sliderlist/${slider.image}" alt="img" class="post-thumbnail">
+                                            </div>
+                                        </c:if>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="backlink">Backlink</label>
+                                        <input type="text" class="form-control" id="backlink" name="backlink" value="${oldBacklink != null ? oldBacklink : slider.backlink}" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="status">Status</label>
+                                        <select class="form-control" id="status" name="status" required>
+                                            <option value="Active" ${(oldStatus != null && oldStatus == 'Active') || (oldStatus == null && slider.status == 'Active') ? 'selected' : ''}>Active</option>
+                                            <option value="Inactive" ${(oldStatus != null && oldStatus == 'Inactive') || (oldStatus == null && slider.status == 'Inactive') ? 'selected' : ''}>Inactive</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="notes">Notes</label>
+                                        <textarea class="form-control" id="notes" name="notes" rows="4">${oldNotes != null ? oldNotes : slider.notes}</textarea>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        <a href="slidercontroller" class="btn btn-secondary">Cancel</a>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </main> 
+        </main>
+        <div class="ttr-overlay"></div>
+
         <!-- External JavaScripts -->
         <script src="<%=request.getContextPath()%>/admin/assets/js/jquery.min.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
@@ -688,7 +537,25 @@
         <script src="<%=request.getContextPath()%>/admin/assets/vendors/chart/chart.min.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/js/admin.js"></script>
 
+        <script>
+            // Preview image when URL changes
+            document.getElementById('image').addEventListener('input', function () {
+                var preview = document.getElementById('imagePreview');
+                const file = this.files[0]; //Lấy tệp đầu tiên được người dùng chọn trong mục nhập tệp.
+                preview.src = URL.createObjectURL(file);//Đặt thuộc tính src của bản xem trước <img> thành URL tạm thời
+                preview.hidden = false;
+            });
+
+            document.getElementById("image").addEventListener("change", function () {
+                const file = this.files[0];
+                if (file && !file.type.startsWith("image/")) {
+                    alert("Chỉ được chọn file ảnh (.jpg, .png, .gif, ...)!");
+                    this.value = ""; // Đặt lại đầu vào tệp để xóa tệp không hợp lệ.
+                    var preview = document.getElementById('imagePreview');
+                    preview.hidden = true;
+                }
+            });
+        </script> 
 
     </body>
-
-</html>
+</html> 
