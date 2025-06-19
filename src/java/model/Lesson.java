@@ -11,22 +11,27 @@ package model;
 public class Lesson {
     private int lessonID;
     private Course course;
-    private String name, contentHtml, contentVideo, type;
+    private Lesson topic;
+    private String name, type;
     private int orderNum;
     private String status;
+    private String contentVideo, contentHtml;
+    private int duration;
 
     public Lesson() {
     }
 
-    public Lesson(int lessonID, Course course, String name, String contentHtml, String contentVideo, String type, int orderNum, String status) {
+    public Lesson(int lessonID, Course course, Lesson topic, String name, String type, int orderNum, String status, String contentVideo, String contentHtml, int duration) {
         this.lessonID = lessonID;
         this.course = course;
+        this.topic = topic;
         this.name = name;
-        this.contentHtml = contentHtml;
-        this.contentVideo = contentVideo;
         this.type = type;
         this.orderNum = orderNum;
         this.status = status;
+        this.contentVideo = contentVideo;
+        this.contentHtml = contentHtml;
+        this.duration = duration;
     }
 
     public int getLessonID() {
@@ -45,28 +50,20 @@ public class Lesson {
         this.course = course;
     }
 
+    public Lesson getTopic() {
+        return topic;
+    }
+
+    public void setTopic(Lesson topic) {
+        this.topic = topic;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getContentHtml() {
-        return contentHtml;
-    }
-
-    public void setContentHtml(String contentHtml) {
-        this.contentHtml = contentHtml;
-    }
-
-    public String getContentVideo() {
-        return contentVideo;
-    }
-
-    public void setContentVideo(String contentVideo) {
-        this.contentVideo = contentVideo;
     }
 
     public String getType() {
@@ -91,6 +88,35 @@ public class Lesson {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getContentVideo() {
+        return contentVideo;
+    }
+
+    public void setContentVideo(String contentVideo) {
+        this.contentVideo = contentVideo;
+    }
+
+    public String getContentHtml() {
+        return contentHtml;
+    }
+
+    public void setContentHtml(String contentHtml) {
+        this.contentHtml = contentHtml;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    @Override
+    public String toString() {
+        return "Lesson{" + "lessonID=" + lessonID + ", course=" + course + ", topic=" + topic + ", name=" + name + ", type=" + type + ", orderNum=" + orderNum + ", status=" + status + ", contentVideo=" + contentVideo + ", contentHtml=" + contentHtml + ", duration=" + duration + '}';
     }
 
     
