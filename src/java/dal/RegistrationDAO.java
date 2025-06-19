@@ -7,6 +7,7 @@ package dal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,9 +60,10 @@ public class RegistrationDAO extends DBContext {
                 Date registrationTime = rs.getDate(8);
                 Date validFrom = rs.getDate(9);
                 Date validTo = rs.getDate(10);
+                String note = rs.getString(11);
 
                 //Lấy entity
-                registration = new Registration(registrationID, user, lastUpdateBy, course, pricePackage, totalCost, status, registrationTime, validFrom, validTo);
+                registration = new Registration(registrationID, user, lastUpdateBy, course, pricePackage, totalCost, status, registrationTime, validFrom, validTo, note);
             }
 
         } catch (SQLException e) {
@@ -348,6 +350,82 @@ public class RegistrationDAO extends DBContext {
             System.out.println(e);
         }
         return list;
+    }
+    
+    // hàm update registration
+    public boolean updateRegistration(Registration registration) {
+        String sql = "UPDATE Registration SET "
+                + "[courseID] = ?, "
+                + "[status] = ?, "
+                + "[validFrom] = ?, "
+                + "[validTo] = ? ,"
+                + "[note] = ? "
+                + "WHERE [registrationID] = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, registration.getCourse().getCourseID());
+            st.setString(2, registration.getStatus());
+            st.setDate(3, new java.sql.Date(registration.getValidFrom().getTime()));
+            st.setDate(4, new java.sql.Date(registration.getValidTo().getTime()));
+            st.setString(5, registration.getNote());
+            st.setInt(6, registration.getRegistrationID());
+
+            int rowsAffected = st.executeUpdate();
+            return rowsAffected > 0; // trả về true nếu có ít nhất 1 dòng được cập nhật
+        } catch (SQLException e) {
+            System.out.println("Error in updateRegistration: " + e.getMessage());
+            return false;
+        }
+    }
+
+    //Thêm mới registration 
+    public int addRegistration(Registration reg) {
+        String sql = "INSERT INTO Registration (userID, courseID, pricePackageID, validFrom, validTo, status, totalCost, lastUpdateBy, note) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        int generatedId = -1;
+        try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            if (reg.getUser() != null) {
+                ps.setInt(1, reg.getUser().getUserID());
+            } else {
+                throw new IllegalArgumentException("❌ Thiếu user khi thêm registration.");
+            }
+            ps.setInt(2, reg.getCourse().getCourseID());
+            ps.setInt(3, reg.getPricePackage().getPricePackageID());
+            ps.setDate(4, new java.sql.Date(reg.getValidFrom().getTime()));
+            ps.setDate(5, new java.sql.Date(reg.getValidTo().getTime()));
+            ps.setString(6, reg.getStatus());
+            ps.setDouble(7, reg.getTotalCost());
+            // saler
+            ps.setInt(8, 24);
+            ps.setString(9, reg.getNote());
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        generatedId = rs.getInt(1);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return generatedId;
+    }
+
+    public boolean updateRegistrationStatus(int registrationID, String newStatus, int lastUpdateBy) {
+        String sql = "UPDATE Registration SET status = ?, lastUpdateBy = ? WHERE registrationID = ?";
+        try (
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, newStatus);
+            ps.setInt(2, lastUpdateBy);
+            ps.setInt(3, registrationID);
+
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static void main(String[] args) {

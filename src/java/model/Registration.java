@@ -20,8 +20,23 @@ public class Registration {
     private double totalCost;
     private String status;
     private Date registrationTime, validFrom, validTo;
+    private String note;
 
     public Registration() {
+    }
+
+    public Registration(int registrationID, User user, User lastUpdateBy, Course course, PricePackage pricePackage, double totalCost, String status, Date registrationTime, Date validFrom, Date validTo, String note) {
+        this.registrationID = registrationID;
+        this.user = user;
+        this.lastUpdateBy = lastUpdateBy;
+        this.course = course;
+        this.pricePackage = pricePackage;
+        this.totalCost = totalCost;
+        this.status = status;
+        this.registrationTime = registrationTime;
+        this.validFrom = validFrom;
+        this.validTo = validTo;
+        this.note = note;
     }
 
     public Registration(int registrationID, User user, User lastUpdateBy, Course course, PricePackage pricePackage, double totalCost, String status, Date registrationTime, Date validFrom, Date validTo) {
@@ -36,6 +51,8 @@ public class Registration {
         this.validFrom = validFrom;
         this.validTo = validTo;
     }
+    
+    
 
     public int getRegistrationID() {
         return registrationID;
@@ -116,6 +133,16 @@ public class Registration {
     public void setValidTo(Date validTo) {
         this.validTo = validTo;
     }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    
     
     public int getTotalCompletedLesson() {
         LessonDAO lD = new LessonDAO();
