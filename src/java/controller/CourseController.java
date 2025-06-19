@@ -2,6 +2,8 @@ package controller;
 
 import dal.CourseCategoryDAO;
 import dal.CourseDAO;
+import dal.PricePackageDAO;
+import dal.SubjectDimensionDAO;
 import dal.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,149 +20,26 @@ import java.util.Arrays;
 import java.util.List;
 import model.Course;
 import model.CourseCategory;
+import model.PricePackage;
+import model.SubjectDimension;
 import model.User;
 
 @WebServlet(name = "CourseController", urlPatterns = {"/coursecontroller"})
 public class CourseController extends HttpServlet {
 
-//    @Override
-//    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-//            throws ServletException, IOException {
-//        CourseDAO courseDao = new CourseDAO();
-//        CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
-//        HttpSession session = request.getSession();
-//
-//        String pageSubjectList = request.getParameter("pageSubjectList");
-//        if (pageSubjectList == null) {
-//            pageSubjectList = "1";
-//        }
-//        int indexPageSubjectList = Integer.parseInt(pageSubjectList);
-//
-//        String categoryParam = request.getParameter("category");
-//        String statusParam = request.getParameter("status");
-//        String action = request.getParameter("action");
-//
-//        if (action == null) {
-//            action = "view"; // Mặc định là view nếu không có action
-//        }
-//
-//        if (action.equals("view") || action.equals("filter")) {
-//            // Nếu có tham số filter từ request, lưu vào session
-//            if (categoryParam != null) {
-//                session.setAttribute("currentCategory", categoryParam);
-//            }
-//            if (statusParam != null) {
-//                session.setAttribute("currentStatus", statusParam);
-//            }
-//
-//            // Lấy category và status từ session hoặc mặc định
-//            String currentCategory = (String) session.getAttribute("currentCategory");
-//            if (currentCategory == null) {
-//                currentCategory = "allCategory"; // Giá trị mặc định
-//            }
-//
-//            String currentStatus = (String) session.getAttribute("currentStatus");
-//            if (currentStatus == null) {
-//                currentStatus = "allStatus";
-//            }
-//
-//            List<Course> courseList;
-//            int totalCourse;
-//
-//            // lọc dựa trên currentCategory và currentStatus
-//            if (currentCategory.equals("allCategory") && currentStatus.equals("allStatus")) {
-//                totalCourse = courseDao.getAllCourse().size();
-//                courseList = courseDao.pagingCourse(indexPageSubjectList);
-//            } else if (currentCategory.equals("allCategory") && !currentStatus.equals("allStatus")) {
-//                totalCourse = courseDao.getAllCoureByStatus(currentStatus).size();
-//                courseList = courseDao.pagingCourseByStatus(indexPageSubjectList, currentStatus);
-//            } else if (!currentCategory.equals("allCategory") && currentStatus.equals("allStatus")) {
-//                CourseCategory courseCategory = courseCategoryDao.getCategoryByName(currentCategory);
-//                int id = courseCategory.getCourseCategory();
-//                totalCourse = courseDao.getAllCoureByCategory(id).size();
-//                courseList = courseDao.pagingCourseByCategory(indexPageSubjectList, id);
-//            } else {
-//                CourseCategory courseCategory = courseCategoryDao.getCategoryByName(currentCategory);
-//                int id = courseCategory.getCourseCategory();
-//                totalCourse = courseDao.getAllCoureByCategoryAndStatus(id, currentStatus).size();
-//                courseList = courseDao.pagingCourseByCategoryAndStatus(indexPageSubjectList, id, currentStatus);
-//            }
-//
-//            int endPage = totalCourse / 5;
-//            if (totalCourse % 5 != 0) {
-//                endPage++;
-//            }
-//
-//            session.setAttribute("endPage", endPage);
-//            session.setAttribute("courseList", courseList);
-//
-//            List<CourseCategory> courseCategoryList = courseCategoryDao.getAllCategory();
-//            session.setAttribute("courseCategoryList", courseCategoryList);
-//
-//            request.getRequestDispatcher("subject-list.jsp").forward(request, response);
-//        } else if (action.equals("detail")) {
-//            String service = request.getParameter("service");
-//            String id = request.getParameter("id");
-//            Course courseDetail = courseDao.getCoureByCourseID(Integer.parseInt(id));
-//
-//            session.setAttribute("courseDetail", courseDetail);
-//            List<CourseCategory> courseCategoryList = courseCategoryDao.getAllCategory();
-//            session.setAttribute("courseCategoryList", courseCategoryList);
-//
-//            if (service != null && service.equals("updatecourse")) {
-//                // Lấy id và user
-//                String idCourseRaw = request.getParameter("idCourse");
-//                int idCourse = Integer.parseInt(idCourseRaw);
-//                UserDAO userDao = new UserDAO();
-//                User user = userDao.getUser(courseDetail.getOwner().getUserID());
-//                // Tên subject
-//                String subjectName = request.getParameter("subjectName");
-//                // Tên category
-//                String category = request.getParameter("category");
-//                CourseCategory courseCategory = courseCategoryDao.getCategoryByName(category);
-//                // Feature
-//                int featuredSubject = 0;
-//                String featuredSubjectRaw = request.getParameter("featuredSubject");
-//                if( featuredSubjectRaw != null && featuredSubjectRaw.equals("1")){
-//                    featuredSubject = 1;
-//                }
-//                // Số lượng bài học
-//                String numberOfLessonsRaw = request.getParameter("numberOfLessons");
-//                int numberOfLesson = Integer.parseInt(numberOfLessonsRaw);
-//                // Trạng thái
-//                String status = request.getParameter("status");
-//                // Mô tả
-//                String description = request.getParameter("description");
-//                
-//                Course courseUpdate = new Course(idCourse, subjectName, courseCategory, courseDetail.getThumbnail(), description, user, status, numberOfLesson, featuredSubject, courseDetail.getCreateDate());
-//                
-//                if( courseDao.updateCourse(courseUpdate) == 1){
-//                    response.sendRedirect("coursecontroller?action=detail&id=" + idCourse + "&success=true");
-//                    return; // Dừng việc thực thi mã sau khi chuyển hướng
-//                } else {
-//                    response.sendRedirect("coursecontroller?action=detail&id=" + idCourse + "&success=false");
-//                    return;
-//                }
-//            }
-//            request.getRequestDispatcher("subject-details.jsp").forward(request, response);
-//        } else {
-//            request.getRequestDispatcher("subject-list.jsp").forward(request, response);
-//        }
-//    }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         CourseDAO courseDao = new CourseDAO();
         CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
+        SubjectDimensionDAO subjectDimensionDAO = new SubjectDimensionDAO();
         HttpSession session = request.getSession();
 
         String action = request.getParameter("action");
         String service = request.getParameter("service");
         String courseIdParam = request.getParameter("id");
         String pageSubjectList = request.getParameter("pageSubjectList");
-        
-        
 
         if (action == null) {
             action = "view";
@@ -172,18 +51,43 @@ public class CourseController extends HttpServlet {
                 handleSubjectList(request, response, session, courseDao, courseCategoryDao, pageSubjectList);
                 break;
 
-            case "detail":
-                if (service != null && service.equals("updatecourse")) {
-                    handleUpdateCourse(request, response, session, courseDao, courseCategoryDao, courseIdParam);
-                } else if (service != null && service.equals("updatedimension")) {
-                    handleUpdateDimension(request, response, session);
+            case "detail": // là trang detail
+                if (service != null) { // các service trong details
+                    switch (service) {
+                        case "overview":
+                            session.setAttribute("serviceActiveTab", "overview");
+                            handleViewCourseDetail(request, response, session, courseDao, courseCategoryDao, courseIdParam);
+                            break;
+                        case "updatecourse":
+                            session.setAttribute("serviceActiveTab", "overview");
+                            handleUpdateCourse(request, response, session, courseDao, courseCategoryDao, courseIdParam);
+                            break;
+                        case "dimension":
+                            session.setAttribute("serviceActiveTab", "dimension");
+                            handleViewDimensionDetail(request, response, session, courseDao, courseCategoryDao, courseIdParam);
+                            break;
+                        case "updatedimension":
+                            session.setAttribute("serviceActiveTab", "dimension");
+                            handleUpdateDimension(request, response, session, subjectDimensionDAO);
+                            break;
+                        case "pricepackage":
+                            session.setAttribute("serviceActiveTab", "pricepackage");
+                            handleViewPricePackage(request, response, session, courseDao);
+                            break;
+                        default:
+                            session.setAttribute("serviceActiveTab", "overview");
+                            handleViewCourseDetail(request, response, session, courseDao, courseCategoryDao, courseIdParam);
+                            break;
+                    }
                 } else {
+                    // If no service parameter, default to overview tab for detail view
+                    session.setAttribute("serviceActiveTab", "overview");
                     handleViewCourseDetail(request, response, session, courseDao, courseCategoryDao, courseIdParam);
                 }
                 break;
 
             default:
-                // Nếu action không xác định, chuyển về trang danh sách mặc định
+                // If action is unrecognized, redirect to default subject list page
                 handleSubjectList(request, response, session, courseDao, courseCategoryDao, pageSubjectList);
                 break;
         }
@@ -278,20 +182,10 @@ public class CourseController extends HttpServlet {
             //response.sendError(HttpServletResponse.SC_NOT_FOUND, "Course not found.");
             return;
         }
-       
-        // gửi ra list dimension
-        if (session.getAttribute("funtionList") == null) {
-            String[] defaultFilters = {"id", "type", "dimension", "action"}; // Đảm bảo đủ các giá trị mặc định
-            List<String> defaultFuntionList = Arrays.asList(defaultFilters);
-            session.setAttribute("funtionList", defaultFuntionList);
-        }
-
         session.setAttribute("courseDetail", courseDetail);
         List<CourseCategory> courseCategoryList = courseCategoryDao.getAllCategory();
         session.setAttribute("courseCategoryList", courseCategoryList);
-
         request.getRequestDispatcher("subject-details.jsp").forward(request, response);
-
     }
 
     private void handleUpdateCourse(HttpServletRequest request, HttpServletResponse response,
@@ -330,14 +224,17 @@ public class CourseController extends HttpServlet {
 
         String status = request.getParameter("status");
         String description = request.getParameter("description");
+        
+        String thumbnailUrl = request.getParameter("thumbnailUrl");
 
         Course courseUpdate = new Course(idCourse, subjectName, courseCategory,
-                courseDetail.getThumbnail(), description, user,
+                thumbnailUrl, description, user,
                 status, numberOfLesson, featuredSubject,
                 courseDetail.getCreateDate());
 
         if (courseDao.updateCourse(courseUpdate) == 1) {
             response.sendRedirect("coursecontroller?action=detail&service=overview&id=" + idCourse + "&success=true");
+            //request.getRequestDispatcher("coursecontroller?action=detail&service=overview&id=" + idCourse + "&success=true").forward(request, response);
         } else {
             response.sendRedirect("coursecontroller?action=detail&service=overview&id=" + idCourse + "&success=false");
         }
@@ -345,19 +242,42 @@ public class CourseController extends HttpServlet {
     }
 
     private void handleUpdateDimension(HttpServletRequest request, HttpServletResponse response,
-            HttpSession session)
+            HttpSession session, SubjectDimensionDAO subjectDimensionDAO)
             throws ServletException, IOException {
-        
+
         String[] filter = request.getParameterValues("filter");
-        if(filter == null || filter.length == 0){
-            filter = new String[] {"id","type","dimension"};
+        if (filter == null || filter.length == 0) {
+            filter = new String[]{"Id", "Type", "Name", "Description", "Action"};
+            String currentID = request.getParameter("id");
+            session.setAttribute("currentID", currentID); // set id hiện tại nếu filter = null;
         }
+
         List<String> funtionList = Arrays.asList(filter);
-        
+        for (String string : funtionList) {
+            if (string.equals("Id")) {
+                request.setAttribute("idSubjectDimension", "id");
+            }
+            if (string.equals("Type")) {
+                request.setAttribute("typeSubjectDimension", "type");
+            }
+            if (string.equals("Name")) {
+                request.setAttribute("nameSubjectDimension", "name");
+            }
+            if (string.equals("Description")) {
+                request.setAttribute("descriptionSubjectDimension", "description");
+            }
+            if (string.equals("Action")) {
+                request.setAttribute("actionSubjectDimension", "action");
+            }
+        }
+
         session.setAttribute("funtionList", funtionList);
-        
-        
-        
+        String id = request.getParameter("id");
+        List<SubjectDimension> listSubjectDimension = subjectDimensionDAO.getAllSubjectDimensionsByCourseID(Integer.parseInt(id));
+        session.setAttribute("listSubjectDimension", listSubjectDimension);
+
+        session.removeAttribute("currentID");
+
         request.getRequestDispatcher("subject-details.jsp").forward(request, response);
         return;
     }
@@ -391,6 +311,135 @@ public class CourseController extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Mô tả ngắn";
+    }
+
+    private void handleViewPricePackage(HttpServletRequest request, HttpServletResponse response, HttpSession session, CourseDAO courseDao) throws ServletException, IOException {
+        PricePackageDAO pDao = new PricePackageDAO();
+        List<PricePackage> listPricePackage;
+        String courseIdParam = request.getParameter("id");
+        int courseId = Integer.parseInt(courseIdParam);
+        session.setAttribute("courseIdOfPricePackage", courseId);
+        int totalPricePackage = pDao.getTotalPricePackageByCourseID(courseId);
+        String pagePricePackage = request.getParameter("pagePricePackage");
+        int indexPagePricePackage = (pagePricePackage == null) ? 1 : Integer.parseInt(pagePricePackage);
+        //String a = "coursecontroller?action=detail&service=pricepackage&id=1";
+        //session.setAttribute("id", courseId);
+        listPricePackage = pDao.pagingPricePackage(courseId, indexPagePricePackage);
+
+        int endPagePrice = totalPricePackage / 3;
+        if (totalPricePackage % 3 != 0) {
+            endPagePrice++;
+        }
+        session.setAttribute("endPagePrice", endPagePrice);
+        session.setAttribute("listPricePackage", listPricePackage);
+        request.getRequestDispatcher("subject-details.jsp").forward(request, response);
+        return;
+    }
+
+    private void handleViewDimensionDetail(HttpServletRequest request, HttpServletResponse response,
+            HttpSession session, CourseDAO courseDao,
+            CourseCategoryDAO courseCategoryDao, String courseIdParam)
+            throws ServletException, IOException {
+        
+        if (courseIdParam == null || courseIdParam.isEmpty()) {
+            return;
+        }
+        int courseId = Integer.parseInt(courseIdParam);
+        session.setAttribute("courseIdOfDimension", courseId);
+
+        Course courseDetail = courseDao.getCoureByCourseID(courseId);
+        if (courseDetail == null) {
+            return;
+        }
+
+        // Lấy các filter đã chọn từ request.getParameterValues("filter")
+        String[] selectedFilters = request.getParameterValues("filter");
+        List<String> currentFuntionList = new ArrayList<>();
+
+        // Đặt các thuộc tính requestScope dựa trên các filter đã chọn
+        if (selectedFilters != null) {
+            for (String filter : selectedFilters) {
+                currentFuntionList.add(filter); // Thêm vào list để hiển thị header
+                switch (filter) {
+                    case "Id":
+                        request.setAttribute("idSubjectDimension", "id");
+                        break;
+                    case "Type":
+                        request.setAttribute("typeSubjectDimension", "type");
+                        break;
+                    case "Name":
+                        request.setAttribute("nameSubjectDimension", "name");
+                        break;
+                    case "Description":
+                        request.setAttribute("descriptionSubjectDimension", "description");
+                        break;
+                    case "Action":
+                        request.setAttribute("actionSubjectDimension", "action");
+                        break;
+                }
+            }
+        } else {
+            // Nếu không có filter nào được chọn (lần đầu tải trang hoặc tất cả bị bỏ chọn),
+            // Để giữ mặc định ban đầu:
+            String[] defaultFilters = {"Id", "Type", "Name", "Description", "Action"};
+            for (String filter : defaultFilters) {
+                currentFuntionList.add(filter);
+                switch (filter) {
+                    case "Id":
+                        request.setAttribute("idSubjectDimension", "id");
+                        break;
+                    case "Type":
+                        request.setAttribute("typeSubjectDimension", "type");
+                        break;
+                    case "Name":
+                        request.setAttribute("nameSubjectDimension", "name");
+                        break;
+                    case "Description":
+                        request.setAttribute("descriptionSubjectDimension", "description");
+                        break;
+                    case "Action":
+                        request.setAttribute("actionSubjectDimension", "action");
+                        break;
+                }
+            }
+        }
+        session.setAttribute("funtionList", currentFuntionList); // Sử dụng currentFuntionList cho header
+
+        SubjectDimensionDAO subjectDimensionDAO = new SubjectDimensionDAO();
+
+        String rowDisplayParam = request.getParameter("rowDisplay");
+        int rowDisplay = 2; // Giá trị mặc định = 2
+        if (rowDisplayParam != null && !rowDisplayParam.isEmpty()) {
+            try {
+                rowDisplay = Integer.parseInt(rowDisplayParam);
+                if (rowDisplay < 1) {
+                    rowDisplay = 2; // Đảm bảo rowDisplay không âm hoặc 0
+                }
+            } catch (NumberFormatException e) {
+                rowDisplay = 2; // Quay về mặc định nếu input không hợp lệ
+            }
+        }
+        session.setAttribute("currentRowDisplayDimension", rowDisplay); // Lưu rowDisplay vào session để dùng lại
+
+        int totalDimension = subjectDimensionDAO.getTotalSubjectDimensionByCourseID(courseId);
+        String pageDimension = request.getParameter("pageDimension");
+        int indexPageDimension = (pageDimension == null || pageDimension.isEmpty()) ? 1 : Integer.parseInt(pageDimension);
+
+        List<SubjectDimension> listSubjectDimension = subjectDimensionDAO.pagingSubjectDimension(courseId, indexPageDimension, rowDisplay);
+        session.setAttribute("listSubjectDimension", listSubjectDimension);
+
+        int endPageDimension = totalDimension / rowDisplay;
+        if( endPageDimension % 2 != 0){
+                endPageDimension = endPageDimension + 1;
+        }
+        session.setAttribute("totalDimension", totalDimension);
+        if (endPageDimension == 0 && totalDimension > 0) {
+            endPageDimension = 1;
+        }
+        session.setAttribute("endPageDimension", endPageDimension);
+        session.setAttribute("currentIndexPageDimension", indexPageDimension); // Lưu trang hiện tại vào session
+
+        request.getRequestDispatcher("subject-details.jsp").forward(request, response);
     }
 
 }
