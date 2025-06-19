@@ -8,7 +8,7 @@ import dal.PostDAO;
 import dal.PostCategoryDAO;
 import dal.UserDAO;
 import java.io.IOException;
-import java.io.PrintWriter; 
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,11 +23,8 @@ import model.PostCategory;
 import jakarta.servlet.http.HttpSession;
 import model.User;
 
-/**
- *
- * @author toans
- */
-@WebServlet(name = "PostController", urlPatterns = {"/postcontroller"})
+
+@WebServlet(name = "PostController", urlPatterns = { "/postcontroller" })
 public class PostController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private PostDAO postDAO = new PostDAO();
@@ -38,7 +35,7 @@ public class PostController extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
-        
+
         if (action == null) {
             action = "list";
         }
@@ -52,7 +49,7 @@ public class PostController extends HttpServlet {
                     }
                     response.sendRedirect("postcontroller");
                     break;
-                    
+
                 case "list":
                     String search = request.getParameter("search");
                     String sortBy = request.getParameter("sortBy");
@@ -61,10 +58,13 @@ public class PostController extends HttpServlet {
                     String dateFilter = request.getParameter("dateFilter");
                     String status = request.getParameter("status");
                     String feature = request.getParameter("feature");
-                    int page = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 1;
+                    int page = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page"))
+                            : 1;
 
-                    List<Post> posts = postDAO.getFilteredPosts(search, sortBy, category, author, dateFilter, status, feature, page, POSTS_PER_PAGE);
-                    int totalPosts = postDAO.getTotalFilteredPosts(search, category, author, dateFilter, status, feature);
+                    List<Post> posts = postDAO.getFilteredPosts(search, sortBy, category, author, dateFilter, status,
+                            feature, page, POSTS_PER_PAGE);
+                    int totalPosts = postDAO.getTotalFilteredPosts(search, category, author, dateFilter, status,
+                            feature);
                     int totalPages = (totalPosts + POSTS_PER_PAGE - 1) / POSTS_PER_PAGE;
 
                     request.setAttribute("posts", posts);
@@ -93,7 +93,16 @@ public class PostController extends HttpServlet {
                         response.sendRedirect("postcontroller");
                     }
                     break;
-
+                case "viewdetail":
+                    String idPost = request.getParameter("id");
+                    if (idPost != null && !idPost.isEmpty()) {
+                        Post post = postDAO.getPostByID(Integer.parseInt(idPost));
+                        request.setAttribute("post", post);
+                        request.getRequestDispatcher("/post-details.jsp").forward(request, response);
+                    } else {
+                        response.sendRedirect("postcontroller");
+                    }
+                    break;
                 case "showAddForm":
                     request.setAttribute("categories", postDAO.getAllCategories());
                     request.getRequestDispatcher("/admin/addpost.jsp").forward(request, response);
@@ -125,13 +134,13 @@ public class PostController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
-        
+
         try {
             switch (action) {
                 case "add":
                     UserDAO userDAO = new UserDAO();
                     User owner = userDAO.getUserByEmail("tranthibich@gmail.com");
-                    
+
                     if (owner == null) {
                         request.setAttribute("error", "Default owner not found");
                         request.setAttribute("categories", postDAO.getAllCategories());
@@ -187,7 +196,8 @@ public class PostController extends HttpServlet {
                         editPost.setUpdateDate(new Date());
 
                         PostCategoryDAO editCategoryDAO = new PostCategoryDAO();
-                        PostCategory editCategory = editCategoryDAO.getPostCategoryByID(Integer.parseInt(editCategoryId));
+                        PostCategory editCategory = editCategoryDAO
+                                .getPostCategoryByID(Integer.parseInt(editCategoryId));
                         editPost.setPostCategory(editCategory);
 
                         postDAO.updatePost(editPost);
