@@ -519,6 +519,7 @@
                                     <c:if test="${not empty b.contentHtml}">
                                         <div class="content-html">${b.contentHtml}</div>
                                     </c:if>
+                                    <!--Phần ghi chú-->
                                     <div class="section-area section-sp1">
                                         <div class="container">
                                             <div class="row">
@@ -527,6 +528,7 @@
                                                     <c:if test="${not empty requestScope.errorMessage}">
                                                         <div id="errorMessage" class="text-red-500 mb-4">${requestScope.errorMessage}</div>
                                                     </c:if>
+                                                    <!--Form ghi chú-->
                                                     <form id="noteForm" action="${pageContext.request.contextPath}/lessonnotecontroller" method="post" enctype="multipart/form-data">
                                                         <input type="hidden" name="lessonId" value="${b.lessonID}">
                                                         <input type="hidden" name="userID" value="${sessionScope.userID}">
@@ -549,6 +551,7 @@
                                                         <div id="mediaNotes" class="space-y-4 mb-4"></div>
                                                         <button type="submit" class="btn btn-primary bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">Save Note</button>
                                                     </form>
+                                                    <!--Danh sách ghi chú-->
                                                     <div id="noteList" class="space-y-3 max-h-96 overflow-y-auto mt-4">
                                                         <c:if test="${empty requestScope.listNotes}">
                                                             <p class="text-gray-500">No notes yet.</p>
@@ -633,32 +636,38 @@
         (function ($) {
             try {
                 console.log('Khởi tạo script tại', new Date().toLocaleString());
+                // Selector cho các phần tử
                 const $imageInput = $('input[name="images"]');
                 const $videoInput = $('input[name="videoLinks"]');
                 const $mediaNotesDiv = $('#mediaNotes');
                 const $noteForm = $('#noteForm');
                 const $videoContainer = $('.video-container');
-
+                
+                // Lưu trữ danh sách file đã chọn và media hiện có
                 let selectedFiles = [];
                 let existingMedia = [];
                 let hideButtonsTimeout;
 
+                // Xử lý hiển thị/ẩn nút điều hướng
                 function showNavButtons() {
                     clearTimeout(hideButtonsTimeout);
                     $videoContainer.find('.nav-button').css('opacity', 1);
                     hideButtonsTimeout = setTimeout(() => {
                         $videoContainer.find('.nav-button').css('opacity', 0);
-                    }, 3000);
+                    }, 3000); // Ẩn sau 3 giây không di chuyển chuột
                 }
 
+                // Sự kiện mousemove trên video container
                 $videoContainer.on('mousemove', showNavButtons);
-
+                
+                // Xử lý URL YouTube
                 function getYouTubeEmbedUrl(url) {
                     console.log('Xử lý URL video:', url);
                     let videoId = extractYouTubeVideoId(url);
                     return videoId ? 'https://www.youtube.com/embed/' + videoId : url;
                 }
 
+                // Thêm preview cho media
                 function addMediaNoteField(type, value, previewSrc, noteContent = '') {
                     console.log('Thêm preview cho ' + type + ':', value);
                     let preview = '';
@@ -687,7 +696,8 @@
                         existingMedia.push(value);
                     }
                 }
-
+                
+                // Cập nhật FileList của input ảnh
                 function updateImageInput() {
                     let dataTransfer = new DataTransfer();
                     selectedFiles.forEach(file => dataTransfer.items.add(file));
@@ -695,9 +705,13 @@
                     console.log('Đã cập nhật file input ảnh:', $imageInput[0].files.length);
                 }
 
+                // Cập nhật preview media
                 function updateMediaNotes() {
                     console.log('Cập nhật ghi chú media');
+                    // Lấy danh sách link video hiện tại
                     let currentVideos = $videoInput.val().split(',').map(v => v.trim()).filter(v => v);
+                    
+                    // Lưu ghi chú hiện tại
                     let currentMediaNotes = {};
                     $mediaNotesDiv.find('.form-group').each(function() {
                         let $group = $(this);
@@ -707,8 +721,12 @@
                         currentMediaNotes[type + '-' + value] = noteContent;
                     });
                     console.log('Ghi chú media hiện tại:', currentMediaNotes);
+                    
+                    // Xóa tất cả form-group để tránh trùng lặp
                     $mediaNotesDiv.empty();
                     existingMedia = [];
+                    
+                    // Thêm lại preview cho các ảnh
                     if (selectedFiles.length > 0) {
                         console.log('Ảnh đã chọn:', selectedFiles.length);
                         $.each(selectedFiles, function(i, file) {
@@ -725,6 +743,8 @@
                             reader.readAsDataURL(file);
                         });
                     }
+                    
+                    // Thêm lại preview cho các video
                     if (currentVideos.length > 0) {
                         console.log('Video đã nhập:', currentVideos);
                         $.each(currentVideos, function(i, video) {
@@ -734,6 +754,7 @@
                     }
                 }
 
+                // Xử lý sự kiện click nút xóa
                 $mediaNotesDiv.on('click', '.delete-media-btn', function() {
                     let $group = $(this).closest('.form-group');
                     let value = $group.data('media-value');
@@ -752,6 +773,7 @@
                     updateMediaNotes();
                 });
 
+                // Sự kiện thay đổi input ảnh
                 $imageInput.on('change', function(e) {
                     console.log('Input ảnh thay đổi, số file:', e.target.files.length);
                     if (e.target.files.length > 0) {
@@ -780,6 +802,7 @@
                     }
                 });
 
+                // Sự kiện thay đổi input video
                 $videoInput.on('input', function(e) {
                     console.log('Input video thay đổi:', e.target.value);
                     var videos = e.target.value.split(',').map(v => v.trim()).filter(v => v);
@@ -792,6 +815,7 @@
                     updateMediaNotes();
                 });
 
+                // Sự kiện submit form
                 $noteForm.on('submit', function(e) {
                     console.log('Form đang submit, selectedFiles:', selectedFiles.length);
                     console.log('File input ảnh:', $imageInput[0].files.length);
@@ -804,6 +828,7 @@
                     }
                 });
 
+                // Kiểm tra và tải lại ảnh trong danh sách ghi chú
                 function checkImages(maxRetries = 3, retryDelay = 1000) {
                     console.log('Kiểm tra ảnh trong danh sách ghi chú');
                     $('#noteList img.media-preview').each(function() {
@@ -836,12 +861,14 @@
                     });
                 }
 
+                // Tải ghi chú media hiện có khi chỉnh sửa
                 $(document).ready(function() {
                     console.log('editVideoLinks:', $('[name="videoLinks"]').val());
                     console.log('editVideoNotes:', $('[name="editVideoNotes"]').val());
                     console.log('editImageLinks:', $('[name="editImageLinks"]').val());
                     console.log('editImageNotes:', $('[name="editImageNotes"]').val());
                     checkImages();
+                    // Tải ghi chú video hiện có nếu ở chế độ chỉnh sửa
                     if ($('[name="videoLinks"]').val()) {
                         let videoLinks = $('[name="videoLinks"]').val().split(',').map(v => v.trim()).filter(v => v);
                         let videoNotes = $('[name="editVideoNotes"]').val() ? $('[name="editVideoNotes"]').val().split(',').map(v => v.trim()) : [];
@@ -850,6 +877,7 @@
                             addMediaNoteField('video', video, null, noteContent);
                         });
                     }
+                    // Tải ghi chú ảnh hiện có nếu ở chế độ chỉnh sửa
                     if ($('[name="editImageLinks"]').val()) {
                         let imageLinks = $('[name="editImageLinks"]').val().split(',').map(v => v.trim()).filter(v => v);
                         let imageNotes = $('[name="editImageNotes"]').val() ? $('[name="editImageNotes"]').val().split(',').map(v => v.trim()) : [];
