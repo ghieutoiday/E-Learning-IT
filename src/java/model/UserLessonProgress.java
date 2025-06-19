@@ -16,19 +16,19 @@ public class UserLessonProgress {
     private User user;
     private Lesson lesson;
     private String status;
-    private Date completedAt, createdAt, updatedAt;
+    private Date completeDate, createDate, updateDate;
 
     public UserLessonProgress() {
     }
 
-    public UserLessonProgress(int userLessonProgressID, User user, Lesson lesson, String status, Date completedAt, Date createdAt, Date updatedAt) {
+    public UserLessonProgress(int userLessonProgressID, User user, Lesson lesson, String status, Date completeDate, Date createDate, Date updateDate) {
         this.userLessonProgressID = userLessonProgressID;
         this.user = user;
         this.lesson = lesson;
         this.status = status;
-        this.completedAt = completedAt;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.completeDate = completeDate;
+        this.createDate = createDate;
+        this.updateDate = updateDate;
     }
 
     public int getUserLessonProgressID() {
@@ -63,29 +63,27 @@ public class UserLessonProgress {
         this.status = status;
     }
 
-    public Date getCompletedAt() {
-        return completedAt;
+    public Date getCompleteDate() {
+        return completeDate;
     }
 
-    public void setCompletedAt(Date completedAt) {
-        this.completedAt = completedAt;
+    public void setCompleteDate(Date completeDate) {
+        this.completeDate = completeDate;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public Date getCreateDate() {
+        return createDate;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
-    public Date getUpdatedAt() {
-        return updatedAt;
+    public Date getUpdateDate() {
+        return updateDate;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
-    
-    
 }
