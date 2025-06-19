@@ -23,6 +23,14 @@ public class SubjectDimension {
         this.name = name;
         this.description = description;
     }
+    
+    public SubjectDimension( Course course, String type, String name, String description) {
+        this.course = course;
+        this.type = type;
+        this.name = name;
+        this.description = description;
+    }
+    
 
     public int getDimensionID() {
         return dimensionID;
@@ -63,6 +71,12 @@ public class SubjectDimension {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return "SubjectDimension{" + "dimensionID=" + dimensionID + '}';
+    }
+    
     
     
 }
