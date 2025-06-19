@@ -380,7 +380,8 @@ public class RegistrationDAO extends DBContext {
 
     //Thêm mới registration 
     public int addRegistration(Registration reg) {
-        String sql = "INSERT INTO Registration (userID, courseID, pricePackageID, validFrom, validTo, status, totalCost, lastUpdateBy, note) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Registration (userID, courseID, pricePackageID, validFrom, validTo, status, totalCost, lastUpdateBy, note) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int generatedId = -1;
         try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
