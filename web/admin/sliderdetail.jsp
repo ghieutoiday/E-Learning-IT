@@ -606,9 +606,6 @@
                 <!-- sidebar menu end -->
             </div>
         </div>
-        <!-- Left sidebar menu -->
-
-
 
         <!-- Main container -->
         <main class="ttr-wrapper">
@@ -618,59 +615,51 @@
                     <div class="col-lg-12 m-b30">
                         <div class="widget-box">
                             <div class="db-breadcrumb">
-                                <h4 class="breadcrumb-title" style="font-size: 24px;">Post Details</h4>
+                                <h4 class="breadcrumb-title" style="font-size: 24px;">Slider Details</h4>
                                 <ul class="db-breadcrumb-list">
                                     <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
-                                    <li>Post Details</li>
+                                    <li>Slider Details</li>
                                 </ul>
                             </div>
                             <div class="post-detail" style="margin-left: 5px;">
                                 <div class="post-header">
-                                    <h1>${post.title}</h1>
+                                    <h1>${slider.title}</h1>
                                     <div class="post-meta">
-                                        <p>
-                                            <i class="fa fa-user"></i> Author: ${post.owner.fullName} |
-                                            <i class="fa fa-folder"></i> Category: ${post.postCategory.postCategoryName} |
-                                            <i class="fa fa-calendar"></i> Created: <fmt:formatDate value="${post.createDate}" pattern="dd/MM/yyyy"/> |
-                                            <i class="fa fa-calendar"></i> Updated: <fmt:formatDate value="${post.updateDate}" pattern="dd/MM/yyyy"/>
-                                        </p>
+
                                         <p>
                                             <span class="status">
                                                 <span class="dot ${post.status eq 'Active' ? 'active' : 'inactive'}"></span>
-                                                ${post.status}
+                                                ${slider.status}
                                             </span>
 
-                                            <c:if test="${post.feature}">
-                                                <span class="feature-badge">|| Featured</span>
-                                            </c:if>
                                         </p>
                                     </div>
                                 </div>
 
-                                <c:if test="${not empty post.thumbnail}">
-                                    <img src="assets/images/post/${post.thumbnail}" alt="${post.title}" class="post-thumbnail" style="width: 550px; height: auto">
-                                </c:if>
-
+                                <img src="assets/images/sliderlist/${slider.image}" alt="Slider Image" class="slider-image" style="width: 550px; height: auto">
+                                <br/><br/>
                                 <div class="post-content">
-                                    <h3>Brief Info</h3>
-                                    <p>${post.briefInfo}</p>
+                                    <h4>Notes</h4>
+                                    <p>${slider.notes}</p>
+                                    <h4>Backlink</h4>
+                                    <p><a href="${slider.backlink}" style="color: #4c1864;">${slider.backlink}</a></p>
 
-                                    <h3>Description</h3>
-                                    <p>${post.description}</p>
                                 </div>
 
                                 <div class="mt-4">
-                                    <a href="postcontroller" class="btn btn-secondary">Back to Posts List
-                                    </a>
-                                    <a href="postcontroller?action=showEditForm&id=${post.postID}" class="btn btn-primary edit">Edit Post
-                                    </a>
+                                    <a href="slidercontroller?action=showEditForm&id=${slider.sliderID}" class="btn btn-secondary">Edit Slider</a>
+                                    <a href="slidercontroller" class="btn btn-secondary">Back to List</a>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </main> 
+
+        </main>
+        <div class="ttr-overlay"></div>
+
         <!-- External JavaScripts -->
         <script src="<%=request.getContextPath()%>/admin/assets/js/jquery.min.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
@@ -690,5 +679,4 @@
 
 
     </body>
-
-</html>
+</html> 

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
     <head>
 
         <!-- META ============================================= -->
@@ -251,9 +251,9 @@
                                     <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
                                     <div class="widget widget_getintuch">	
                                         <ul>
-                                            <li><i class="ti-location-pin"></i>75k Newcastle St. Ponte Vedra Beach, FL 309382 New York</li>
-                                            <li><i class="ti-mobile"></i>0800-123456 (24/7 Support Line)</li>
-                                            <li><i class="ti-email"></i>info@example.com</li>
+                                            <li><i class="ti-location-pin"></i>Khu công nghệ cao Hòa Lạc, Thạch Thất, Hà Nội</li>
+                                            <li><i class="ti-mobile"></i>0966875204 (24/7 Support Line)</li>
+                                            <li><i class="ti-email"></i>hieunthe181161@fpt.edu.vn</li>
                                         </ul>
                                     </div>
                                     <h5 class="m-t0 m-b20">Follow Us</h5>

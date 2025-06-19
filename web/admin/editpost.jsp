@@ -65,12 +65,12 @@
             .widget-box{
                 margin-left: -14px;
             }
-            
-            </style>
-        </head>
-        <body class="ttr-opened-sidebar ttr-pinned-sidebar">
-            <!-- Header -->
-            <header class="ttr-header">
+
+        </style>
+    </head>
+    <body class="ttr-opened-sidebar ttr-pinned-sidebar">
+        <!-- Header -->
+        <header class="ttr-header">
             <div class="ttr-header-wrapper">
                 <!--sidebar menu toggler start -->
                 <div class="ttr-toggle-sidebar ttr-material-button">
@@ -276,6 +276,12 @@
                             </a>
                         </li>
                         <li>
+                            <a href="slidercontroller" class="ttr-material-button">
+                                <span class="ttr-icon"><i class="ti-book"></i></span>
+                                <span class="ttr-label">Sliders List</span>
+                            </a>
+                        </li>
+                        <li>
                             <a href="#" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-email"></i></span>
                                 <span class="ttr-label">Mailbox</span>
@@ -349,56 +355,65 @@
             </div>
         </div>
         <main class="ttr-wrapper">
-                <div class="row">
-                    <div class="col-lg-12 m-b30">
-                        <div class="widget-box">
-                            <div class="db-breadcrumb dbedit">
-                                <h4 class="breadcrumb-title" style="font-size: 24px;">Edit Post</h4>
-                                <ul class="db-breadcrumb-list">
-                                    <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
-                                    <li>Edit Post</li>
-                                </ul>
+            <div class="row">
+                <div class="col-lg-12 m-b30">
+                    <div class="widget-box">
+                        <div class="db-breadcrumb dbedit">
+                            <h4 class="breadcrumb-title" style="font-size: 24px;">Edit Post</h4>
+                            <ul class="db-breadcrumb-list">
+                                <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
+                                <li>Edit Post</li>
+                            </ul>
+                        </div>
+
+                        <c:if test="${not empty error}">
+                            <div class="alert alert-danger" role="alert">
+                                ${error}
+                            </div>
+                        </c:if>
+
+                        <form method="POST" action="postcontroller" class="post-form" enctype="multipart/form-data">
+                            <input type="hidden" name="action" value="edit">
+                            <input type="hidden" name="id" value="${post.postID}">
+
+                            <div class="form-group">
+                                <label for="title">Title</label>
+                                <input type="text" class="form-control" id="title" name="title" value="${oldTitle != null ? oldTitle : post.title}" required>
                             </div>
 
-                            <c:if test="${not empty error}">
-                                <div class="alert alert-danger" role="alert">
-                                    ${error}
-                                </div>
-                            </c:if>
+                            <div class="form-group">
+                                <label for="briefInfo">Brief Info</label>
+                                <textarea class="form-control" id="briefInfo" name="briefInfo" rows="3" required>${oldBriefInfo != null ? oldBriefInfo : post.briefInfo}</textarea>
+                            </div>
 
-                            <form method="POST" action="postcontroller" class="post-form">
-                                <input type="hidden" name="action" value="edit">
-                                <input type="hidden" name="id" value="${post.postID}">
-                                
-                                <div class="form-group">
-                                    <label for="title">Title</label>
-                                    <input type="text" class="form-control" id="title" name="title" value="${post.title}" required>
-                                </div>
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea class="form-control" id="description" name="description" rows="5" required>${oldDescription != null ? oldDescription : post.description}</textarea>
+                            </div>
 
-                                <div class="form-group">
-                                    <label for="briefInfo">Brief Info</label>
-                                    <textarea class="form-control" id="briefInfo" name="briefInfo" rows="3" required>${post.briefInfo}</textarea>
-                                </div>
+                            <div class="form-group">
+                                <label for="thumbnail">Thumbnail Image</label>
+                                <input type="file" class="form-control" id="thumbnail" name="thumbnail" accept="image/*" > 
+                                <small class="form-text text-muted">Upload a new image file (JPG, PNG, etc.) or leave empty to keep current image</small>
+                                <c:if test="${not empty post.thumbnail}">
+                                    <div class="mt-2">
+                                        <p>Current image:</p>
+                                        <img style="width:250px ;height: auto" src="assets/images/post/${post.thumbnail}" alt="img" id="imagePreview" class="post-thumbnail">
+                                    </div>
+                                </c:if>
 
-                                <div class="form-group">
-                                    <label for="description">Description</label>
-                                    <textarea class="form-control" id="description" name="description" rows="5" required>${post.description}</textarea>
-                                </div>
 
-                                <div class="form-group">
-                                    <label for="thumbnail">Thumbnail URL</label>
-                                    <input type="text" class="form-control" id="thumbnail" name="thumbnail" value="${post.thumbnail}" required>
-                                    <small class="form-text text-muted">Enter the URL of the thumbnail image</small>
-                                </div>
+                            </div>
 
-                                <div class="form-group">
-                                    <label for="category">Category</label>
-                                    <select class="form-control" id="category" name="category" required>
-                                        <c:forEach var="category" items="${categories}">
-                                            <option value="${category.postCategoryID}" 
-                                                    ${post.postCategory.postCategoryID == category.postCategoryID ? 'selected' : ''}>
-                                                ${category.postCategoryName}
-                                            </option>
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <select class="form-control" id="category" name="category" required>
+                                    <c:forEach var="category" items="${categories}">
+                                        <option value="${category.postCategoryID}" 
+                                                ${(oldCategory != null && category.postCategoryID == oldCategory) || 
+                                                  (oldCategory == null && post.postCategory.postCategoryID == category.postCategoryID) ? 'selected' : ''}>
+                                                    ${category.postCategoryName}
+                                                </option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -406,14 +421,15 @@
                                 <div class="form-group">
                                     <label for="status">Status</label>
                                     <select class="form-control" id="status" name="status" required>
-                                        <option value="Active" ${post.status eq 'Active' ? 'selected' : ''}>Active</option>
-                                        <option value="Inactive" ${post.status eq 'Inactive' ? 'selected' : ''}>Inactive</option>
+                                        <option value="Active" ${(oldStatus != null && oldStatus == 'Active') || (oldStatus == null && post.status == 'Active') ? 'selected' : ''}>Active</option>
+                                        <option value="Inactive" ${(oldStatus != null && oldStatus == 'Inactive') || (oldStatus == null && post.status == 'Inactive') ? 'selected' : ''}>Inactive</option>
                                     </select>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="feature" name="feature" ${post.feature ? 'checked' : ''}>
+                                        <input type="checkbox" class="custom-control-input" id="feature" name="feature" 
+                                               ${(oldFeature != null && oldFeature) || (oldFeature == null && post.feature) ? 'checked' : ''}>
                                         <label class="custom-control-label" for="feature">Feature this post</label>
                                     </div>
                                 </div>
@@ -427,8 +443,8 @@
                     </div>
                 </div>
             </div>
-            </main>
-                <script src="<%=request.getContextPath()%>/admin/assets/js/jquery.min.js"></script>
+        </main>
+        <script src="<%=request.getContextPath()%>/admin/assets/js/jquery.min.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
@@ -443,6 +459,26 @@
         <script src="<%=request.getContextPath()%>/admin/assets/js/functions.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/vendors/chart/chart.min.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/js/admin.js"></script>
+        <script>
 
-        </body>
-    </html> 
+            // Preview image when URL changes
+            document.getElementById('thumbnail').addEventListener('input', function () {
+                var preview = document.getElementById('imagePreview');
+                const file = this.files[0];
+                preview.src = URL.createObjectURL(file);
+                preview.hidden = false;
+
+            });
+
+            document.getElementById("thumbnail").addEventListener("change", function () {
+                const file = this.files[0];
+                if (file && !file.type.startsWith("image/")) {
+                    alert("Chỉ được chọn file ảnh (.jpg, .png, .gif, ...)!");
+                    this.value = ""; // Clear file input
+                    var preview = document.getElementById('imagePreview');
+                    preview.hidden = true;
+                }
+            });
+        </script> 
+    </body>
+</html> 
