@@ -155,7 +155,7 @@ public class CourseDAO extends DBContext {
     //Thêm mới subject 
     public int addNewCourse(Course course) {
     String sql = "INSERT INTO Course (courseName, courseCategoryID, description, ownerID, status, feature) "
-               + "VALUES (?, ?, ?, ?, ?, ?)";
+                 + "VALUES (?, ?, ?, ?, ?, ?)";
 
     try (PreparedStatement st = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
         st.setString(1, course.getCourseName());
@@ -237,7 +237,7 @@ public class CourseDAO extends DBContext {
             //  lọc ra các bản ghi Course với tên name duy nhất (không trùng nhau).
             // Mỗi name chỉ lấy 1 bản ghi đại diện (bản ghi có pricePackageID nhỏ nhất).
             String sql = "SELECT * FROM Course WHERE courseID IN ( "
-                    + "SELECT MIN(courseID) FROM Course GROUP BY courseName )";
+                        + "SELECT MIN(courseID) FROM Course GROUP BY courseName )";
 
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();

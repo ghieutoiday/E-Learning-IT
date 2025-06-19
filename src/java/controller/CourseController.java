@@ -64,15 +64,6 @@ public class CourseController extends HttpServlet {
             action = "view";
         }
         
-        if (action.equals("create")) {
-            // Chuyển sang form tạo mới khóa học
-            List<CourseCategory> courseCategoryList = courseCategoryDao.getAllCategory();
-            List<User> userListIds = new UserDAO().getUsersByIDs(25, 26);
-
-            request.setAttribute("courseCategoryList", courseCategoryList);
-            request.setAttribute("UserListIds", userListIds);
-            request.getRequestDispatcher("new-subject.jsp").forward(request, response);
-        }
         
 
         switch (action) {
@@ -115,7 +106,14 @@ public class CourseController extends HttpServlet {
                     handleViewCourseDetail(request, response, session, courseDao, courseCategoryDao, courseIdParam);
                 }
                 break;
-
+                case "create":
+                // Chuyển sang form tạo mới khóa học
+                List<CourseCategory> courseCategoryList = courseCategoryDao.getAllCategory();
+                List<User> userListIds = new UserDAO().getUsersByIDs(25, 26);
+                request.setAttribute("courseCategoryList", courseCategoryList);
+                request.setAttribute("UserListIds", userListIds);
+                request.getRequestDispatcher("new-subject.jsp").forward(request, response);
+                break;
             default:
                 // If action is unrecognized, redirect to default subject list page
                 handleSubjectList(request, response, session, courseDao, courseCategoryDao, pageSubjectList);
