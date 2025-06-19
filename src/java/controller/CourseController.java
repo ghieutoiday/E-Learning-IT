@@ -1,5 +1,7 @@
 package controller;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import dal.CourseCategoryDAO;
 import dal.CourseDAO;
 import dal.PricePackageDAO;
@@ -8,24 +10,41 @@ import dal.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
 import java.lang.System.Logger;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import model.Course;
 import model.CourseCategory;
 import model.PricePackage;
 import model.SubjectDimension;
 import model.User;
+import utils.CloudinaryUtil;
 
 @WebServlet(name = "CourseController", urlPatterns = {"/coursecontroller"})
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024, // 1MB
+        maxFileSize = 1024 * 1024 * 10, // 10MB
+        maxRequestSize = 1024 * 1024 * 50 // 50MB
+)
 public class CourseController extends HttpServlet {
+    
+    private Cloudinary cloudinary;
+
+    public CourseController() {
+        this.cloudinary = CloudinaryUtil.getCloudinary();
+        
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -44,6 +63,17 @@ public class CourseController extends HttpServlet {
         if (action == null) {
             action = "view";
         }
+        
+        if (action.equals("create")) {
+            // Chuyển sang form tạo mới khóa học
+            List<CourseCategory> courseCategoryList = courseCategoryDao.getAllCategory();
+            List<User> userListIds = new UserDAO().getUsersByIDs(25, 26);
+
+            request.setAttribute("courseCategoryList", courseCategoryList);
+            request.setAttribute("UserListIds", userListIds);
+            request.getRequestDispatcher("new-subject.jsp").forward(request, response);
+        }
+        
 
         switch (action) {
             case "view":
@@ -289,6 +319,88 @@ public class CourseController extends HttpServlet {
         String search = request.getParameter("search");
         CourseDAO courseDao = new CourseDAO();
         CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
+        
+        String action = request.getParameter("action");
+        
+        if ("create".equals(action)) {
+            
+
+            try {
+                // Lấy dữ liệu từ form gửi lên
+                String courseName = request.getParameter("courseName");
+                String courseCategoryId = request.getParameter("courseCategory");
+                String description = request.getParameter("description");
+                String status = request.getParameter("status");
+                String ownerId = request.getParameter("owner");
+                String featureCourse = request.getParameter("feature");
+                int feature = (featureCourse != null) ? 1 : 0;  
+
+                Course course = new Course();
+                course.setCourseName(courseName);
+                course.setDescription(description);
+                course.setStatus(status);
+                course.setFeature(feature);
+
+                CourseCategory category = new CourseCategoryDAO().getCategoryById(Integer.parseInt(courseCategoryId));
+                course.setCourseCategory(category);
+
+                User owner = new UserDAO().getUserByID(Integer.parseInt(ownerId));
+                course.setOwner(owner);
+
+                int courseID = courseDao.addNewCourse(course);
+
+                if (courseID > 0) {
+                    // Lấy tất cả các phần dữ liệu từ form
+                    Collection<Part> parts = request.getParts();
+                    for (Part part : parts) {
+                        String partName = part.getName();
+                        String fileName = part.getSubmittedFileName();
+                        long size = part.getSize();
+
+                        if ("images".equals(partName) && fileName != null && !fileName.isEmpty() && size > 0) {
+                            try {
+                                // Tạo thông số upload cho Cloudinary
+                                Map<String, Object> uploadParams = ObjectUtils.asMap(
+                                        "folder", "courses/" + courseID,     // Thư mục lưu ảnh theo ID khóa học
+                                        "resource_type", "auto",        // Cho phép tự xác định loại file
+                                        "unique_filename", true         // Đảm bảo tên file duy nhất
+                                );
+                                
+                                
+                                byte[] fileBytes = part.getInputStream().readAllBytes();
+                                try {
+                                    // Upload file lên Cloudinary
+                                    Map<String, Object> uploadResult = cloudinary.uploader().upload(fileBytes, uploadParams);
+
+                                    // // Lấy thông tin ảnh trả về từ Cloudinary
+                                    String publicId = (String) uploadResult.get("public_id");
+                                    String imageUrl = (String) uploadResult.get("secure_url");
+
+
+                                    // chèn ảnh vô database
+                                    int imageId = courseDao.insertLink(fileName, imageUrl, courseID);
+                                    
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    throw e;
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    response.sendRedirect("coursecontroller");
+                } else {
+                    request.setAttribute("error", "Failed to add course");
+                    request.getRequestDispatcher("new-subject.jsp").forward(request, response);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.setAttribute("error", "An error occurred: " + e.getMessage());
+                request.getRequestDispatcher("new-subject.jsp").forward(request, response);
+            }
+            return;
+        }
 
         if (search != null && !search.trim().isEmpty()) {
             List<Course> courseList = courseDao.searchCourseByNameOrCategory(search);

@@ -328,7 +328,7 @@
                                         <option value="inactive" <c:if test="${param.status == 'inactive'}">selected</c:if>>Inactive</option>
                                     </select>
 
-                                        <button type="button" onclick="window.location.href = '#'">Create</button>
+                                        <button type="button" onclick="window.location.href = 'coursecontroller?action=create'">Create</button>
                                     </form>
 
                                     <form action="coursecontroller" method="post" class="search-form">
