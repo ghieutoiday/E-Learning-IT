@@ -133,8 +133,15 @@ public class LessonNoteController extends HttpServlet {
             Lesson lesson = lessonDAO.getLessonByLessonID(lessonIdInt);
 
             String content = request.getParameter("content");
-            String[] videoLinks = request.getParameter("videoLinks") != null
-                    ? request.getParameter("videoLinks").split(",") : new String[]{};
+            String[] videoLinks;
+            String rawLinks = request.getParameter("videoLinks");
+
+            if (rawLinks != null) {
+                videoLinks = rawLinks.split(",");
+            } else {
+                videoLinks = new String[]{};
+            }
+
             String[] imageNotes = request.getParameterValues("imageNotes[]");
             String[] videoNotes = request.getParameterValues("videoNotes[]");
             String[] existingMedia = request.getParameterValues("existingMedia[]");
@@ -142,7 +149,11 @@ public class LessonNoteController extends HttpServlet {
             UserLessonNotes note = new UserLessonNotes();
             note.setUser(user);
             note.setLesson(lesson);
-            note.setContent(content != null && !content.trim().isEmpty() ? content : null);
+            if (content != null && !content.trim().isEmpty()) {
+                note.setContent(content);
+            } else {
+                note.setContent(null);
+            }
 
             String uploadPath = UPLOAD_DIR;
             File uploadDir = new File(uploadPath);
