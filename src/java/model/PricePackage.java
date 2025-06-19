@@ -19,6 +19,18 @@ public class PricePackage {
     public PricePackage() {
     }
 
+    public PricePackage(Course course, String name, int accessDuration, double listPrice, double salePrice, String description, String status) {
+        this.course = course;
+        this.name = name;
+        this.accessDuration = accessDuration;
+        this.listPrice = listPrice;
+        this.salePrice = salePrice;
+        this.description = description;
+        this.status = status;
+    }
+    
+    
+
     public PricePackage(int pricePackageID, Course course, String name, int accessDuration, double listPrice, double salePrice, String description, String status) {
         this.pricePackageID = pricePackageID;
         this.course = course;
@@ -93,6 +105,12 @@ public class PricePackage {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "pricePackageID=" + pricePackageID;
+    }
+    
     
     
 }
