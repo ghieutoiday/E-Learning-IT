@@ -22,12 +22,14 @@ public class EmailUtil {
 
     public static void sendEmail(String recipientEmail, String subject, String content) throws MessagingException {
         Properties props = new Properties();
-        props.put("mail.smtp.host", SMTP_HOST);
+        props.put("mail.smtp.host", SMTP_HOST); 
         props.put("mail.smtp.port", SMTP_PORT);
-        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.auth", "true"); // true → bật xác thực người dùng SMTP.
         props.put("mail.smtp.starttls.enable", "true"); // bảo vệ thông tin của máy khách về máy chủ smtp
 
         // Tạo Session với Authenticator
+        //Tạo phiên gửi mail với cấu hình SMTP + thông tin đăng nhập.
+        //Xác thực với SMTP server bằng email và password.
         Session session = Session.getInstance(props, new Authenticator() { 
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
