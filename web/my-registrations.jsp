@@ -333,7 +333,7 @@
                                         <h5 class="widget-title style-1">All Courses</h5>
                                         <ul>
 
-                                            <!--courseCategory = 0 ngh?a là nó s? x? ra list toàn b? Registration-->
+                                            <!--courseCategory = 0 ngh?a là nó s? x?y ra list toàn b? Registration-->
                                             <li><a href="registrationcontroller?courseCategoryID=0&action=filter">General</a></li>
                                                 <c:forEach items="${requestScope.listCourseCategory}" var="a">
                                                 <li><a href="registrationcontroller?courseCategoryID=${a.courseCategory}&action=filter">${a.courseCategoryName}</a></li>
@@ -372,7 +372,9 @@
                                                             <c:forEach var="reg" items="${listRegistration}">
                                                                 <tr>
                                                                     <td>${reg.registrationID}</td>
-                                                                    <td>${reg.course.courseName}</td>
+                                                                    <td>
+                                                                        <a href="lessonviewcontroller?courseID=${reg.course.courseID}">${reg.course.courseName}</a>
+                                                                    </td>
                                                                     <td><fmt:formatDate value="${reg.registrationTime}" pattern="dd-MM-yyyy"/></td>
                                                                     <td>${reg.pricePackage.name}</td>
                                                                     <td>$${reg.totalCost}</td>
