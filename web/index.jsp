@@ -293,7 +293,7 @@
                                     </div>
                                 </div>
                                 <div class="menu-logo">
-                                    <a href="home"><img src="assets/images/logo-white.png" alt=""></a>
+                                    <a href="home"><img src="assets/images/logowhite1.png" alt=""></a>
                                 </div>
                                 <!-- Mobile Nav Button ==== -->
                                 <button class="navbar-toggler collapsed menuicon justify-content-end"
@@ -336,7 +336,7 @@
                                 <div class="menu-links navbar-collapse collapse justify-content-start"
                                      id="menuDropdown">
                                     <div class="menu-logo">
-                                        <a href="home"><img src="assets/images/logo.png" alt=""></a>
+                                        <a href="home"><img src="assets/images/logoblack1.png" alt=""></a>
                                     </div>
                                     <ul class="nav navbar-nav">
                                         <li class="active"><a href="javascript:;" style="color:white;">Home <i
@@ -592,7 +592,7 @@
                     <div class="container">
                         <div class="d-flex align-items-stretch">
                             <div class="pt-logo mr-auto">
-                                <a href="home"><img src="assets/images/logo-white.png" alt="" /></a>
+                                <a href="home"><img style="width:50%"src="assets/images/logowhite1.png" alt="" /></a>
                             </div>
                             <div class="pt-social-link">
                                 <ul class="list-inline m-a0">
