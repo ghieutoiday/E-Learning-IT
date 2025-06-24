@@ -428,6 +428,54 @@ public class RegistrationDAO extends DBContext {
         }
         return false;
     }
+    
+    public boolean save(Registration registration) {
+        String sql = "INSERT INTO Registration (userID, courseID, pricePackageID, totalCost, status, registrationTime) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            // Lấy ID từ đối tượng User - ĐÚNG
+            ps.setInt(1, registration.getUser().getUserID());
+            // Lấy ID từ đối tượng Course - ĐÚNG
+            ps.setInt(2, registration.getCourse().getCourseID());
+            // Lấy ID từ đối tượng PricePackage - ĐÚNG
+            ps.setInt(3, registration.getPricePackage().getPricePackageID());
+            ps.setDouble(4, registration.getTotalCost());
+            ps.setString(5, registration.getStatus());
+            ps.setTimestamp(6, new java.sql.Timestamp(registration.getRegistrationTime().getTime()));
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error in RegistrationDAO.save: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Kiểm tra xem một người dùng đã có đơn đăng ký (chưa bị hủy) cho một khóa
+     * học cụ thể hay chưa.
+     *
+     * @param userId ID của người dùng.
+     * @param courseId ID của khóa học.
+     * @return true nếu đã tồn tại, false nếu chưa có.
+     */
+    public boolean hasExistingRegistration(int userId, int courseId) {
+        String sql = "SELECT COUNT(*) FROM Registration WHERE userID = ? AND courseID = ? AND status != 'Cancelled'";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            ps.setInt(2, courseId);
+
+            if (ps.executeQuery().next()) {
+                return ps.executeQuery().getInt(1) > 0;
+            }
+
+        } catch (SQLException e) {
+            // Sửa lại System.out
+            System.out.println("Lỗi trong hasExistingRegistration: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     public static void main(String[] args) {
         RegistrationDAO d = new RegistrationDAO();
