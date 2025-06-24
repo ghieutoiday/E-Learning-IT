@@ -279,6 +279,69 @@ public class PricePackageDAO extends DBContext {
         return generatedId;
     }
     
+    public List<PricePackage> getPricePackagesByCourseId(int courseId) {
+        List<PricePackage> list = new ArrayList<>();
+        CourseDAO courseDAO = new CourseDAO();
+        Course course = courseDAO.getCourseByIdd(courseId);
+
+        if (course == null) {
+            return list;
+        }
+
+        String sql = "SELECT * FROM PricePackage WHERE courseID = ? AND status = 'Active'";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, courseId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    PricePackage pkg = new PricePackage();
+                    pkg.setPricePackageID(rs.getInt("pricePackageID"));
+                    pkg.setCourse(course); // Gán cả đối tượng Course
+                    pkg.setName(rs.getString("name"));
+                    pkg.setAccessDuration(rs.getInt("accessDuration"));
+                    pkg.setListPrice(rs.getDouble("listPrice"));
+                    pkg.setSalePrice(rs.getDouble("salePrice"));
+                    pkg.setDescription(rs.getString("description"));
+                    pkg.setStatus(rs.getString("status"));
+                    list.add(pkg);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Lỗi trong getPricePackagesByCourseId: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public PricePackage getPricePackageById(int pricePackageId) {
+        String sql = "SELECT * FROM PricePackage WHERE pricePackageID = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, pricePackageId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    CourseDAO courseDAO = new CourseDAO();
+                    Course course = courseDAO.getCourseByIdd(rs.getInt("courseID"));
+                    
+                    PricePackage pkg = new PricePackage();
+                    pkg.setPricePackageID(rs.getInt("pricePackageID"));
+                    pkg.setCourse(course); // Gán cả đối tượng Course
+                    pkg.setName(rs.getString("name"));
+                    pkg.setAccessDuration(rs.getInt("accessDuration"));
+                    pkg.setListPrice(rs.getDouble("listPrice"));
+                    pkg.setSalePrice(rs.getDouble("salePrice"));
+                    pkg.setDescription(rs.getString("description"));
+                    pkg.setStatus(rs.getString("status"));
+                    
+                    return pkg;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Lỗi trong getPricePackageById: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
     
 
 

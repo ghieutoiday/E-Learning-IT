@@ -596,6 +596,32 @@ public class UserDAO extends DBContext{
         }
         return users;
     }
+    
+    
+        // Thêm phương thức này vào file dal/UserDAO.java
+    /**
+     * Tìm kiếm và trả về một đối tượng User dựa trên email.
+     *
+     * @param email Email của người dùng cần tìm.
+     * @return Đối tượng User nếu tìm thấy, ngược lại trả về null.
+     */
+    public User getUserByEmaill(String email) {
+        String sql = "SELECT * FROM [User] WHERE email = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    // Tận dụng lại hàm getUserByID đã có để không phải viết lại code
+                    int userId = rs.getInt("userID");
+                    return getUserByID(userId);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Lỗi trong getUserByEmail: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     
     
