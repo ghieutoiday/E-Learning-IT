@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpSession; // Import HttpSession để quản lý 
 import java.util.List;
 import model.Role;
 import model.User;
+import utils.EmailService;
 
 @WebServlet(name = "UserController", urlPatterns = {"/userController", "/usercontroller"})
 public class UserController extends HttpServlet {
@@ -23,7 +24,8 @@ public class UserController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8"); // Đảm bảo request được đọc với encoding UTF-8
-
+        
+        handleNotifications(request);
         String action = request.getParameter("action");
 
         // Xử lý action "changePassword" của Hiếu
@@ -169,116 +171,127 @@ public class UserController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");  
-        HttpSession session = request.getSession();  
-
-        String action = request.getParameter("formAction");  
+        request.setCharacterEncoding("UTF-8"); 
+        HttpSession session = request.getSession(); 
+        String action = request.getParameter("formAction"); 
+        String queryString = request.getParameter("currentQueryString");
+        if (queryString == null) queryString = "";
 
         if ("addUser".equals(action)) {
-            String fullName = request.getParameter("newUser_fullName");
-            String email = request.getParameter("newUser_email");
-            String password = request.getParameter("newUser_password");  
-            String gender = request.getParameter("newUser_gender");
-            String mobile = request.getParameter("newUser_mobile");
-            String address = request.getParameter("newUser_address");
-            String roleIDStr = request.getParameter("newUser_roleID");
-            String avatar = request.getParameter("newUser_avatar");  
-            String status = request.getParameter("newUser_status");
-
-            session.setAttribute("input_newUser_fullName", fullName);
-            session.setAttribute("input_newUser_email", email);
-            session.setAttribute("input_newUser_gender", gender);
-            session.setAttribute("input_newUser_mobile", mobile);
-            session.setAttribute("input_newUser_address", address);
-            session.setAttribute("input_newUser_roleID", roleIDStr);
-            session.setAttribute("input_newUser_avatar", avatar); 
-            session.setAttribute("input_newUser_status", status);
-
-            boolean proceedToAdd = true; 
-
-            // 1. VALIDATION DỮ LIỆU ĐẦU VÀO (các trường bắt buộc)
-            if (fullName == null || fullName.trim().isEmpty() ||
-                email == null || email.trim().isEmpty() ||
-                password == null || password.trim().isEmpty() ||  
-                roleIDStr == null || roleIDStr.trim().isEmpty()) {
-                
-                session.setAttribute("errorMessage", "Required fields are missing (Full Name, Email, Password, Role).");
-                session.setAttribute("showAddUserFormOnError", true);  
-                proceedToAdd = false;
-            }
-
-            // 2. KIỂM TRA EMAIL ĐÃ TỒN TẠI CHƯA (nếu các trường bắt buộc đã hợp lệ)
-            if (proceedToAdd && userDAO.emailExists(email)) { 
-                session.setAttribute("errorMessage", "Email '" + email + "' already exists. Please use a different email.");
-                session.setAttribute("showAddUserFormOnError", true);
-                proceedToAdd = false;
-            }
-
-            // 3. KIỂM TRA SỐ ĐIỆN THOẠI ĐÃ TỒN TẠI CHƯA (nếu email hợp lệ và mobile được cung cấp)
-            if (proceedToAdd && mobile != null && !mobile.trim().isEmpty() && userDAO.mobileExists(mobile)) { 
-                session.setAttribute("errorMessage", "Mobile number '" + mobile + "' already exists. Please use a different mobile number.");
-                session.setAttribute("showAddUserFormOnError", true);
-                proceedToAdd = false;
-            }
-            
-            // 4. TIẾN HÀNH THÊM USER NẾU TẤT CẢ VALIDATION THÀNH CÔNG
-            if (proceedToAdd) {
-                try {
-                    int roleID = Integer.parseInt(roleIDStr);  
-                    Role role = new Role();  
-                    role.setRoleID(roleID);
-                    
-                    String finalAvatar = (avatar != null && !avatar.trim().isEmpty()) ? avatar : null; 
-
-                    User newUser = new User(0, fullName, email, password, gender, mobile, address, role, finalAvatar, status);
-                    
-                    boolean success = userDAO.addUser(newUser); 
-
-                    if (success) {  
-                        session.setAttribute("successMessage", "User '" + fullName + "' added successfully!");
-                        session.removeAttribute("input_newUser_fullName");
-                        session.removeAttribute("input_newUser_email");
-                        session.removeAttribute("input_newUser_gender");
-                        session.removeAttribute("input_newUser_mobile");
-                        session.removeAttribute("input_newUser_address");
-                        session.removeAttribute("input_newUser_roleID");
-                        session.removeAttribute("input_newUser_avatar");
-                        session.removeAttribute("input_newUser_status");
-                        session.removeAttribute("showAddUserFormOnError"); 
-                    } else {  
-                        session.setAttribute("errorMessage", "Failed to add user '" + fullName + "'. Please check data or database error.");
-                        session.setAttribute("showAddUserFormOnError", true);  
-                    }
-                } catch (NumberFormatException e) {  
-                    session.setAttribute("errorMessage", "Invalid Role ID format for new user: " + roleIDStr);
-                    session.setAttribute("showAddUserFormOnError", true);
-                } catch (Exception e) {  
-                    session.setAttribute("errorMessage", "Error adding user: " + e.getMessage());
-                    session.setAttribute("showAddUserFormOnError", true);
-                    e.printStackTrace();  
-                }
-            }
-            
-        } else {  
-            // Nếu không phải action "addUser", có thể có các action POST khác ở đây trong tương lai
+            handleAddUser(request, session);
+        } else if ("updateUser".equals(action)) {
+            handleUpdateUser(request, session);
+        } else { 
             session.setAttribute("errorMessage", "Unknown POST action: " + action);
         }
-
-        // Chuyển hướng về trang danh sách user, giữ lại các tham số truy vấn
-        String queryString = request.getParameter("currentQueryString");  
-        if (queryString == null) {
-            queryString = "";  
-        }
-        // Xóa tham số formAction để tránh lặp lại hành động khi reload trang
-        queryString = queryString.replaceAll("&?formAction=addUser", "");
-        queryString = queryString.replaceAll("formAction=addUser&?", "");
-
-        if (!queryString.isEmpty() && !queryString.startsWith("?")) {
-            queryString = "?" + queryString;
-        }
         
-        response.sendRedirect(request.getContextPath() + "/userController" + queryString);
+        // Luôn chuyển hướng về trang danh sách sau khi xử lý xong
+        response.sendRedirect(request.getContextPath() + "/userController?" + queryString);
     }
+    
+    private void handleUpdateUser(HttpServletRequest request, HttpSession session) {
+         try {
+            int userId = Integer.parseInt(request.getParameter("userId"));
+            int roleId = Integer.parseInt(request.getParameter("roleId"));
+            String status = request.getParameter("status");
+
+            boolean success = userDAO.updateUserRoleAndStatusSelective(userId, roleId, status);
+
+            if (success) {
+                session.setAttribute("successMessage", "User #" + userId + " updated successfully.");
+            } else {
+                session.setAttribute("errorMessage", "Failed to update user #" + userId + ".");
+            }
+        } catch (NumberFormatException e) {
+            session.setAttribute("errorMessage", "Invalid data format for user update.");
+        }
+    }
+    
+    
+    private void handleAddUser(HttpServletRequest request, HttpSession session) {
+        String fullName = request.getParameter("newUser_fullName");
+        String email = request.getParameter("newUser_email");
+        String password = request.getParameter("newUser_password");
+        String roleIDStr = request.getParameter("newUser_roleID");
+        String mobile = request.getParameter("newUser_mobile");
+        
+        // Lưu lại các giá trị đã nhập để điền lại form nếu có lỗi
+        session.setAttribute("input_newUser_fullName", fullName);
+        session.setAttribute("input_newUser_email", email);
+        // ... (lưu các giá trị khác nếu cần)
+
+        // Kiểm tra các trường bắt buộc
+        if (fullName.trim().isEmpty() || email.trim().isEmpty() || password.trim().isEmpty() || roleIDStr.trim().isEmpty()) {
+            session.setAttribute("errorMessage", "Required fields are missing (Full Name, Email, Password, Role).");
+            session.setAttribute("showAddUserFormOnError", true); 
+            return; // Dừng lại nếu có lỗi
+        }
+
+        // Kiểm tra email và mobile tồn tại
+        if (userDAO.emailExists(email)) { 
+            session.setAttribute("errorMessage", "Email '" + email + "' already exists.");
+            session.setAttribute("showAddUserFormOnError", true);
+            return; 
+        }
+        if (mobile != null && !mobile.trim().isEmpty() && userDAO.mobileExists(mobile)) { 
+            session.setAttribute("errorMessage", "Mobile number '" + mobile + "' already exists.");
+            session.setAttribute("showAddUserFormOnError", true);
+            return;
+        }
+
+        try {
+            int roleID = Integer.parseInt(roleIDStr); 
+            Role role = userDAO.getRoleByID(roleID);
+            
+            if (role == null) {
+                session.setAttribute("errorMessage", "Invalid Role selected.");
+                session.setAttribute("showAddUserFormOnError", true);
+                return;
+            }
+            
+            User newUser = new User(0, fullName, email, password, request.getParameter("newUser_gender"), mobile, request.getParameter("newUser_address"), role, null, request.getParameter("newUser_status"));
+            boolean userAdded = userDAO.addUser(newUser);
+
+            if (userAdded) { 
+                boolean emailSent = EmailService.sendNewUserPasswordEmail(newUser.getEmail(), newUser.getFullName(), password);
+                if (emailSent) {
+                    session.setAttribute("successMessage", "User '" + fullName + "' added successfully! Credentials sent to email.");
+                } else {
+                    session.setAttribute("successMessage", "User '" + fullName + "' added successfully! (But failed to send email)");
+                }
+                // Xóa các giá trị đã lưu trong session khi thành công
+                session.removeAttribute("input_newUser_fullName");
+                session.removeAttribute("input_newUser_email");
+            } else { 
+                session.setAttribute("errorMessage", "Failed to add user to database.");
+                session.setAttribute("showAddUserFormOnError", true); 
+            }
+        } catch (Exception e) {
+            session.setAttribute("errorMessage", "Error adding user: " + e.getMessage());
+            session.setAttribute("showAddUserFormOnError", true);
+        }
+    }
+    
+    // Hàm này giúp lấy thông báo từ session và đặt vào request để JSP hiển thị
+    private void handleNotifications(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            if (session.getAttribute("successMessage") != null) {
+                request.setAttribute("pageSuccessMessage", session.getAttribute("successMessage"));
+                session.removeAttribute("successMessage");
+            }
+            if (session.getAttribute("errorMessage") != null) {
+                request.setAttribute("pageErrorMessage", session.getAttribute("errorMessage"));
+                session.removeAttribute("errorMessage");
+            }
+            if (session.getAttribute("showAddUserFormOnError") != null) {
+                request.setAttribute("showAddUserFormOnErrorForJSP", true);
+                session.removeAttribute("showAddUserFormOnError");
+            }
+        }
+    }
+    
+  
 
     @Override
     public String getServletInfo() {
