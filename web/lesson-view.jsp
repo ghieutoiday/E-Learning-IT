@@ -401,7 +401,8 @@
                 <div class="ttr-sidebar-toggle-button"><i class="ti-arrow-left"></i></div>
             </div>
             <nav class="ttr-sidebar-navi">
-                <c:set var="c" value="1" scope="page"/>
+                <!-- Khởi tạo biến một lần duy nhất để lấy index hiển thị-->
+                <c:set var="c" value="1" scope="page"/> 
                 <c:set var="d" value="1" scope="page"/>
                 <ul>
                     <c:forEach items="${requestScope.subjectTopicLesson}" var="a">
@@ -411,6 +412,7 @@
                                     <span class="index">
                                         <h6><c:out value="${d}"/>. ${a.name}</h6>
                                     </span>
+                                    <!--Tăng giá trị biến d sau mỗi vòng lặp-->
                                     <c:set var="d" value="${d + 1}" scope="page"/>
                                     <c:if test="${not empty a.duration}">
                                         <span class="duration-label">
@@ -433,6 +435,7 @@
                                         <a href="lessonviewcontroller?lessonID=${subLesson.lessonID}" class="ttr-material-button lesson-link" data-lesson-id="${subLesson.lessonID}">
                                             <span class="ttr-label">
                                                 <span class="index"><c:out value="${c}"/>.</span>
+                                                <!--Tăng giá trị biến c sau khi xong 1 subLesson-->
                                                 <c:set var="c" value="${c + 1}" scope="page"/>
                                                 ${subLesson.name}
                                                 <c:if test="${not empty subLesson.duration}">

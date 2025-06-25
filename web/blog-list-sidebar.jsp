@@ -254,7 +254,8 @@
                                     <c:forEach items="${listPost}" var="o">
                                         <div class="blog-post blog-md clearfix">
                                             <div class="ttr-post-media"> 
-                                                <a href="#"><img src="${o.thumbnail}" alt=""></a> 
+                                                
+                                                <td><img src="assets/images/post/${o.thumbnail}" alt="Thumbnail"></td>
                                             </div>
                                             <div class="ttr-post-info">
                                                 <ul class="media-post">
@@ -360,7 +361,7 @@
                                             <div class="widget-post-bx">
                                                 <c:forEach items="${requestScope.listRecentPost}" var="b">
                                                     <div class="widget-post clearfix">
-                                                        <div class="ttr-post-media"> <img src="${b.thumbnail}" alt="" style="width: 200px; height: 65px; object-fit: cover; display: block;"> </div>
+                                                        <div class="ttr-post-media"> <td><img src="assets/images/post/${b.thumbnail}" alt="Thumbnail" style="width: 200px; height: 65px; object-fit: cover; display: block;"></td></div>
                                                         <div class="ttr-post-info">
                                                             <div class="ttr-post-header">
                                                                 <h6 class="post-title"><a href="blogcontroller?postID=${b.postID}&pageforward=blogdetail">${b.title}</a></h6>
