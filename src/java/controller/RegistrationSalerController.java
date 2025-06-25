@@ -5,13 +5,11 @@
 package controller;
 
 import dal.CourseDAO;
-import dal.PostDAO;
 import dal.PricePackageDAO;
 import dal.RegistrationDAO;
 import dal.UserDAO;
 import jakarta.mail.MessagingException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -22,13 +20,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import model.Course;
-import model.Post;
 import model.PricePackage;
 import model.Registration;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import javax.naming.NamingException;
 import model.User;
 import utils.EmailUtil;
 import utils.PasswordGenerator;
