@@ -1,6 +1,0 @@
-projectKey=E-Learning-IT
-serverUrl=http://localhost:9000
-serverVersion=25.6.0.109173
-dashboardUrl=http://localhost:9000/dashboard?id=E-Learning-IT
-ceTaskId=2d60b5c7-6ecd-457e-8cc4-e930e7ed350a
-ceTaskUrl=http://localhost:9000/api/ce/task?id=2d60b5c7-6ecd-457e-8cc4-e930e7ed350a
