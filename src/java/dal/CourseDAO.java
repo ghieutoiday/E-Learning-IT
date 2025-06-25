@@ -652,6 +652,75 @@ public class CourseDAO extends DBContext {
 
         return list;
     }
+      
+      public Course getCourseByIdd(int courseId) {
+        String sql = "SELECT * FROM Course WHERE courseID = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, courseId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Course c = new Course();
+                    c.setCourseID(rs.getInt("courseID"));
+                    c.setCourseName(rs.getString("courseName"));
+                    
+                    // Lấy các đối tượng liên quan
+                    CourseCategoryDAO catDAO = new CourseCategoryDAO();
+                    UserDAO userDAO = new UserDAO();
+                    
+                    c.setCourseCategory(catDAO.getCategoryById(rs.getInt("courseCategoryID")));
+                    c.setOwner(userDAO.getUserByID(rs.getInt("ownerID")));
+                    c.setDescription(rs.getString("description"));
+                    c.setStatus(rs.getString("status"));
+                    // Thêm các trường khác nếu cần
+                    return c;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getCourseById: " + e.getMessage());
+        }
+        return null;
+    }
+    public Course getCoureByCourseIDD(int courseID) {
+        Course course = null;
+        String sql = "SELECT c.courseID, "
+                + "       c.courseName, "
+                + "       c.courseCategoryID, "
+                + "       c.description, "
+                + "       c.ownerID, "
+                + "       c.status, "
+                + "       c.numberOfLesson, "
+                + "       c.feature, "
+                + "       c.createDate, "
+                + "       i.thumbnail "
+                + "FROM Course c "
+                + "JOIN Image i ON c.courseID = i.courseID "
+                + "WHERE c.courseID = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, courseID);
+            ResultSet rs = ps.executeQuery();
+            CourseCategoryDAO courseCategoryDAO = new CourseCategoryDAO();
+            UserDAO userDao = new UserDAO();
+            while (rs.next()) {
+                CourseCategory courseCategory = courseCategoryDAO.getCategoryById(rs.getInt("courseCategoryID"));
+                User user = userDao.getUserByID(rs.getInt("ownerID"));
+                String courseThumbnailLink = rs.getString("thumbnail");
+                course = new Course(rs.getInt("courseID"),
+                        rs.getString("courseName"),
+                        courseCategory,
+                        courseThumbnailLink, //Truyền link ảnh vào đây
+                        rs.getString("description"),
+                        user,
+                        rs.getString("status"),
+                        rs.getInt("numberOfLesson"),
+                        rs.getInt("feature"),
+                        rs.getDate("createDate"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return course;
+    }
 
     public static void main(String[] args) {
         CourseDAO courseDao = new CourseDAO();
