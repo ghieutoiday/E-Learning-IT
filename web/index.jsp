@@ -435,7 +435,10 @@
                                                 <li><a href="registrationsalercontroller">Registration List</a></li>
                                                 <li><a href="change-password.jsp">Change Password</a></li>
                                                 <li><a href="userController">Users List</a></li>
+<<<<<<< workspace-hieu
                                                 <li><a href="userController?action=forget">Forget Password</a></li>
+=======
+>>>>>>> main
                                                 <li><a href="settingController">Settings List</a></li>
                                                 <li><a href="javascript:;">Calendar<i
                                                             class="fa fa-angle-right"></i></a>

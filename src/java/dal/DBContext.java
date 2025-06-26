@@ -43,7 +43,11 @@ public class DBContext {
     private Connection createConnection() throws SQLException {
         try {
             String user = "sa";
+<<<<<<< workspace-hieu
             String pass = "1234";
+=======
+            String pass = "123";
+>>>>>>> main
             String url = "jdbc:sqlserver://localhost:1433;databaseName=CourseManagementDB";
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             return DriverManager.getConnection(url, user, pass);

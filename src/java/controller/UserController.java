@@ -18,8 +18,10 @@ import model.Role;
 import model.TokenForgetPassword;
 import model.User;
 import utils.EmailService;
+
 import utils.EmailServiceForPassword;
 import static utils.EmailServiceForPassword.send;
+
 
 @WebServlet(name = "UserController", urlPatterns = {"/userController", "/usercontroller"})
 public class UserController extends HttpServlet {
@@ -32,8 +34,10 @@ public class UserController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8"); // Đảm bảo request được đọc với encoding UTF-8
+
         //HttpSession session = request.getSession();
         HttpSession session = request.getSession(false);
+
         handleNotifications(request);
         String action = request.getParameter("action");
 
@@ -186,18 +190,26 @@ public class UserController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
         String action = request.getParameter("formAction");
         String queryString = request.getParameter("currentQueryString");
         if (queryString == null) {
             queryString = "";
-        }
+
+        request.setCharacterEncoding("UTF-8"); 
+        HttpSession session = request.getSession(); 
+        String action = request.getParameter("formAction"); 
+        String queryString = request.getParameter("currentQueryString");
+        if (queryString == null) queryString = "";
+
 
         if ("addUser".equals(action)) {
             handleAddUser(request, session);
         } else if ("updateUser".equals(action)) {
             handleUpdateUser(request, session);
+
         } else {
             session.setAttribute("errorMessage", "Unknown POST action: " + action);
         }
@@ -250,14 +262,75 @@ public class UserController extends HttpServlet {
             return;
         }
         if (mobile != null && !mobile.trim().isEmpty() && userDAO.mobileExists(mobile)) {
+
+        } else { 
+            session.setAttribute("errorMessage", "Unknown POST action: " + action);
+        }
+        
+        // Luôn chuyển hướng về trang danh sách sau khi xử lý xong
+        response.sendRedirect(request.getContextPath() + "/userController?" + queryString);
+    }
+    
+    private void handleUpdateUser(HttpServletRequest request, HttpSession session) {
+         try {
+            int userId = Integer.parseInt(request.getParameter("userId"));
+            int roleId = Integer.parseInt(request.getParameter("roleId"));
+            String status = request.getParameter("status");
+
+            boolean success = userDAO.updateUserRoleAndStatusSelective(userId, roleId, status);
+
+            if (success) {
+                session.setAttribute("successMessage", "User #" + userId + " updated successfully.");
+            } else {
+                session.setAttribute("errorMessage", "Failed to update user #" + userId + ".");
+            }
+        } catch (NumberFormatException e) {
+            session.setAttribute("errorMessage", "Invalid data format for user update.");
+        }
+    }
+    
+    
+    private void handleAddUser(HttpServletRequest request, HttpSession session) {
+        String fullName = request.getParameter("newUser_fullName");
+        String email = request.getParameter("newUser_email");
+        String password = request.getParameter("newUser_password");
+        String roleIDStr = request.getParameter("newUser_roleID");
+        String mobile = request.getParameter("newUser_mobile");
+        
+        // Lưu lại các giá trị đã nhập để điền lại form nếu có lỗi
+        session.setAttribute("input_newUser_fullName", fullName);
+        session.setAttribute("input_newUser_email", email);
+        // ... (lưu các giá trị khác nếu cần)
+
+        // Kiểm tra các trường bắt buộc
+        if (fullName.trim().isEmpty() || email.trim().isEmpty() || password.trim().isEmpty() || roleIDStr.trim().isEmpty()) {
+            session.setAttribute("errorMessage", "Required fields are missing (Full Name, Email, Password, Role).");
+            session.setAttribute("showAddUserFormOnError", true); 
+            return; // Dừng lại nếu có lỗi
+        }
+
+        // Kiểm tra email và mobile tồn tại
+        if (userDAO.emailExists(email)) { 
+            session.setAttribute("errorMessage", "Email '" + email + "' already exists.");
+            session.setAttribute("showAddUserFormOnError", true);
+            return; 
+        }
+        if (mobile != null && !mobile.trim().isEmpty() && userDAO.mobileExists(mobile)) { 
+
             session.setAttribute("errorMessage", "Mobile number '" + mobile + "' already exists.");
             session.setAttribute("showAddUserFormOnError", true);
             return;
         }
 
         try {
+
             int roleID = Integer.parseInt(roleIDStr);
             Role role = userDAO.getRoleByID(roleID);
+
+
+            int roleID = Integer.parseInt(roleIDStr); 
+            Role role = userDAO.getRoleByID(roleID);
+            
 
             if (role == null) {
                 session.setAttribute("errorMessage", "Invalid Role selected.");
@@ -265,10 +338,18 @@ public class UserController extends HttpServlet {
                 return;
             }
 
+
             User newUser = new User(0, fullName, email, password, request.getParameter("newUser_gender"), mobile, request.getParameter("newUser_address"), role, null, request.getParameter("newUser_status"));
             boolean userAdded = userDAO.addUser(newUser);
 
             if (userAdded) {
+
+            
+            User newUser = new User(0, fullName, email, password, request.getParameter("newUser_gender"), mobile, request.getParameter("newUser_address"), role, null, request.getParameter("newUser_status"));
+            boolean userAdded = userDAO.addUser(newUser);
+
+            if (userAdded) { 
+
                 boolean emailSent = EmailService.sendNewUserPasswordEmail(newUser.getEmail(), newUser.getFullName(), password);
                 if (emailSent) {
                     session.setAttribute("successMessage", "User '" + fullName + "' added successfully! Credentials sent to email.");
@@ -278,9 +359,15 @@ public class UserController extends HttpServlet {
                 // Xóa các giá trị đã lưu trong session khi thành công
                 session.removeAttribute("input_newUser_fullName");
                 session.removeAttribute("input_newUser_email");
+
             } else {
                 session.setAttribute("errorMessage", "Failed to add user to database.");
                 session.setAttribute("showAddUserFormOnError", true);
+
+            } else { 
+                session.setAttribute("errorMessage", "Failed to add user to database.");
+                session.setAttribute("showAddUserFormOnError", true); 
+
             }
         } catch (Exception e) {
             session.setAttribute("errorMessage", "Error adding user: " + e.getMessage());
@@ -306,6 +393,8 @@ public class UserController extends HttpServlet {
             }
         }
     }
+    
+  
 
     @Override
     public String getServletInfo() {

@@ -146,6 +146,7 @@ public class CourseDAO extends DBContext {
             ps.close();
         } catch (SQLException ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, "Lỗi khi lấy tất cả khóa học", ex);
+
         }
         return list;
     }
@@ -180,6 +181,43 @@ public class CourseDAO extends DBContext {
         return 0;
     }
 
+
+        }
+        return list;
+    }
+
+    //Thêm mới subject 
+    public int addNewCourse(Course course) {
+    String sql = "INSERT INTO Course (courseName, courseCategoryID, description, ownerID, status, feature) "
+                 + "VALUES (?, ?, ?, ?, ?, ?)";
+
+    try (PreparedStatement st = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        st.setString(1, course.getCourseName());
+        st.setInt(2, course.getCourseCategory().getCourseCategory());
+        st.setString(3, course.getDescription());
+        st.setInt(4, course.getOwner().getUserID());
+        st.setString(5, course.getStatus());
+        st.setInt(6, course.getFeature());
+
+        // Gọi executeUpdate() trước khi getGeneratedKeys
+        int affectedRows = st.executeUpdate();
+
+        if (affectedRows > 0) {
+            try (ResultSet rs = st.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1); // ID vừa tạo
+                }
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("SQL Error: " + e.getMessage());
+    }
+
+    return 0;
+}
+
+    
+
 //    public boolean linkCourseImage(int courseID, int imageId) {
 //        String sql = "INSERT INTO Hotel_has_image (hotel_ID, image_ID) VALUES (?, ?)";
 //        System.out.println("Linking hotel " + hotelId + " with image " + imageId);
@@ -196,6 +234,7 @@ public class CourseDAO extends DBContext {
 //            return false;
 //        }
 //    }
+
     public int insertLink(String imageName, String thumbnail, int courseID) {
         String sql = "INSERT INTO Image (imageName, thumbnail, courseID) VALUES (?, ?, ?)";
 
@@ -233,7 +272,11 @@ public class CourseDAO extends DBContext {
             //  lọc ra các bản ghi Course với tên name duy nhất (không trùng nhau).
             // Mỗi name chỉ lấy 1 bản ghi đại diện (bản ghi có pricePackageID nhỏ nhất).
             String sql = "SELECT * FROM Course WHERE courseID IN ( "
+
                     + "SELECT MIN(courseID) FROM Course GROUP BY courseName )";
+
+                        + "SELECT MIN(courseID) FROM Course GROUP BY courseName )";
+
 
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -576,6 +619,10 @@ public class CourseDAO extends DBContext {
         String sql = "UPDATE [dbo].[Course] SET "
                 + "[courseName] = ?, "
                 + "[courseCategoryID] = ?, "
+
+
+                + "[thumbnail] = ?, "
+
                 + "[description] = ?, "
                 + "[status] = ?, "
                 + "[numberOfLesson] = ?, "
@@ -585,6 +632,7 @@ public class CourseDAO extends DBContext {
         String sql2 = "UPDATE [dbo].[Image] SET [thumbnail] = ? WHERE [courseID] = ?";
 
         try {
+
             PreparedStatement ps1 = connection.prepareStatement(sql);
             ps1.setString(1, course.getCourseName());
             ps1.setInt(2, course.getCourseCategory().getCourseCategory());
@@ -600,14 +648,34 @@ public class CourseDAO extends DBContext {
             ps2.setInt(2, course.getCourseID());
             rowsAffected += ps2.executeUpdate();
 
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, course.getCourseName());
+            //CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
+            ps.setInt(2, course.getCourseCategory().getCourseCategory());
+            ps.setString(3, course.getThumbnail());
+            ps.setString(4, course.getDescription());
+            ps.setString(5, course.getStatus());
+            ps.setInt(6, course.getNumberOfLesson());
+            ps.setInt(7, course.getFeature());
+            ps.setInt(8, course.getCourseID());
+
+            rowsAffected = ps.executeUpdate();
+
+
         } catch (SQLException ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return rowsAffected;
     }
 
+
     // Lấy danh sách các khóa học nổi bật (feature = 1) và đang hoạt động (status = 'Active').
     public List<Course> getCoursePageHome() {
+
+
+      // Lấy danh sách các khóa học nổi bật (feature = 1) và đang hoạt động (status = 'Active').
+      public List<Course> getCoursePageHome() {
+
         List<Course> list = new ArrayList<>();
         String sql = "SELECT c.[courseID]\n"
                 + "      ,c.[courseName]\n"
@@ -621,6 +689,12 @@ public class CourseDAO extends DBContext {
                 + "  FROM [dbo].[Course] c\n"
                 + "  LEFT JOIN [dbo].[Image] i ON c.courseID = i.courseID\n"
                 + "   WHERE c.[status] = 'Active' AND c.[feature] = 1 \n "
+                + "      ,i.[thumbnail]\n"      
+             
+                + "  FROM [dbo].[Course] c\n"
+                + "  LEFT JOIN [dbo].[Image] i ON c.courseID = i.courseID\n"
+                   + "   WHERE c.[status] = 'Active' AND c.[feature] = 1 \n "
+
                 + "  order by c.[courseID]";
 
         try {
@@ -632,6 +706,7 @@ public class CourseDAO extends DBContext {
                 CourseCategory courseCategory = courseCategoryDao.getCategoryById(rs.getInt("courseCategoryID"));
                 User user = userDao.getUser(rs.getInt("ownerID"));
                 String thumbnail = rs.getString("thumbnail");
+
                 Course course = new Course(rs.getInt("courseID"),
                         rs.getString("courseName"),
                         courseCategory,
@@ -641,6 +716,17 @@ public class CourseDAO extends DBContext {
                         rs.getString("status"),
                         rs.getInt("numberOfLesson"),
                         rs.getDate("createDate"));
+
+                Course course = new Course(rs.getInt("courseID"), 
+                    rs.getString("courseName"), 
+                    courseCategory,
+                    thumbnail,
+                    rs.getString("description"), 
+                    user, 
+                    rs.getString("status"), 
+                    rs.getInt("numberOfLesson"), 
+                    rs.getDate("createDate"));
+
                 list.add(course);
             }
         } catch (SQLException ex) {
@@ -650,7 +736,12 @@ public class CourseDAO extends DBContext {
         return list;
     }
 
+
     public Course getCourseByIdd(int courseId) {
+
+      
+      public Course getCourseByIdd(int courseId) {
+
         String sql = "SELECT * FROM Course WHERE courseID = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, courseId);
@@ -660,9 +751,17 @@ public class CourseDAO extends DBContext {
                     c.setCourseID(rs.getInt("courseID"));
                     c.setCourseName(rs.getString("courseName"));
 
+
                     // Lấy các đối tượng liên quan
                     CourseCategoryDAO catDAO = new CourseCategoryDAO();
                     UserDAO userDAO = new UserDAO();
+
+
+                    
+                    // Lấy các đối tượng liên quan
+                    CourseCategoryDAO catDAO = new CourseCategoryDAO();
+                    UserDAO userDAO = new UserDAO();
+                    
 
                     c.setCourseCategory(catDAO.getCategoryById(rs.getInt("courseCategoryID")));
                     c.setOwner(userDAO.getUserByID(rs.getInt("ownerID")));
@@ -723,6 +822,7 @@ public class CourseDAO extends DBContext {
     public static void main(String[] args) {
         CourseDAO courseDao = new CourseDAO();
         Course course = courseDao.getCoureByCourseID(8);
+
         CourseCategoryDAO courseCategoryDAO = new CourseCategoryDAO();
         UserDAO userDao = new UserDAO();
         CourseCategory courseCategory = courseCategoryDAO.getCategoryByName(course.getCourseCategory().getCourseCategoryName());
@@ -732,6 +832,10 @@ public class CourseDAO extends DBContext {
         //System.out.println(course.getCourseCategory().getCourseCategory());
         System.out.println(x);
 
-    }
+        System.out.println(course.getThumbnail());
 
+
+    }
+    
+   
 }
