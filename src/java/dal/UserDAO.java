@@ -8,6 +8,7 @@ import model.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -505,14 +506,132 @@ public class UserDAO extends DBContext{
         return false;
     }
     
+    public void updateUserRegistration(User user) {
+        String sql = "UPDATE [User] SET fullName = ?, gender = ?, email = ?, mobile = ? WHERE userID = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, user.getFullName());
+            st.setString(2, user.getGender());
+            st.setString(3, user.getEmail());
+            st.setString(4, user.getMobile());
+            st.setInt(5, user.getUserID());
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error in updateUser: " + e.getMessage());
+        }
+    }
+
+    public int addNewUser(User user) {
+        String sql = "INSERT INTO [User] (fullName, email, password, gender, mobile, roleID, status) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        int generatedUserId = -1;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, user.getFullName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword());
+            ps.setString(4, user.getGender());
+            ps.setString(5, user.getMobile());
+
+            // Nếu role null thì gán mặc định roleID = 1 (user thường)
+            if (user.getRole() != null) {
+                ps.setInt(6, user.getRole().getRoleID());
+            } else {
+                ps.setInt(6, 1); // role mặc định
+            }
+
+            // Nếu status null thì gán mặc định là "Active"
+            if (user.getStatus() != null) {
+                ps.setString(7, user.getStatus());
+            } else {
+                ps.setString(7, "Active");
+            }
+
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        generatedUserId = rs.getInt(1); // Lấy userID vừa tạo
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Lỗi trong addNewUser: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return generatedUserId;
+    }
+    
+    //GetUser by IDs của thịnh
+    public List<User> getUsersByIDs(int id1, int id2) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM [User] WHERE userID IN (?, ?)";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id1);
+            ps.setInt(2, id2);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int userID = rs.getInt("userID");
+                String fullName = rs.getString("fullName");
+                String email = rs.getString("email");
+                String password = rs.getString("password");
+                String gender = rs.getString("gender");
+                String mobile = rs.getString("mobile");
+                String address = rs.getString("address");
+                Role role = getRoleByID(rs.getInt("roleID"));
+                String avatar = rs.getString("avatar");
+                String status = rs.getString("status");
+
+                User user = new User(userID, fullName, email, password, gender, mobile, address, role, avatar, status);
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getUsersByIDs: " + e.getMessage());
+        }
+        return users;
+    }
+    
+    
+        // Thêm phương thức này vào file dal/UserDAO.java
+    /**
+     * Tìm kiếm và trả về một đối tượng User dựa trên email.
+     *
+     * @param email Email của người dùng cần tìm.
+     * @return Đối tượng User nếu tìm thấy, ngược lại trả về null.
+     */
+    public User getUserByEmaill(String email) {
+        String sql = "SELECT * FROM [User] WHERE email = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    // Tận dụng lại hàm getUserByID đã có để không phải viết lại code
+                    int userId = rs.getInt("userID");
+                    return getUserByID(userId);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Lỗi trong getUserByEmail: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    } 
+
+    
     
 
     
     
     public static void main(String[] args) {
         UserDAO u = new UserDAO();
-        String email = "nguyenvanan@gmail.com";
-        System.out.println(u.getUser(10));
+        String email = "ganrt.hieu.08@gmail.com";
+        System.out.println(u.getUserByEmail(email));
     }
     
     

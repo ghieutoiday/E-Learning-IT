@@ -5,10 +5,15 @@
 **/nbproject/private/
 **/nbproject/Makefile-*.mk
 **/nbproject/Package-*.bash
+**/DBContext.java
 build/
 nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+# SonarQube
+.scannerwork/
+sonar-project.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/netbeans

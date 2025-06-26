@@ -269,7 +269,7 @@
                                                     <li><a href="#"><i class="fa fa-tags"></i>${a.course.courseCategory.courseCategoryName}</a></li>
                                                 </ul>
                                                 <h5 class="post-title" style="height:3em; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
-                                                    <a href="#">${a.course.courseName}</a>
+                                                    <a href="lessonviewcontroller?courseID=${a.course.courseID}">${a.course.courseName}</a>
                                                 </h5>
                                                 <div class="post-extra" style="display: flex; justify-content: center">
                                                     

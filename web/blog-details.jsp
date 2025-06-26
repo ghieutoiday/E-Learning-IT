@@ -251,7 +251,7 @@
                                     <!-- blog start -->
                                     <div class="recent-news blog-lg">
                                         <div class="action-box blog-lg">
-                                            <img src="${c.thumbnail}" alt="blogthumbnail not found !!!">
+                                            <td><img src="assets/images/post/${c.thumbnail}" alt="Thumbnail"></td>
                                         </div>
                                         <div class="info-bx">
                                             <ul class="media-post">
@@ -293,7 +293,7 @@
                                         <div class = "widge post-category">
                                             <h6 class="widget-title post-category">Post Category</h6>
 
-                                            <!--L?y ra list Post Category, sau khi click vào tên thì chuy?n sang blogcontroller-->
+                                            <!--L?y ra list Post Category, sau khi click v?o t?n th? chuy?n sang blogcontroller-->
                                             <c:forEach items="${requestScope.listPostCategory}" var="a">
                                                 <p><a href="blogcontroller?postCategoryID=${a.postCategoryID}&pageforward=bloglist">${a.postCategoryName}</a></p>
                                                 </c:forEach>    
@@ -306,7 +306,7 @@
                                             <div class="widget-post-bx">
                                                 <c:forEach items="${requestScope.listRecentPost}" var="b">
                                                     <div class="widget-post clearfix">
-                                                        <div class="ttr-post-media"> <img src="${b.thumbnail}" alt="" style="width: 200px; height: 65px; object-fit: cover; display: block;"> </div>
+                                                        <div class="ttr-post-media"><td><img src="assets/images/post/${b.thumbnail}" alt="Thumbnail" style="width: 200px; height: 65px; object-fit: cover; display: block;"></td> </div>
                                                         <div class="ttr-post-info">
                                                             <div class="ttr-post-header">
                                                                 <h6 class="post-title"><a href="blogcontroller?postID=${b.postID}&pageforward=blogdetail">${b.title}</a></h6>

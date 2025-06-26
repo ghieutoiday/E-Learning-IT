@@ -648,7 +648,7 @@
                                 </div>
 
                                 <c:if test="${not empty post.thumbnail}">
-                                    <img src="${post.thumbnail}" alt="${post.title}" class="post-thumbnail">
+                                    <img src="assets/images/post/${post.thumbnail}" alt="${post.title}" class="post-thumbnail" style="width: 550px; height: auto">
                                 </c:if>
 
                                 <div class="post-content">
@@ -672,7 +672,7 @@
             </div>
         </main> 
         <!-- External JavaScripts -->
-           <script src="<%=request.getContextPath()%>/admin/assets/js/jquery.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/js/jquery.min.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>

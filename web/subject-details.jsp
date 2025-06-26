@@ -47,7 +47,7 @@
             .form-group.checkbox-group {
                 display: flex;
                 align-items: center;
-                justify-content: space-between; /* ??y Number of Lessons sát mép ph?i */
+                justify-content: space-between;
                 gap: 20px;
                 flex-wrap: wrap;
             }
@@ -57,8 +57,8 @@
                 gap: 10px;
             }
             .form-group.checkbox-group input[type="number"] {
-                max-width: 100px; /* Thu nh? ô Number of Lessons */
-                margin-left: auto; /* ??y ô input sát mép ph?i */
+                max-width: 100px;
+                margin-left: auto;
             }
             .form-group.owner-group {
                 display: flex;
@@ -69,10 +69,10 @@
                 margin: 0;
             }
             .form-group.owner-group input[type="text"] {
-                border: none; /* Xóa vi?n ô Owner */
-                background: transparent; /* Trong su?t ?? gi?ng text hi?n th? */
-                padding: 0; /* Xóa padding ?? trông t? nhiên */
-                flex: 1; /* ?i?n ??y kho?ng tr?ng còn l?i */
+                border: none;
+                background: transparent;
+                padding: 0;
+                flex: 1;
             }
             .tabs {
                 display: flex;
@@ -122,6 +122,16 @@
                 border-radius: 5px;
                 cursor: pointer;
             }
+            .add-new-btn {
+                background: #28a745;
+                color: white;
+                padding: 8px 15px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                float: right;
+                margin-bottom: 15px;
+            }
             table {
                 width: 100%;
                 border-collapse: collapse;
@@ -138,9 +148,19 @@
             }
             .filter-section {
                 margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                flex-wrap: wrap;
             }
             .filter-section label {
                 margin-right: 15px;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+            .filter-section input[type="number"] {
+                max-width: 100px;
             }
             .apply-btn {
                 background: #007bff;
@@ -149,6 +169,26 @@
                 border: none;
                 border-radius: 5px;
                 cursor: pointer;
+            }
+            .pagination {
+                text-align: center;
+                margin-top: 20px;
+            }
+            .pagination a {
+                padding: 8px 12px;
+                margin: 0 5px;
+                text-decoration: none;
+                color: #007bff;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+            .pagination a.active {
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+            }
+            .pagination a:hover {
+                background-color: #e9ecef;
             }
         </style>
     </head>
@@ -312,38 +352,44 @@
                             </div>
                         </div>
                     </div>
-                </header>
-                <div class="page-content bg-white">
-                    <div class="page-banner ovbl-dark" style="background-image:url(assets/images/banner/banner2.jpg);">
-                        <div class="container">
-                            <div class="page-banner-entry">
-                                <h1 class="text-white">Subject / Course Details</h1>
-                            </div>
+            </header>
+            <div class="page-content bg-white">
+                <div class="page-banner ovbl-dark" style="background-image:url(assets/images/banner/banner2.jpg);">
+                    <div class="container">
+                        <div class="page-banner-entry">
+                            <h1 class="text-white">Subject / Course Details</h1>
                         </div>
                     </div>
-                    <div class="breadcrumb-row">
-                        <div class="container">
-                            <ul class="list-inline">
-                                <li><a href="#">Home</a></li>
-                                <li>Courses Details</li>
-                            </ul>
-                        </div>
+                </div>
+                <div class="breadcrumb-row">
+                    <div class="container">
+                        <ul class="list-inline">
+                            <li><a href="#">Home</a></li>
+                            <li>Courses Details</li>
+                        </ul>
                     </div>
-                    <div class="content-block">
-                        <div class="section-area section-sp1">
-                            <div class="container">
-                                <div class="tabs">
-                                    <div class="tab active" data-tab="overview">Overview</div>
-                                    <div class="tab" data-tab="dimension">Dimension</div>
-                                    <div class="tab" data-tab="price-package">Price Package</div>
+                </div>
+                <div class="content-block">
+                    <div class="section-area section-sp1">
+                        <div class="container">
+                            <div class="tabs">
+                                <div class="tab ${sessionScope.serviceActiveTab == 'overview' ? 'active' : ''}" data-tab="overview">
+                                    <a href="coursecontroller?action=detail&service=overview&id=${sessionScope.courseDetail.courseID}">Overview</a>
                                 </div>
-                                <!-- Overview -->
+                                <div class="tab ${sessionScope.serviceActiveTab == 'dimension' ? 'active' : ''}" data-tab="dimension">
+                                    <a href="coursecontroller?action=detail&service=dimension&id=${sessionScope.courseDetail.courseID}">Dimension</a>
+                                </div>
+                                <div class="tab ${sessionScope.serviceActiveTab == 'pricepackage' ? 'active' : ''}" data-tab="pricepackage">
+                                    <a href="coursecontroller?action=detail&service=pricepackage&id=${sessionScope.courseDetail.courseID}">Price Package</a>
+                                </div>
+                            </div>
+
+                            <c:if test="${sessionScope.serviceActiveTab == 'overview'}">
                                 <div id="overview" class="tab-content active">
                                     <form action="coursecontroller" method="get">
                                         <input type="hidden" name="service" value="updatecourse">
                                         <input type="hidden" name="action" value="detail">
                                         <input type="hidden" name="id" value="${sessionScope.courseDetail.courseID}">
-                                        
                                         <div class="overview-section">
                                             <div class="overview-left">
                                                 <div class="form-group">
@@ -363,27 +409,31 @@
                                                 </div>
                                                 <div class="form-group checkbox-group">
                                                     <label>
-                                                        Featured Subject <input type="checkbox" name="featuredSubject" value="1" <c:if test="${sessionScope.courseDetail.feature == 1}">checked</c:if>> 
-                                                    </label>
-                                                    <label>
-                                                        Number of Lessons
-                                                        <input type="number" name="numberOfLessons" min="1" value="${sessionScope.courseDetail.numberOfLesson}">
+                                                        Featured Subject <input type="checkbox" name="featuredSubject" value="1" <c:if test="${sessionScope.courseDetail.feature == 1}">checked</c:if>>
+                                                        </label>
+                                                        <label>
+                                                            Number of Lessons
+                                                            <input type="number" name="numberOfLessons" min="1" value="${sessionScope.courseDetail.numberOfLesson}" readonly>
                                                     </label>
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Status</label>
                                                     <select name="status">
-                                                        <option value="active" <c:if test="${sessionScope.courseDetail.status == 'Active'}">selected</c:if>>Active</option>
-                                                        <option value="inactive" <c:if test="${sessionScope.courseDetail.status == 'Inactive'}">selected</c:if>>Inactive</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group owner-group">
-                                                    <label>Owner</label>
-                                                    <input type="text" name="owner" value="${sessionScope.courseDetail.owner}" readonly>
+                                                        <option value="Active" <c:if test="${sessionScope.courseDetail.status == 'Active'}">selected</c:if>>Active</option>
+                                                        <option value="Inactive" <c:if test="${sessionScope.courseDetail.status == 'Inactive'}">selected</c:if>>Inactive</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group owner-group">
+                                                        <label>Owner</label>
+                                                        <input type="text" name="owner" value="${sessionScope.courseDetail.owner}" readonly>
                                                 </div>
                                             </div>
                                             <div class="overview-right">
                                                 <img src="${sessionScope.courseDetail.thumbnail}" alt="Course Thumbnail">
+                                                <div class="form-group">
+                                                    <label>Thumbnail URL</label>
+                                                    <input type="text" name="thumbnailUrl" placeholder="Enter image URL" value="${sessionScope.courseDetail.thumbnail}">
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="description-section">
@@ -395,57 +445,95 @@
                                         <button type="submit" class="save-btn">Save</button>
                                     </form>
                                 </div>
-                                <!-- Dimension -->
-                                <div id="dimension" class="tab-content">
-                                    <form method="get" action="coursecontroller">
+                            </c:if>
+
+                            <%-- Dimension Tab Content --%>
+                            <c:if test="${sessionScope.serviceActiveTab == 'dimension'}">
+                                <div id="dimension" class="tab-content active">
+                                    <%-- Form Add New --%>
+                                    <form method="get" action="subjectdimensioncontroller">
                                         <input type="hidden" name="service" value="updatedimension">
                                         <input type="hidden" name="action" value="detail">
                                         <input type="hidden" name="id" value="${sessionScope.courseDetail.courseID}">
-                                        
+                                        <a href="subjectdimensioncontroller?action=add&courseID=${sessionScope.courseDetail.courseID}" class="add-new-btn">Add New</a>
+                                    </form>
+
+
+                                    <form id="filterDimensionForm" method="get" action="coursecontroller">
+                                        <input type="hidden" name="service" value="dimension">
+                                        <input type="hidden" name="action" value="detail">
+                                        <input type="hidden" name="id" value="${sessionScope.courseIdOfDimension}"> 
+
                                         <div class="filter-section">
-                                            <label><input type="checkbox" name="filter" class="dimension-filter" value="id" checked> ID</label>
-                                            <label><input type="checkbox" name="filter" class="dimension-filter" value="type" checked> Type</label>
-                                            <label><input type="checkbox" name="filter" class="dimension-filter" value="dimension" checked> Dimension</label>
-                                            <label><input type="checkbox" name="filter" class="dimension-filter" value="action" checked> Action</label>
-                                            <button class="apply-btn" type="submit" onclick="applyDimensionFilters()">Apply</button>
+                                            <label><input type="checkbox" name="filter" class="dimension-filter" value="Id" <c:if test="${requestScope.idSubjectDimension != null}">checked</c:if>> ID</label>
+                                            <label><input type="checkbox" name="filter" class="dimension-filter" value="Type" <c:if test="${requestScope.typeSubjectDimension != null}">checked</c:if>> Type</label>
+                                            <label><input type="checkbox" name="filter" class="dimension-filter" value="Name" <c:if test="${requestScope.nameSubjectDimension != null}">checked</c:if>> Name</label>
+                                            <label><input type="checkbox" name="filter" class="dimension-filter" value="Description" <c:if test="${requestScope.descriptionSubjectDimension != null}">checked</c:if>> Description</label>
+                                            <label><input type="checkbox" name="filter" class="dimension-filter" value="Action" <c:if test="${requestScope.actionSubjectDimension != null}">checked</c:if>> Action</label>
+                                            <label>Row Display: <input type="number" name="rowDisplay" min="1" max="${sessionScope.totalDimension}" value="${sessionScope.currentRowDisplayDimension != null ? sessionScope.currentRowDisplayDimension : 2}"></label>
+                                            <button class="apply-btn" type="submit">Apply</button>
                                         </div>
                                     </form>
+
+
                                     <table id="dimension-table">
                                         <thead>
                                             <tr>
-<!--                                                <th class="col-id">ID</th>
-                                                <th class="col-type">Type</th>
-                                                <th class="col-dimension">Dimension</th>
-                                                <th class="col-action">Action</th>-->
-<c:forEach var="i" items="${sessionScope.funtionList}">
-    <th class="col-type">${i}</th>
-</c:forEach>
+                                                <c:forEach var="i" items="${sessionScope.funtionList}">
+                                                    <th class="col-type">${i}</th>
+                                                    </c:forEach>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-<!--                                                <td class="col-id">1</td>
-                                                <td class="col-type">Lecture</td>
-                                                <td class="col-dimension">120 minutes</td>
-                                                <td class="col-action">Edit</td>-->
-                                            </tr>
+                                            <c:forEach var="i" items="${sessionScope.listSubjectDimension}">
+                                                <tr>
+                                                    <c:if test="${requestScope.idSubjectDimension != null}">
+                                                        <td class="col-type">${i.dimensionID}</td>
+                                                    </c:if>
+                                                    <c:if test="${requestScope.typeSubjectDimension != null}">
+                                                        <td class="col-type">${i.type}</td>
+                                                    </c:if>
+                                                    <c:if test="${requestScope.nameSubjectDimension != null}">
+                                                        <td class="col-type">${i.name}</td>
+                                                    </c:if>
+                                                    <c:if test="${requestScope.descriptionSubjectDimension != null}">
+                                                        <td class="col-type">${i.description}</td>
+                                                    </c:if>
+                                                    <c:if test="${requestScope.actionSubjectDimension != null}">
+                                                        <td class="col-type">
+                                                            <a href="subjectdimensioncontroller?action=edit&dimensionId=${i.dimensionID}">Edit</a>/
+                                                            <a href="subjectdimensioncontroller?action=delete&courseId=${sessionScope.courseDetail.courseID}&dimensionId=${i.dimensionID}">Delete</a>
+                                                        </td>
+                                                    </c:if>
+                                                </tr>
+                                            </c:forEach>
                                         </tbody>
                                     </table>
+
+                                    <%-- Phân trang --%>
+                                    <div class="pagination">
+                                        <c:forEach begin="1" end="${sessionScope.endPageDimension}" var="i">
+
+                                            <c:set var="filterParams" value=""/>
+                                            <c:forEach var="filterVal" items="${paramValues.filter}">
+                                                <c:set var="filterParams" value="${filterParams}&filter=${filterVal}"/>
+                                            </c:forEach>
+
+                                            <c:set var="rowDisplayParam" value=""/>
+                                            <c:if test="${param.rowDisplay != null}">
+                                                <c:set var="rowDisplayParam" value="&rowDisplay=${param.rowDisplay}"/>
+                                            </c:if>
+
+                                            <a href="coursecontroller?action=detail&service=dimension&id=${sessionScope.courseIdOfDimension}&pageDimension=${i}${filterParams}${rowDisplayParam}"
+                                               class="${sessionScope.currentIndexPageDimension == i ? 'active' : ''}">${i}</a>
+                                        </c:forEach>
+                                    </div>
                                 </div>
-                                <!-- Price Package -->
-                                <div id="price-package" class="tab-content">
-                                    <form>
-                                        
-                                        <div class="filter-section">
-                                            <label><input type="checkbox" class="price-filter" value="id" checked> ID</label>
-                                            <label><input type="checkbox" class="price-filter" value="package" checked> Package</label>
-                                            <label><input type="checkbox" class="price-filter" value="duration" checked> Duration</label>
-                                            <label><input type="checkbox" class="price-filter" value="list-price" checked> List Price</label>
-                                            <label><input type="checkbox" class="price-filter" value="sale-price" checked> Sale Price</label>
-                                            <label><input type="checkbox" class="price-filter" value="action" checked> Action</label>
-                                            <button class="apply-btn" type="submit" onclick="applyPriceFilters()">Apply</button>
-                                        </div>
-                                    </form>
+                            </c:if>
+                            <%-- Price Package Tab Content --%>
+                            <c:if test="${sessionScope.serviceActiveTab == 'pricepackage'}">
+                                <div id="price-package" class="tab-content active">
+                                    <a href="pricepackagecontroller?action=add&courseId=${sessionScope.courseDetail.courseID}" class="add-new-btn">Add New</a>
                                     <table id="price-table">
                                         <thead>
                                             <tr>
@@ -454,22 +542,33 @@
                                                 <th class="col-duration">Duration</th>
                                                 <th class="col-list-price">List Price</th>
                                                 <th class="col-sale-price">Sale Price</th>
+                                                <th class="col-sale-price">Status</th>
                                                 <th class="col-action">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td class="col-id">1</td>
-                                                <td class="col-package">Basic</td>
-                                                <td class="col-duration">60 hours</td>
-                                                <td class="col-list-price">$190</td>
-                                                <td class="col-sale-price">$120</td>
-                                                <td class="col-action">Edit</td>
-                                            </tr>
+                                            <c:forEach var="i" items="${sessionScope.listPricePackage}"> 
+                                                <tr>
+                                                    <td class="col-id">${i.pricePackageID}</td>
+                                                    <td class="col-package">${i.name}</td>
+                                                    <td class="col-duration">${i.accessDuration}</td>
+                                                    <td class="col-list-price">${i.listPrice}</td>
+                                                    <td class="col-sale-price">${i.salePrice}</td>
+                                                    <td class="col-action">${i.status}</td>
+                                                    <td class="col-action">
+                                                        <a href="pricepackagecontroller?action=edit&courseId=${sessionScope.courseDetail.courseID}&pricepackageId=${i.pricePackageID}"">Edit</a>/
+                                                        <a href="pricepackagecontroller?action=delete&courseId=${sessionScope.courseDetail.courseID}&pricepackageId=${i.pricePackageID}">Delete</a></td>
+                                                </tr>
+                                            </c:forEach>
                                         </tbody>
                                     </table>
+                                    <div class="pagination">
+                                        <c:forEach begin="1" end="${sessionScope.endPagePrice}" var="i">
+                                            <a href="coursecontroller?action=detail&service=pricepackage&id=${sessionScope.courseIdOfPricePackage}&pagePricePackage=${i}" >${i}</a>
+                                        </c:forEach>
+                                    </div>
                                 </div>
-                            </div>
+                            </c:if>
                         </div>
                     </div>
                 </div>
@@ -593,45 +692,5 @@
             <script src="assets/js/functions.js"></script>
             <script src="assets/js/contact.js"></script>
             <script src="assets/vendors/switcher/switcher.js"></script>
-            <script>
-                // Tab switching functionality
-                document.querySelectorAll('.tab').forEach(tab => {
-                    tab.addEventListener('click', () => {
-                        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                        tab.classList.add('active');
-                        document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
-                    });
-                });
-
-                // Dimension table filter
-                function applyDimensionFilters() {
-                    const filters = Array.from(document.querySelectorAll('.dimension-filter:checked')).map(filter => filter.value);
-                    const columns = ['id', 'type', 'dimension', 'action'];
-                    columns.forEach(col => {
-                        const elements = document.querySelectorAll(`.col-${col}`);
-                        elements.forEach(el => {
-                            el.style.display = filters.includes(col) ? '' : 'none';
-                        });
-                    });
-                }
-
-                // Price Package table filter
-                function applyPriceFilters() {
-                    const filters = Array.from(document.querySelectorAll('.price-filter:checked')).map(filter => filter.value);
-                    const columns = ['id', 'package', 'duration', 'list-price', 'sale-price', 'action'];
-                    columns.forEach(col => {
-                        const elements = document.querySelectorAll(`.col-${col}`);
-                        elements.forEach(el => {
-                            el.style.display = filters.includes(col) ? '' : 'none';
-                        });
-                    });
-                }
-
-                // Ensure page loads correctly
-                window.onload = function() {
-                    document.getElementById('loading-icon-bx').style.display = 'none';
-                };
-            </script>
-        </body>
-    </html>
+    </body>
+</html>

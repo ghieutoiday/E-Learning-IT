@@ -4,7 +4,6 @@
  */
 package controller;
 
-import dal.BlogDAO;
 import dal.PostDAO;
 import java.io.IOException;
 import java.io.PrintWriter;

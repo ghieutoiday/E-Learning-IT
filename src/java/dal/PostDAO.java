@@ -30,34 +30,8 @@ public class PostDAO extends DBContext {
         this.postCategoryDAO = new PostCategoryDAO();
     }
 
-    // Getters and setters for DAOs
-    public UserDAO getUserDAO() {
-        return userDAO;
-    }
-
-    public void setUserDAO(UserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
-
-    public PostCategoryDAO getPostCategoryDAO() {
-        return postCategoryDAO;
-    }
-
-    public void setPostCategoryDAO(PostCategoryDAO postCategoryDAO) {
-        this.postCategoryDAO = postCategoryDAO;
-    }
-
-    // Getter for all categories
-    public List<PostCategory> getAllCategories() {
-        return postCategoryDAO.getAllPostCategories();
-    }
-
-    // Getter for all authors
-    public List<User> getAllAuthors() {
-        return userDAO.getAllAuthors();
-    }
-
-    // Modified methods to work with JSTL
+ 
+    
     public List<Post> getFilteredPosts(String search, String sortBy, String category, 
             String author, String dateFilter, String status, String feature, 
             int page, int postsPerPage) {
@@ -88,7 +62,7 @@ public class PostDAO extends DBContext {
         
         // Add author filter
         if (author != null && !author.isEmpty()) {
-            sql.append("AND p.ownerID = ? ");
+            sql.append("AND p.ownerID = ? "); 
             params.add(Integer.parseInt(author));
         }
         
@@ -432,6 +406,27 @@ public class PostDAO extends DBContext {
             return false;
         }
     }
+        public List<Post> getHotPost() {
+        List<Post> list = new ArrayList<>();
+        try {
+            String sql = "Select * from Post WHERE status = 'Active' and feature = 1";
+
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {  //Kiểm tra xem còn dữ liệu trong rs hay không
+                int id = rs.getInt(1);
+
+                //Lấy entity
+                Post post = getPostByID(id);
+                list.add(post);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
     
        
     public void updatePost(Post post) {
@@ -578,37 +573,8 @@ public class PostDAO extends DBContext {
         return postCategory;
     }
 
-    //Lấy 1 bài Post với ID cụ thể
-//    public Post getPostByID(int id) {
-//        Post post = null;
-//        try {
-//            String sql = "Select * from Post where status = 'Active' AND postID = " + id;
-//
-//            PreparedStatement ps = connection.prepareStatement(sql);
-//            ResultSet rs = ps.executeQuery();
-//
-//            while (rs.next()) {  //Kiểm tra xem còn dữ liệu trong rs hay không
-//                // lấy dữ liệu từng cột 
-//                User owner = userDAO.getUserByID(rs.getInt(2)); 
-//                String title = rs.getString(3);
-//                PostCategory postCategory = getPostCategortByID(rs.getInt(4));
-//                String thumbnail = rs.getString(5);
-//                String briefInfor = rs.getString(6);
-//                String description = rs.getString(7);
-//                String status = rs.getString(8);
-//                boolean feature = rs.getBoolean(9);
-//                java.util.Date createDate = rs.getDate(10);
-//                java.util.Date updateDate = rs.getDate(11);
-//
-//                //Lấy entity
-//                post = new Post(id, owner, title, postCategory, thumbnail, briefInfor, description, status, feature, createDate, updateDate);
-//            }
-//
-//        } catch (SQLException e) {
-//            System.out.println(e);
-//        }
-//        return post;
-//    }
+
+
 
     //Lấy tất cả bài Post trong DB với status = Active
     public List<Post> getAllPost() {
@@ -633,6 +599,7 @@ public class PostDAO extends DBContext {
         return list;
     }
 
+        
     //Lấy 5 bài viết có createDate mới nhất
     public List<Post> getRecentPost() {
         List<Post> list = new ArrayList();
@@ -757,5 +724,19 @@ public class PostDAO extends DBContext {
             System.out.println(e);
         }
         return list;
+    }
+
+    public boolean isTitleExists(String title) {
+        String sql = "SELECT COUNT(*) FROM Post WHERE title = ?";
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setString(1, title);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in isTitleExists: " + e.getMessage());
+        }
+        return false;
     }
 }

@@ -90,7 +90,8 @@
                 padding: 10px 20px;
                 font-size: 16px;
                 font-weight: 500;
-                background-color: #28a745;
+                background-color: #0d6efd;
+                border-color: #0d6efd;
                 color: #fff;
                 border: none;
                 border-radius: 5px;
@@ -99,7 +100,7 @@
                 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             }
             .add-new-btn:hover {
-                background-color: #218838;
+                background-color: #084298;
                 transform: translateY(-2px);
             }
             .add-new-btn:active {
@@ -438,7 +439,7 @@
                 <div class="page-banner ovbl-dark">
                     <div class="container">
                         <div class="page-banner-entry">
-                            <h1 class="text-white">Registration List</h1>
+                            <h1 class="text-white">New Course</h1>
                         </div>
                     </div>
                 </div>
@@ -456,8 +457,9 @@
                     <div class="section-area section-sp1">
                         <div class="container">
                             <div class="action-bar">
-                                <button class="add-new-btn">Add New</button>
+                                <a href="registrationsalercontroller?action=new" class="add-new-btn btn btn-primary">Add New</a>
                             </div>
+
                             <div class="filter-bar">
                                 <form action="registrationsalercontroller" method="GET" class="filter-form">
                                     <input type="text" name="emailSearch" placeholder="Search Email"
@@ -483,7 +485,19 @@
                                     </select>
 
 
-                                    
+                                    <select name="validFrom">
+                                        <option value="">From</option>
+                                        <c:forEach var="fromDate" items="${fromDateList}">
+                                            <option value="${fromDate}" ${param.validFrom == fromDate ? 'selected' : ''}>${fromDate}</option>
+                                        </c:forEach>
+                                    </select>
+
+                                    <select name="validTo">
+                                        <option value="">To</option>
+                                        <c:forEach var="fromDate" items="${fromDateList}">
+                                            <option value="${fromDate}" ${param.validFrom == fromDate ? 'selected' : ''}>${fromDate}</option>
+                                        </c:forEach>
+                                    </select>
 
 
                                     <select name="status">
@@ -674,10 +688,11 @@
                                             <td>${Saler.lastUpdateBy.fullName}</td>
                                             <td>
                                                 <span class="action-link">
-                                                    <a href="${pageContext.request.contextPath}/your-edit-url?id=${item.id}">Edit</a> 
-                                                    <a href="${pageContext.request.contextPath}/your-detail-url?id=${item.id}">Detail</a>
+                                                    <a href="registrationsalercontroller?action=edit&registrationID=${Saler.registrationID}">Edit</a>&nbsp;&nbsp;
+                                                    <a href="registrationsalercontroller?action=detail&registrationID=${Saler.registrationID}">Detail</a>
                                                 </span>
                                             </td>
+
                                         </tr>
                                     </c:forEach>
                                     <!-- More rows can be populated dynamically -->
