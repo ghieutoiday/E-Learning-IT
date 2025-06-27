@@ -283,9 +283,15 @@
                                             </div>
                                             <div class="topbar-right">
                                                 <ul>
-
-                                                    <li><a href="login.jsp" style="color:white">Login</a></li>
-                                                    <li><a href="register.jsp" style="color:white">Register</a>
+                                                    <c:if test="${sessionScope.loggedInUser eq null}">
+                                                        <button id="openLoginModal" class="btn btn-primary">Login</button>
+                                                    </c:if>
+                                                    <c:if test="${sessionScope.loggedInUser eq null}">
+                                                        <button id="openSignupModal" class="btn btn-success">Sign Up</button>
+                                                    </c:if>
+                                                    <c:if test="${sessionScope.loggedInUser ne null}">
+                                                        <li><a href="logout" style="color:white">Logout</a></li>
+                                                    </c:if>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -852,6 +858,8 @@
             },
         });
     </script>
+
+    <%@ include file="login-register-modal.jsp" %>
 </body>
 
 </html>
