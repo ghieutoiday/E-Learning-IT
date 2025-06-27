@@ -582,9 +582,6 @@ public class CourseDAO extends DBContext {
         String sql = "UPDATE [dbo].[Course] SET "
                 + "[courseName] = ?, "
                 + "[courseCategoryID] = ?, "
-
-                + "[thumbnail] = ?, "
-
                 + "[description] = ?, "
                 + "[status] = ?, "
                 + "[numberOfLesson] = ?, "
