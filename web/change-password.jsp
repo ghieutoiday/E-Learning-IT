@@ -327,8 +327,11 @@
                         <h2>Change Password</h2>
                         <form method="get" action="usercontroller">
                             <input type="hidden" name="action" value="changePassword">
-                            <input type="email" name="email" value="dangkhuong28062004@gmail.com" placeholder="Email" required>
+                            <input type="hidden" name="token" value="${param.token}">
+                            <input type="email" name="email" value="" placeholder="Email" required>
+                            <c:if test="${param.token == null}">
                             <input type="password" name="password" value="" placeholder="Old Password" required>
+                            </c:if>
                             <input type="password" name="newPassword" value="" placeholder="New Password" required>
                             <input type="password" name="confirmPassword" value="" placeholder="Password Confirm" required>
                             <div class="button-row">
