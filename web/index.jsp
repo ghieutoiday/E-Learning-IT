@@ -283,15 +283,9 @@
                                             </div>
                                             <div class="topbar-right">
                                                 <ul>
-                                                    <c:if test="${sessionScope.loggedInUser eq null}">
-                                                        <button id="openLoginModal" class="btn btn-primary">Login</button>
-                                                    </c:if>
-                                                    <c:if test="${sessionScope.loggedInUser eq null}">
-                                                        <button id="openSignupModal" class="btn btn-success">Sign Up</button>
-                                                    </c:if>
-                                                    <c:if test="${sessionScope.loggedInUser ne null}">
-                                                        <li><a href="logout" style="color:white">Logout</a></li>
-                                                    </c:if>
+
+                                                    <li><a href="login.jsp" style="color:white">Login</a></li>
+                                                    <li><a href="register.jsp" style="color:white">Register</a>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -397,7 +391,7 @@
                                                 <li class="add-menu-left">
                                                     <h5 class="menu-adv-title">Our Courses</h5>
                                                     <ul>
-                                                        <li><a href="courses.jsp">Courses </a></li>
+                                                        <li><a href="courseslist">Courses </a></li>
                                                         <li><a href="courses-details.jsp">Courses Details</a>
                                                         </li>
                                                         <li><a href="profile.jsp">Instructor Profile</a></li>
@@ -441,9 +435,6 @@
                                                 <li><a href="registrationsalercontroller">Registration List</a></li>
                                                 <li><a href="change-password.jsp">Change Password</a></li>
                                                 <li><a href="userController">Users List</a></li>
-
-                                                <li><a href="userController?action=forget">Forget Password</a></li>
-
                                                 <li><a href="settingController">Settings List</a></li>
                                                 <li><a href="javascript:;">Calendar<i
                                                             class="fa fa-angle-right"></i></a>
@@ -858,8 +849,6 @@
             },
         });
     </script>
-
-    <%@ include file="login-register-modal.jsp" %>
 </body>
 
 </html>
