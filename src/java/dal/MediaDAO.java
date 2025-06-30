@@ -16,6 +16,7 @@ import model.Media;
  * @author ASUS
  */
 public class MediaDAO extends DBContext {
+
     private static MediaDAO instance;
 
     private MediaDAO() {
@@ -97,6 +98,9 @@ public class MediaDAO extends DBContext {
     // 5. Lấy ra toàn bộ Media theo noteID
     public List<Media> getAllMediaByNote(int noteID) {
         List<Media> listMedia = new ArrayList<>();
+        if (noteID <= 0) {
+            return listMedia; // Trả về danh sách rỗng nếu noteID không hợp lệ
+        }
         String sql = "SELECT * FROM Media WHERE noteID = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, noteID);
@@ -110,7 +114,6 @@ public class MediaDAO extends DBContext {
             }
         } catch (SQLException e) {
             System.err.println("Error in getAllMediaByNote: " + e.getMessage());
-            e.printStackTrace();
         }
         return listMedia;
     }
