@@ -620,7 +620,7 @@
                                     <div class="filters" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 20px; width: 100%;">
                                         <div class="d-flex align-items-center">
                                             <span>Number per page:</span>
-                                            <input type="number" name="rowsPerPage" value="${param.rowsPerPage != null ? param.rowsPerPage : 5}" min="1" max="${totalSliders}" class="form-control" style="height: 32px;width: 75px; margin-left: 10px; padding: 6px;" />
+                                            <input type="number" name="rowsPerPage" value="${param.rowsPerPage != null ? param.rowsPerPage : 5}" min="1" class="form-control" style="height: 32px;width: 75px; margin-left: 10px; padding: 6px;" />
                                         </div>
 
                                         <div class="d-flex align-items-center">
