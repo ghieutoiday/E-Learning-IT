@@ -44,7 +44,7 @@ public class DBContext {
         try {
             String user = "sa";
 
-            String pass = "123456";
+            String pass = "123";
 
 
             String url = "jdbc:sqlserver://localhost:1433;databaseName=CourseManagementDB";
