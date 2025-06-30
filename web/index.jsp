@@ -391,7 +391,7 @@
                                                 <li class="add-menu-left">
                                                     <h5 class="menu-adv-title">Our Courses</h5>
                                                     <ul>
-                                                        <li><a href="courses.jsp">Courses </a></li>
+                                                        <li><a href="courseslist">Courses </a></li>
                                                         <li><a href="courses-details.jsp">Courses Details</a>
                                                         </li>
                                                         <li><a href="profile.jsp">Instructor Profile</a></li>
