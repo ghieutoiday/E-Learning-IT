@@ -735,7 +735,7 @@ public class CourseDAO extends DBContext {
             sql += " AND c.courseCategoryID = ? ";
         }
 
-        sql += " ORDER BY c.[createDate] DESC "
+        sql += " ORDER BY c.[updateDate] DESC "
                 + " OFFSET " + ((index - 1) * 9) + " ROWS FETCH NEXT 9 ROWS ONLY;";
 
         try {
