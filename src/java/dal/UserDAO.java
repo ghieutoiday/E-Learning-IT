@@ -518,7 +518,7 @@ public class UserDAO extends DBContext {
             System.out.println("Error in updateUser: " + e.getMessage());
         }
     }
-
+    // cho Registration
     public int addNewUser(User user) {
         String sql = "INSERT INTO [User] (fullName, email, password, gender, mobile, roleID, status) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -562,6 +562,70 @@ public class UserDAO extends DBContext {
         }
 
         return generatedUserId;
+    }
+    
+    // cho Register
+    public int addNewUserRegister(User user) {
+        String sql = "INSERT INTO [User] (fullName, email, password, gender, mobile, roleID, status) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        int generatedUserId = -1;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, user.getFullName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword());
+            ps.setString(4, user.getGender());
+            ps.setString(5, user.getMobile());
+
+            // Nếu role null thì gán mặc định roleID = 1 (user thường)
+            if (user.getRole() != null) {
+                ps.setInt(6, user.getRole().getRoleID());
+            } else {
+                ps.setInt(6, 1); // role mặc định
+            }
+
+            // Nếu status null thì gán mặc định là "Inactive"
+            if (user.getStatus() != null) {
+                ps.setString(7, user.getStatus());
+            } else {
+                ps.setString(7, "Inactive");
+            }
+
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        generatedUserId = rs.getInt(1); // Lấy userID vừa tạo
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Lỗi trong addNewUser: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return generatedUserId;
+    }
+    
+    // Phương thức cập nhật trạng thái người dùng
+    public boolean updateUserStatus(int userId, String status) {
+        String sql = "UPDATE [User] SET status = ? WHERE userId = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, status);
+            ps.setInt(2, userId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Lỗi SQL trong updateUserStatus: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Lỗi chung trong updateUserStatus: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
     }
 
     //GetUser by IDs của thịnh

@@ -21,6 +21,8 @@ public class Course {
     private int numberOfLesson;
     private int feature;
     private Date createDate;
+    private double listPrice;
+    private double salePrice;
 
     public Course() {
     }
@@ -36,8 +38,6 @@ public class Course {
         this.feature = feature;
         this.createDate = createDate;
     }
-    
-    
 
     public Course(int courseID, String courseName, CourseCategory courseCategory, String description, User owner, String status, int numberOfLesson, Date createDate) {
         this.courseID = courseID;
@@ -49,8 +49,6 @@ public class Course {
         this.numberOfLesson = numberOfLesson;
         this.createDate = createDate;
     }
-    
-    
 
     public Course(int courseID, String courseName, CourseCategory courseCategory, String thumbnail, String description, User owner, String status, int numberOfLesson, Date createDate) {
         this.courseID = courseID;
@@ -84,7 +82,6 @@ public class Course {
     public void setFeature(int feature) {
         this.feature = feature;
     }
-    
 
     public int getCourseID() {
         return courseID;
@@ -158,5 +155,20 @@ public class Course {
         this.createDate = createDate;
     }
 
-    
+    public double getListPrice() {
+        return listPrice;
+    }
+
+    public void setListPrice(double listPrice) {
+        this.listPrice = listPrice;
+    }
+
+    public double getSalePrice() {
+        return salePrice;
+    }
+
+    public void setSalePrice(double salePrice) {
+        this.salePrice = salePrice;
+    }
+
 }

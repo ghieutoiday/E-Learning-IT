@@ -15,6 +15,14 @@
                     </div>
                 </c:if>
 
+                <%-- M?I: HI?N TH? THÔNG BÁO ??NG KÝ THÀNH CÔNG --%>
+                <c:if test="${not empty requestScope.signupSuccessMessage}">
+                    <div id="signupSuccessMessageDiv" style="color: graytext; margin-bottom: 15px; text-align: center;">
+                        ${requestScope.signupSuccessMessage}
+                    </div>
+                </c:if>
+
+
                 <div class="form-group">
                     <label>Full Name</label>
                     <input name="fullName" type="text" required class="form-control" 
