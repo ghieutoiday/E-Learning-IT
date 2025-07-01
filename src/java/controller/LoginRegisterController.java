@@ -190,8 +190,6 @@ public class LoginRegisterController extends HttpServlet {
                          e.printStackTrace();
                          signupErrorMessage = "Có lỗi xảy ra khi lưu token xác minh. Vui lòng thử lại.";
                     }
-                } else {
-                    signupErrorMessage = "Có lỗi xảy ra trong quá trình đăng ký. Vui lòng thử lại.";
                 }
             }
 
