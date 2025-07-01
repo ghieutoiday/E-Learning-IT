@@ -304,7 +304,7 @@
                                     <div class="widget widget_archive">
                                         <h5 class="widget-title style-1">Subject Category</h5>
                                         <ul>
-                                            <li class="${requestScope.categoryId == null ? 'active' : ''}"><a href="courseslist?search=${requestScope.search}">All Categories</a></li>
+                                            <li class="${requestScope.categoryId == null ? 'active' : ''}"><a href="courseslist?search=${requestScope.search}&pageforward=courselist">All Categories</a></li>
                                                 <c:forEach var="cat" items="${sessionScope.courseCategoryList}">
                                                 <li class="${requestScope.categoryId == cat.courseCategory ? 'active' : ''}"><a href="courseslist?categoryId=${cat.courseCategory}&search=${requestScope.search}&pageforward=courselist">${cat.courseCategoryName}</a></li>
                                                 </c:forEach>
