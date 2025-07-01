@@ -146,6 +146,41 @@ public class UserDAO extends DBContext {
 
         return user;
     }
+    
+    //Hàm getUserByEmailByLogin Của thịnh
+    public User getUserByEmailByLogin(String email) {
+        User user = null;
+        String sql = "SELECT  [userID]\n"
+                + "      ,[fullName]\n"
+                + "      ,[email]\n"
+                + "      ,[password]\n"
+                + "      ,[gender]\n"
+                + "      ,[mobile]\n"
+                + "      ,[roleID]\n"
+                + "      ,[avatar]\n"
+                + "      ,[status]\n"
+                + "  FROM [CourseManagementDB].[dbo].[User]\n"
+                + "  where email = ? AND status = ?";
+
+        RoleDAO roleDao = new RoleDAO();
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, email);
+            ps.setString(2, "Active");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                //Role roleID = roleDao.getRole(rs.getInt(id));
+                user = new User(rs.getInt("userID"), rs.getString("fullName"), rs.getString("email"), rs.getString("password"),
+                        rs.getString("gender"), rs.getString("mobile"), null, rs.getString("avatar"), rs.getString("status"));
+
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return user;
+    }
 
     //Hàm updatePassword của Hiếu
     public int UpdatePassword(String password, String email) {
