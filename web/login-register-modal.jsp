@@ -77,6 +77,8 @@
                 <h2 class="title-head">Login to your <span>Account</span></h2>
                 <p>Don't have an account? <a href="#" onclick="event.preventDefault(); switchToSignup();">Create one here</a></p>
             </div>
+            
+            
 
             <form class="contact-bx" action="loginregistercontroller?action=login" method="post">
                 <div id="loginErrorMessageDiv" style="color: red; margin-bottom: 15px; text-align: center;"></div>

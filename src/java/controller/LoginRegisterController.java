@@ -68,26 +68,24 @@ public class LoginRegisterController extends HttpServlet {
 
             String email = request.getParameter("email");
             String password = request.getParameter("password");
-            String errorMessage = null; // Khởi tạo là null thay vì rỗng để dễ kiểm tra
+            String errorMessage = null; 
 
-            // 1. Kiểm tra dữ liệu đầu vào cơ bản
+
             if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
                 errorMessage = "Email và mật khẩu không được để trống.";
             } else {
-                // 2. Tìm kiếm người dùng và xác thực mật khẩu
-                User user = userDAO.getUserByEmail(email);
+                User user = userDAO.getUserByEmailByLogin(email);
                 if (user != null) {
-                     String storedPassword = user.getPassword(); // Mật khẩu từ DB
+                     String storedPassword = user.getPassword(); 
 
                     boolean passwordMatches = false;
 
-                    // 1. Kiểm tra xem mật khẩu trong DB có phải dạng BCrypt không
+                    // Kiểm tra xem mật khẩu trong DB có phải dạng BCrypt không
                     if (storedPassword != null && 
                         (storedPassword.startsWith("$2a$") || 
                          storedPassword.startsWith("$2b$") || 
                          storedPassword.startsWith("$2y$"))) {
                         
-                        // Đây là mật khẩu BCrypt (dành cho tài khoản mới hoặc đã được chuyển đổi từ trước)
                         passwordMatches = BCrypt.checkpw(password, storedPassword);
 
                     } else {
@@ -98,26 +96,20 @@ public class LoginRegisterController extends HttpServlet {
                         // Đăng nhập THÀNH CÔNG
                         session.setAttribute("loggedInUser", user); 
                         response.sendRedirect(request.getContextPath() + "/home");
-                        return; // RẤT QUAN TRỌNG: Dừng xử lý tại đây khi thành công
+                        return; 
                     } else {
                         // Mật khẩu không đúng
                         errorMessage = "Mật khẩu không đúng. Vui lòng thử lại.";
                     }
                 } else {
-                    // Email không tồn tại
-                    errorMessage = "Email không tồn tại. Vui lòng kiểm tra lại.";
+                    errorMessage = "Đã có lỗi xảy ra. Vui lòng kiểm tra lại.";
                 }
             }
 
-            // --- Xử lý khi Đăng nhập THẤT BẠI ---
-            // Phần này được đặt NGOÀI khối if/else của logic xác thực thành công/thất bại
-            // để đảm bảo nó luôn được thực thi nếu không có lệnh `return` nào xảy ra (tức là đăng nhập thất bại).
-            request.setAttribute("loginError", errorMessage); // Gửi thông báo lỗi
-            request.setAttribute("prevEmail", email != null ? email : ""); // Giữ lại email đã nhập
-            request.setAttribute("openLoginModalOnLoad", true); // Cờ báo cho JS mở lại modal
-
-            // Chuyển tiếp (forward) về lại index.jsp để hiển thị modal với lỗi
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
+            request.setAttribute("loginError", errorMessage);
+            request.setAttribute("prevEmail", email != null ? email : ""); 
+            request.setAttribute("openLoginModalOnLoad", true); 
+            request.getRequestDispatcher("/home").forward(request, response);
 
         } else if ("signup".equalsIgnoreCase(action)) {
             String fullName = request.getParameter("fullName");
@@ -134,23 +126,21 @@ public class LoginRegisterController extends HttpServlet {
             } else if (userDAO.getUserByEmail(email) != null) {
                 signupErrorMessage = "Email này đã được đăng ký. Vui lòng sử dụng email khác.";
             } else {
-                // MỚI: Băm mật khẩu bằng BCrypt trước khi lưu vào DB (CHỈ DÀNH CHO NGƯỜI DÙNG MỚI)
                 String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
                 User newUser = new User();
-                // Gán dữ liệu cho từng thuộc tính của newUser
                 newUser.setFullName(fullName);
                 newUser.setGender(gender);
                 newUser.setEmail(email);
                 newUser.setMobile(mobile);
-                newUser.setPassword(hashedPassword); // LƯU MẬT KHẨU ĐÃ BĂM BCrypt
+                newUser.setPassword(hashedPassword); 
                 
                 int newUserId  = userDAO.addNewUserRegister(newUser);
 
                 if (newUserId  > 0) {
-                    // MỚI: Cập nhật đối tượng newUser với userID vừa lấy được từ DB
                     newUser.setUserID(newUserId); 
-
+                    
+                    //Tạo token xác minh
                     String verificationTokenString = UUID.randomUUID().toString();
                     LocalDateTime tokenExpiryTime = LocalDateTime.now().plusMinutes(10);
 
@@ -162,8 +152,10 @@ public class LoginRegisterController extends HttpServlet {
                     verificationTokenObj.setUserID(newUser); // Gán đối tượng User vào token
                     
                     try {
+                        //Lưu token vào DB
                         tokenDAO.saveToken(verificationTokenObj); 
-
+                        
+                        //Tạo link xác minh
                         String verificationLink = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
                                 + request.getContextPath() + "/verifycontroller?token=" + verificationTokenString;
 
@@ -209,7 +201,7 @@ public class LoginRegisterController extends HttpServlet {
             request.setAttribute("prevMobile", mobile != null ? mobile : "");
             request.setAttribute("prevGender", gender != null ? gender : "");
             request.setAttribute("openSignupModalOnLoad", true);
-            request.getRequestDispatcher("index.jsp").forward(request, response);
+            request.getRequestDispatcher("/home").forward(request, response);
         }
 
     }

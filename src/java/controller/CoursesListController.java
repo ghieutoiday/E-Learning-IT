@@ -3,6 +3,7 @@ package controller;
 import dal.CourseCategoryDAO;
 import dal.CourseDAO;
 import dal.PostDAO;
+import dal.PricePackageDAO;
 import dal.SliderDAO;
 import dal.SubjectDimensionDAO;
 
@@ -17,12 +18,32 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Course;
 import model.CourseCategory;
+import model.PricePackage;
 
 @WebServlet(name = "CoursesListController", urlPatterns = { "/courseslist" })
 public class CoursesListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        CourseDAO dao = new CourseDAO();
+        
+        //Lấy postID từ BlogDetail (ở chỗ Recent Post) or BlogList sau khi click vào bài viết
+        String courseId_raw = request.getParameter("courseId");
+        //Set postID ban đầu bằng -1 để lấy ngoại lệ
+        int courseId;
+        if (courseId_raw != null && !courseId_raw.isBlank()) {
+            try {
+                courseId = Integer.parseInt(courseId_raw);
+                //Lấy và tạo 1 attribute CourseDetail cụ thể để hiện thị trong trang Blog Detail
+                Course courseDetail = dao.getCoureByCourseIDAndPrice(courseId);
+                request.setAttribute("courseDetail", courseDetail);
+
+            } catch (NumberFormatException e) {
+                System.out.println(e);
+            }
+        }
+        
         int page = 1;
         if (request.getParameter("page") != null) {
             page = Integer.parseInt(request.getParameter("page"));
@@ -33,7 +54,7 @@ public class CoursesListController extends HttpServlet {
         if (categoryIdStr != null && !categoryIdStr.isEmpty()) {
             categoryId = Integer.parseInt(categoryIdStr);
         }
-        CourseDAO dao = new CourseDAO();
+        
         CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
         List<Course> courseList = dao.getCoursePageCoursesList(page, search, categoryId);
         int totalCourses = dao.countCourseWithFilter(search, categoryId);
@@ -48,6 +69,14 @@ public class CoursesListController extends HttpServlet {
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("search", search);
         request.setAttribute("categoryId", categoryId);
-        request.getRequestDispatcher("courses.jsp").forward(request, response);
+        
+        //Lấy page để Chọn trang nào đc forward sang
+        String pageforward = request.getParameter("pageforward");
+        if (pageforward.equalsIgnoreCase("courselist")) {
+            request.getRequestDispatcher("courses.jsp").forward(request, response);
+        } else if (pageforward.equalsIgnoreCase("coursedetail")) {
+            request.getRequestDispatcher("courses-details.jsp").forward(request, response);
+        }
+        
     }
 }
