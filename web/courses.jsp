@@ -295,7 +295,7 @@
                                                 <form role="search" method="get" action="courseslist" >
                                                     <input type="hidden" name="pageforward" value="courselist" />
                                                     <div class="input-group">
-                                                    <input  style="width: 100%; height: 40px; " name="search" type="text" value="${requestScope.search}" class="form-control">
+                                                        <input  style="width: 100%; height: 40px; " name="search" type="text" value="${requestScope.search}" class="form-control">
                                                     </div>
                                                 </form>
                                             </div>
@@ -332,8 +332,15 @@
                                                         <div class="ttr-post-meta">
                                                             <ul>
                                                                 <li class="price">
-                                                                    <del>$${course.listPrice}</del>
-                                                                    <h5>$${course.salePrice}</h5>
+                                                                    <c:choose>
+                                                                        <c:when test="${course.salePrice == 0}">
+                                                                            <h5 style="color: green;">Free</h5>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <del>List Price: $${course.listPrice}</del>
+                                                                            <h5>Sale Price: $${course.salePrice}</h5>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
                                                                 </li>
                                                             </ul>
                                                         </div>
