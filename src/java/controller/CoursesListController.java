@@ -34,7 +34,7 @@ public class CoursesListController extends HttpServlet {
         if (courseId_raw != null && !courseId_raw.isBlank()) {
             try {
                 courseId = Integer.parseInt(courseId_raw);
-                //Lấy và tạo 1 attribute CourseDetail cụ thể để hiện thị trong trang Blog Detail
+                //Lấy và tạo 1 attribute CourseDetail cụ thể để hiện thị trong trang Course Detail
                 Course courseDetail = dao.getCoureByCourseIDAndPrice(courseId);
                 request.setAttribute("courseDetail", courseDetail);
 
