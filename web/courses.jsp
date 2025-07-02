@@ -408,7 +408,7 @@
                                                                     <h6>Sale Price: $${course.salePrice}</h6>
                                                                 </c:otherwise>
                                                             </c:choose>
-                                                        </div>
+                                                        fhhf</div>
                                                     </div>
                                                 </div>
                                             </div>
