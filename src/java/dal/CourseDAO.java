@@ -70,7 +70,7 @@ public class CourseDAO extends DBContext {
         }
         return course;
     }
-    
+
     // Hàm get course theo getCoureByCourseIDAndPrice
     public Course getCoureByCourseIDAndPrice(int courseID) {
         Course course = null;
@@ -120,7 +120,7 @@ public class CourseDAO extends DBContext {
                         rs.getDate("createDate"));
                 course.setListPrice(listPrice);
                 course.setSalePrice(salePrice);
-                
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -799,7 +799,7 @@ public class CourseDAO extends DBContext {
                 + "  LEFT JOIN [dbo].[Image] i ON c.courseID = i.courseID\n"
                 + "  OUTER APPLY (\n"
                 + "      SELECT TOP 1 listPrice, salePrice FROM [dbo].[PricePackage] pp\n"
-                + "      WHERE pp.courseID = c.courseID and pp.name = 'Basic' \n"
+                + "      WHERE pp.courseID = c.courseID \n"
                 + "      ORDER BY pp.salePrice ASC\n"
                 + "  ) pp\n"
                 + "   WHERE c.[status] = 'Active' AND c.[feature] = 1\n "
@@ -937,7 +937,7 @@ public class CourseDAO extends DBContext {
         return course;
     }
 
-     public static void main(String[] args) {
+    public static void main(String[] args) {
         CourseDAO dao = new CourseDAO();
 
         // Thay bằng courseID có thật trong DB
