@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Duration;
 
-// Đã khôi phục URL pattern về "/verifycontroller"
 @WebServlet(name = "VerifyController", urlPatterns = {"/verifycontroller"}) 
 public class VerifyController extends HttpServlet {
 
@@ -42,27 +41,37 @@ public class VerifyController extends HttpServlet {
                     verificationMessage = "Liên kết xác minh không tồn tại.";
                 } else if (verToken.isIsUsed()) {
                     verificationMessage = "Liên kết xác minh đã được sử dụng.";
-
+                    // Dòng này được BÌNH LUẬN (OPTIONAL) theo các thảo luận trước đó, 
+                    // nhưng nếu bỏ bình luận thì nó sẽ xóa token đã sử dụng.
+                    // tokenDAO.deleteToken(tokenString); 
                 } else if (verToken.getExpiryTime().isBefore(LocalDateTime.now())) { // Kiểm tra token hết hạn
                     verificationMessage = "Liên kết xác minh đã hết hạn. Vui lòng đăng ký lại hoặc yêu cầu gửi lại email.";
-                    tokenDAO.markTokenUsed(tokenString); // Đánh dấu là đã sử dụng (để ngăn dùng lại nếu chưa xóa)
+                    tokenDAO.markTokenUsed(tokenString); 
+                    // DÒNG SỬ DỤNG HÀM DELETE: Xóa token sau khi hết hạn
+                    tokenDAO.deleteToken(tokenString); 
                 } else {
                     // Token hợp lệ, chưa sử dụng, chưa hết hạn
                     User user = userDAO.getUserByID(verToken.getUserID().getUserID()); 
 
                     if (user == null) {
                         verificationMessage = "Không tìm thấy tài khoản người dùng cho liên kết này.";
-                        tokenDAO.markTokenUsed(tokenString); // Đánh dấu token đã dùng nếu user không tìm thấy
+                        tokenDAO.markTokenUsed(tokenString); 
+                        // DÒNG SỬ DỤNG HÀM DELETE: Xóa token nếu user không tìm thấy (để tránh token vô chủ)
+                        tokenDAO.deleteToken(tokenString); 
                     } else if ("Active".equalsIgnoreCase(user.getStatus())) {
                         verificationMessage = "Tài khoản của bạn đã được xác minh trước đó.";
-                        tokenDAO.markTokenUsed(tokenString); // Đánh dấu token đã dùng nếu đã Active
+                        tokenDAO.markTokenUsed(tokenString); 
+                        // DÒNG SỬ DỤNG HÀM DELETE: Xóa token nếu tài khoản đã Active (đã được xác minh rồi)
+                        tokenDAO.deleteToken(tokenString); 
                     } else {
                         // Token hợp lệ và tài khoản chưa Active, tiến hành xác minh
                         boolean userStatusUpdated = userDAO.updateUserStatus(user.getUserID(), "Active");
-                        tokenDAO.markTokenUsed(tokenString); // Đánh dấu token là đã sử dụng
+                        tokenDAO.markTokenUsed(tokenString); 
 
                         if (userStatusUpdated) {
                             verificationMessage = "Tài khoản của bạn đã được xác minh thành công! Bạn có thể đăng nhập ngay bây giờ.";
+                            // DÒNG SỬ DỤNG HÀM DELETE: Xóa token sau khi xác minh thành công
+                            tokenDAO.deleteToken(tokenString); 
                         } else {
                             verificationMessage = "Có lỗi xảy ra trong quá trình cập nhật trạng thái người dùng. Vui lòng thử lại.";
                         }
@@ -75,6 +84,6 @@ public class VerifyController extends HttpServlet {
         }
         
         request.setAttribute("verificationMessage", verificationMessage);
-        request.getRequestDispatcher("verificationStatus.jsp").forward(request, response);
+        request.getRequestDispatcher("/verificationStatus.jsp").forward(request, response);
     }
 }

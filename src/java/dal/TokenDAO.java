@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import model.TokenForgetPassword;
 import model.User;
 
-
 public class TokenDAO extends DBContext {
 
     public void saveToken(TokenForgetPassword token) {
@@ -52,5 +51,21 @@ public class TokenDAO extends DBContext {
             e.printStackTrace();
         }
     }
-    
+
+    public boolean deleteToken(String tokenString) {
+        String sql = "DELETE FROM TokenForgetPassword WHERE token = ?";
+        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, tokenString);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Lỗi SQL trong deleteToken: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Lỗi chung trong deleteToken: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }
