@@ -576,26 +576,31 @@ public class CourseDAO extends DBContext {
         String sql = "UPDATE [dbo].[Course] SET "
                 + "[courseName] = ?, "
                 + "[courseCategoryID] = ?, "
-                + "[thumbnail] = ?, "
                 + "[description] = ?, "
                 + "[status] = ?, "
                 + "[numberOfLesson] = ?, "
                 + "[feature] = ? "
                 + "WHERE [courseID] = ?";
 
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, course.getCourseName());
-            //CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
-            ps.setInt(2, course.getCourseCategory().getCourseCategory());
-            ps.setString(3, course.getThumbnail());
-            ps.setString(4, course.getDescription());
-            ps.setString(5, course.getStatus());
-            ps.setInt(6, course.getNumberOfLesson());
-            ps.setInt(7, course.getFeature());
-            ps.setInt(8, course.getCourseID());
+        String sql2 = "UPDATE [dbo].[Image] SET [thumbnail] = ? WHERE [courseID] = ?";
 
-            rowsAffected = ps.executeUpdate();
+        try {
+
+            PreparedStatement ps1 = connection.prepareStatement(sql);
+            ps1.setString(1, course.getCourseName());
+            ps1.setInt(2, course.getCourseCategory().getCourseCategory());
+            ps1.setString(3, course.getDescription());
+            ps1.setString(4, course.getStatus());
+            ps1.setInt(5, course.getNumberOfLesson());
+            ps1.setInt(6, course.getFeature());
+            ps1.setInt(7, course.getCourseID());
+            rowsAffected += ps1.executeUpdate();
+
+            PreparedStatement ps2 = connection.prepareStatement(sql2);
+            ps2.setString(1, course.getThumbnail());
+            ps2.setInt(2, course.getCourseID());
+            rowsAffected += ps2.executeUpdate();
+
 
         } catch (SQLException ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
