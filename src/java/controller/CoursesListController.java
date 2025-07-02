@@ -28,14 +28,13 @@ public class CoursesListController extends HttpServlet {
         
         CourseDAO dao = new CourseDAO();
         
-        //Lấy postID từ BlogDetail (ở chỗ Recent Post) or BlogList sau khi click vào bài viết
+
         String courseId_raw = request.getParameter("courseId");
-        //Set postID ban đầu bằng -1 để lấy ngoại lệ
         int courseId;
         if (courseId_raw != null && !courseId_raw.isBlank()) {
             try {
                 courseId = Integer.parseInt(courseId_raw);
-                //Lấy và tạo 1 attribute CourseDetail cụ thể để hiện thị trong trang Blog Detail
+                //Lấy và tạo 1 attribute CourseDetail cụ thể để hiện thị trong trang Course Detail
                 Course courseDetail = dao.getCoureByCourseIDAndPrice(courseId);
                 request.setAttribute("courseDetail", courseDetail);
 
