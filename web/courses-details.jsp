@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <html lang="en">
 
     <head>
@@ -46,6 +50,204 @@
         <!-- STYLESHEETS ============================================= -->
         <link rel="stylesheet" type="text/css" href="assets/css/style.css">
         <link class="skin" rel="stylesheet" type="text/css" href="assets/css/color/color-1.css">
+
+        <title>Course Details - ${courseDetail.courseName}</title>
+        <style>
+        /* Base styles for the entire page (if not already defined by your template) */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+        }
+
+        /* Styles for the chatbot icon */
+        .chatbot-icon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+
+        .chatbot-icon:hover {
+            background-color: #45a049;
+        }
+
+        /* Styles for the chat container */
+        .chat-container {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px; /* Kích thước mặc định */
+            height: 450px; /* Kích thước mặc định */
+            min-width: 280px; /* Kích thước tối thiểu */
+            min-height: 350px; /* Kích thước tối thiểu */
+            max-width: 90vw; /* Giới hạn kích thước tối đa theo viewport */
+            max-height: 90vh; /* Giới hạn kích thước tối đa theo viewport */
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            z-index: 999;
+            transition: all 0.3s ease-in-out;
+            transform-origin: bottom right;
+            transform: scale(0);
+            resize: none; /* Tắt resize mặc định của trình duyệt */
+            /* Thêm relative để các grips định vị theo nó */
+            position: fixed; /* Quan trọng để nó nổi */
+        }
+
+        .chat-container.open {
+            display: flex;
+            transform: scale(1);
+        }
+
+        /* Resizable Grips */
+        .resizer {
+            position: absolute;
+            background: transparent; /* Hoặc một màu nhỏ để dễ debug, sau đó làm transparent */
+            z-index: 1001; /* Đảm bảo grips nằm trên cùng */
+        }
+
+        .resizer.bottom-right {
+            width: 15px;
+            height: 15px;
+            bottom: 0;
+            right: 0;
+            cursor: nwse-resize;
+        }
+
+        .resizer.bottom {
+            width: 100%;
+            height: 8px;
+            bottom: 0;
+            left: 0;
+            cursor: ns-resize;
+        }
+
+        .resizer.right {
+            width: 8px;
+            height: 100%;
+            top: 0;
+            right: 0;
+            cursor: ew-resize;
+        }
+
+        /* Existing Chatbot CSS (modified for floating behavior) */
+        .chat-header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            font-size: 1.1em;
+            text-align: center;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            cursor: grab; /* Chỉ ra nó có thể được kéo */
+            flex-shrink: 0; /* Đảm bảo header không bị co lại */
+        }
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            border-bottom: 1px solid #eee;
+            background-color: #e5ddd5;
+            /* Thay flex-basis: 0; bằng min-height: 0; để không bị lỗi trên một số trình duyệt */
+            min-height: 0; /* Cho phép nó co lại khi container thay đổi kích thước */
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .message.user {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+            margin-left: auto;
+            text-align: right;
+        }
+        .message.bot {
+            background-color: #fff;
+            align-self: flex-start;
+            margin-right: auto;
+            border: 1px solid #ddd;
+        }
+        /* CSS cho các gợi ý prompt */
+        .prompt-suggestions {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 10px 15px;
+            gap: 10px;
+            border-top: 1px solid #eee;
+            background-color: #f8f8f8;
+            -webkit-overflow-scrolling: touch;
+            flex-shrink: 0;
+        }
+
+        .prompt-suggestion-button {
+            flex-shrink: 0;
+            padding: 8px 12px;
+            border: 1px solid #007bff;
+            border-radius: 20px;
+            background-color: #eaf5ff;
+            color: #007bff;
+            cursor: pointer;
+            font-size: 13px;
+            white-space: nowrap;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .prompt-suggestion-button:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        /* Kết thúc CSS cho gợi ý prompt */
+
+        .chat-input {
+            display: flex;
+            padding: 10px 15px;
+            border-top: 1px solid #eee;
+            flex-shrink: 0;
+        }
+        .chat-input input[type="text"] {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 10px;
+            outline: none;
+            font-size: 0.95em;
+        }
+        .chat-input button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background-color 0.3s ease;
+        }
+        .chat-input button:hover {
+            background-color: #45a049;
+        }
+    </style>
 
     </head>
     <body id="bg">
@@ -220,322 +422,154 @@
             </header>
             <!-- header END ==== -->
             <!-- Content -->
-            <div class="page-content bg-white">
-                <!-- inner page banner -->
-                <div class="page-banner ovbl-dark" style="background-image:url(assets/images/banner/banner2.jpg);">
+            <div class="content-block">
+                <div class="section-area section-sp1">
                     <div class="container">
-                        <div class="page-banner-entry">
-                            <h1 class="text-white">Courses Details</h1>
-                        </div>
-                    </div>
-                </div>
-                <!-- Breadcrumb row -->
-                <div class="breadcrumb-row">
-                    <div class="container">
-                        <ul class="list-inline">
-                            <li><a href="#">Home</a></li>
-                            <li>Courses Details</li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- Breadcrumb row END -->
-                <!-- inner page banner END -->
-                <div class="content-block">
-                    <!-- About Us -->
-                    <div class="section-area section-sp1">
-                        <div class="container">
-                            <div class="row d-flex flex-row-reverse">
-                                <div class="col-lg-3 col-md-4 col-sm-12 m-b30">
-                                    <div class="course-detail-bx">
-                                        <div class="course-price">
-                                            <del>$190</del>
-                                            <h4 class="price">$120</h4>
-                                        </div>	
-                                        <div class="course-buy-now text-center">
-                                            <a href="#" class="btn radius-xl text-uppercase">Buy Now This Courses</a>
+                        <div class="row">
+                            <div class="col-lg-9 col-md-8 col-sm-12">
+                                <div class="courses-post">
+                                    <div class="ttr-post-media media-effect">
+                                        <a href="#"><img src="${courseDetail.thumbnail}" alt=""></a>
+                                    </div>
+                                    <div class="ttr-post-info">
+                                        <div class="ttr-post-title">
+                                            <h2 class="post-title">${courseDetail.courseName}</h2>
+                                            <h4 class="tagline">${courseDetail.courseCategory}</h4>
                                         </div>
-                                        <div class="teacher-bx">
-                                            <div class="teacher-info">
-                                                <div class="teacher-thumb">
-                                                    <img src="assets/images/testimonials/pic1.jpg" alt=""/>
-                                                </div>
-                                                <div class="teacher-name">
-                                                    <h5>Hinata Hyuga</h5>
-                                                    <span>Science Teacher</span>
-                                                </div>
-                                            </div>
+                                        <div class="ttr-post-text">
+                                            <p>${courseDetail.briefInfo}</p>
                                         </div>
-                                        <div class="cours-more-info">
-                                            <div class="review">
-                                                <span>3 Review</span>
-                                                <ul class="cours-star">
-                                                    <li class="active"><i class="fa fa-star"></i></li>
-                                                    <li class="active"><i class="fa fa-star"></i></li>
-                                                    <li class="active"><i class="fa fa-star"></i></li>
-                                                    <li><i class="fa fa-star"></i></li>
-                                                    <li><i class="fa fa-star"></i></li>
-                                                </ul>
-                                            </div>
-                                            <div class="price categories">
-                                                <span>Categories</span>
-                                                <h5 class="text-primary">Frontend</h5>
-                                            </div>
-                                        </div>
-                                        <div class="course-info-list scroll-page">
-                                            <ul class="navbar">
-                                                <li><a class="nav-link" href="#overview"><i class="ti-zip"></i>Overview</a></li>
-                                                <li><a class="nav-link" href="#curriculum"><i class="ti-bookmark-alt"></i>Curriculum</a></li>
-                                                <li><a class="nav-link" href="#instructor"><i class="ti-user"></i>Instructor</a></li>
-                                                <li><a class="nav-link" href="#reviews"><i class="ti-comments"></i>Reviews</a></li>
+                                    </div>
+                                </div>
+
+                                <div class="courese-overview" id="overview">
+                                    <h4>Course Overview</h4>
+                                    <div class="row">
+                                        <div class="col-md-12 col-lg-4">
+                                            <ul class="course-features">
+                                                <li><i class="ti-money"></i> <span class="label">Original Price</span> <span class="value"><del>$${courseDetail.listPrice}</del></span></li>
+                                                <li><i class="ti-tag"></i> <span class="label">Sale Price</span> <span class="value text-danger">$${courseDetail.salePrice}</span></li>
                                             </ul>
                                         </div>
+                                        <div class="col-md-12 col-lg-8">
+                                            <h5 class="m-b5">Product Description</h5>
+                                            <p>${courseDetail.description}</p>
+                                            <a href="showRegistration?courseId=${courseDetail.courseID}" class="btn btn-primary mt-3">Register Now</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-md-4 col-sm-12 m-b30">
+                                <div class="widget courses-search-bx placeani">
+                                    <div class="form-group ${requestScope.search != null ? 'focused' : ''}">
+                                        <label>Search Courses</label>
+                                        <form role="search" method="get" action="courseslist">
+                                            <input type="hidden" name="pageforward" value="courselist" />
+                                            <div class="input-group">
+                                                <input style="width: 100%; height: 40px;" name="search" type="text" value="${requestScope.search}" class="form-control">
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
 
-                                <div class="col-lg-9 col-md-8 col-sm-12">
-                                    <div class="courses-post">
-                                        <div class="ttr-post-media media-effect">
-                                            <a href="#"><img src="assets/images/blog/default/thum1.jpg" alt=""></a>
-                                        </div>
-                                        <div class="ttr-post-info">
-                                            <div class="ttr-post-title ">
-                                                <h2 class="post-title">Nvidia and UE4 Technologies Practice</h2>
-                                            </div>
-                                            <div class="ttr-post-text">
-                                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="courese-overview" id="overview">
-                                        <h4>Overview</h4>
-                                        <div class="row">
-                                            <div class="col-md-12 col-lg-4">
-                                                <ul class="course-features">
-                                                    <li><i class="ti-book"></i> <span class="label">Lectures</span> <span class="value">8</span></li>
-                                                    <li><i class="ti-help-alt"></i> <span class="label">Quizzes</span> <span class="value">1</span></li>
-                                                    <li><i class="ti-time"></i> <span class="label">Duration</span> <span class="value">60 hours</span></li>
-                                                    <li><i class="ti-stats-up"></i> <span class="label">Skill level</span> <span class="value">Beginner</span></li>
-                                                    <li><i class="ti-smallcap"></i> <span class="label">Language</span> <span class="value">English</span></li>
-                                                    <li><i class="ti-user"></i> <span class="label">Students</span> <span class="value">32</span></li>
-                                                    <li><i class="ti-check-box"></i> <span class="label">Assessments</span> <span class="value">Yes</span></li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-md-12 col-lg-8">
-                                                <h5 class="m-b5">Course Description</h5>
-                                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry?s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
-                                                <h5 class="m-b5">Certification</h5>
-                                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry?s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
-                                                <h5 class="m-b5">Learning Outcomes</h5>
-                                                <ul class="list-checked primary">
-                                                    <li>Over 37 lectures and 55.5 hours of content!</li>
-                                                    <li>LIVE PROJECT End to End Software Testing Training Included.</li>
-                                                    <li>Learn Software Testing and Automation basics from a professional trainer from your own desk.</li>
-                                                    <li>Information packed practical training starting from basics to advanced testing techniques.</li>
-                                                    <li>Best suitable for beginners to advanced level users and who learn faster when demonstrated.</li>
-                                                    <li>Course content designed by considering current software testing technology and the job market.</li>
-                                                    <li>Practical assignments at the end of every session.</li>
-                                                    <li>Practical learning experience with live project work and examples.cv</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="m-b30" id="curriculum">
-                                        <h4>Curriculum</h4>
-                                        <ul class="curriculum-list">
-                                            <li>
-                                                <h5>First Level</h5>
-                                                <ul>
-                                                    <li>
-                                                        <div class="curriculum-list-box">
-                                                            <span>Lesson 1.</span> Introduction to UI Design
-                                                        </div>
-                                                        <span>120 minutes</span>
-                                                    </li>
-                                                    <li>
-                                                        <div class="curriculum-list-box">
-                                                            <span>Lesson 2.</span> User Research and Design
-                                                        </div>
-                                                        <span>60 minutes</span>
-                                                    </li>
-                                                    <li>
-                                                        <div class="curriculum-list-box">
-                                                            <span>Lesson 3.</span> Evaluating User Interfaces Part 1
-                                                        </div>
-                                                        <span>85 minutes</span>
-                                                    </li>
-                                                </ul>
+                                <div class="widget widget_archive">
+                                    <h5 class="widget-title style-1">Subject Category</h5>
+                                    <ul>
+                                        <li class="${requestScope.categoryId == null ? 'active' : ''}">
+                                            <a href="courseslist?search=${requestScope.search}">All Categories</a>
+                                        </li>
+                                        <c:forEach var="cat" items="${sessionScope.courseCategoryList}">
+                                            <li class="${requestScope.categoryId == cat.courseCategory ? 'active' : ''}">
+                                                <a href="courseslist?categoryId=${cat.courseCategory}&search=${requestScope.search}&pageforward=courselist">${cat.courseCategoryName}</a>
                                             </li>
-                                            <li>
-                                                <h5>Second Level</h5>
-                                                <ul>
-                                                    <li>
-                                                        <div class="curriculum-list-box">
-                                                            <span>Lesson 1.</span> Prototyping and Design
-                                                        </div>
-                                                        <span>110 minutes</span>
-                                                    </li>
-                                                    <li>
-                                                        <div class="curriculum-list-box">
-                                                            <span>Lesson 2.</span> UI Design Capstone
-                                                        </div>
-                                                        <span>120 minutes</span>
-                                                    </li>
-                                                    <li>
-                                                        <div class="curriculum-list-box">
-                                                            <span>Lesson 3.</span> Evaluating User Interfaces Part 2
-                                                        </div>
-                                                        <span>120 minutes</span>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <h5>Final</h5>
-                                                <ul>
-                                                    <li>
-                                                        <div class="curriculum-list-box">
-                                                            <span>Part 1.</span> Final Test
-                                                        </div>
-                                                        <span>120 minutes</span>
-                                                    </li>
-                                                    <li>
-                                                        <div class="curriculum-list-box">
-                                                            <span>Part 2.</span> Online Test
-                                                        </div>
-                                                        <span>120 minutes</span>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="" id="instructor">
-                                        <h4>Instructor</h4>
-                                        <div class="instructor-bx">
-                                            <div class="instructor-author">
-                                                <img src="assets/images/testimonials/pic1.jpg" alt="">
-                                            </div>
-                                            <div class="instructor-info">
-                                                <h6>Keny White </h6>
-                                                <span>Professor</span>
-                                                <ul class="list-inline m-tb10">
-                                                    <li><a href="#" class="btn sharp-sm facebook"><i class="fa fa-facebook"></i></a></li>
-                                                    <li><a href="#" class="btn sharp-sm twitter"><i class="fa fa-twitter"></i></a></li>
-                                                    <li><a href="#" class="btn sharp-sm linkedin"><i class="fa fa-linkedin"></i></a></li>
-                                                    <li><a href="#" class="btn sharp-sm google-plus"><i class="fa fa-google-plus"></i></a></li>
-                                                </ul>
-                                                <p class="m-b0">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries</p>
-                                            </div>
-                                        </div>
-                                        <div class="instructor-bx">
-                                            <div class="instructor-author">
-                                                <img src="assets/images/testimonials/pic2.jpg" alt="">
-                                            </div>
-                                            <div class="instructor-info">
-                                                <h6>Keny White </h6>
-                                                <span>Professor</span>
-                                                <ul class="list-inline m-tb10">
-                                                    <li><a href="#" class="btn sharp-sm facebook"><i class="fa fa-facebook"></i></a></li>
-                                                    <li><a href="#" class="btn sharp-sm twitter"><i class="fa fa-twitter"></i></a></li>
-                                                    <li><a href="#" class="btn sharp-sm linkedin"><i class="fa fa-linkedin"></i></a></li>
-                                                    <li><a href="#" class="btn sharp-sm google-plus"><i class="fa fa-google-plus"></i></a></li>
-                                                </ul>
-                                                <p class="m-b0">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="" id="reviews">
-                                        <h4>Reviews</h4>
-
-                                        <div class="review-bx">
-                                            <div class="all-review">
-                                                <h2 class="rating-type">3</h2>
-                                                <ul class="cours-star">
-                                                    <li class="active"><i class="fa fa-star"></i></li>
-                                                    <li class="active"><i class="fa fa-star"></i></li>
-                                                    <li class="active"><i class="fa fa-star"></i></li>
-                                                    <li><i class="fa fa-star"></i></li>
-                                                    <li><i class="fa fa-star"></i></li>
-                                                </ul>
-                                                <span>3 Rating</span>
-                                            </div>
-                                            <div class="review-bar">
-                                                <div class="bar-bx">
-                                                    <div class="side">
-                                                        <div>5 star</div>
-                                                    </div>
-                                                    <div class="middle">
-                                                        <div class="bar-container">
-                                                            <div class="bar-5" style="width:90%;"></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="side right">
-                                                        <div>150</div>
-                                                    </div>
-                                                </div>
-                                                <div class="bar-bx">
-                                                    <div class="side">
-                                                        <div>4 star</div>
-                                                    </div>
-                                                    <div class="middle">
-                                                        <div class="bar-container">
-                                                            <div class="bar-5" style="width:70%;"></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="side right">
-                                                        <div>140</div>
-                                                    </div>
-                                                </div>
-                                                <div class="bar-bx">
-                                                    <div class="side">
-                                                        <div>3 star</div>
-                                                    </div>
-                                                    <div class="middle">
-                                                        <div class="bar-container">
-                                                            <div class="bar-5" style="width:50%;"></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="side right">
-                                                        <div>120</div>
-                                                    </div>
-                                                </div>
-                                                <div class="bar-bx">
-                                                    <div class="side">
-                                                        <div>2 star</div>
-                                                    </div>
-                                                    <div class="middle">
-                                                        <div class="bar-container">
-                                                            <div class="bar-5" style="width:40%;"></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="side right">
-                                                        <div>110</div>
-                                                    </div>
-                                                </div>
-                                                <div class="bar-bx">
-                                                    <div class="side">
-                                                        <div>1 star</div>
-                                                    </div>
-                                                    <div class="middle">
-                                                        <div class="bar-container">
-                                                            <div class="bar-5" style="width:20%;"></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="side right">
-                                                        <div>80</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
+                                        </c:forEach>
+                                    </ul>
                                 </div>
 
+                                <div class="widget recent-posts-entry widget-courses">
+                                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                                        <h5 class="widget-title style-1">Featured Subject</h5>
+                                        <div id="showMoreFeatured" class="widget-title" style="font-size: 18px; background: #fff; cursor: pointer;">▼</div>
+                                    </div>
+                                    <div class="widget-post-bx" id="featuredList">
+                                        <c:forEach var="course" items="${sessionScope.courseListByFeature}" varStatus="status">
+                                            <div class="widget-post clearfix featured-item" ${status.index >= 2 ? 'style="display:none;"' : ''}>
+                                                <div class="ttr-post-media">
+                                                    <img src="${course.thumbnail}" width="200" height="143" alt="${course.courseName}">
+                                                </div>
+                                                <div class="ttr-post-info">
+                                                    <div class="ttr-post-header">
+                                                        <h6 class="post-title"><a href="courseslist?courseId=${course.courseID}&pageforward=coursedetail">${course.courseName}</a></h6>
+                                                    </div>
+                                                    <div class="ttr-post-meta">
+                                                        <ul>
+                                                            <li class="price">
+                                                                <del>$${course.listPrice}</del>
+                                                                <h5>$${course.salePrice}</h5>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </c:forEach>
+                                    </div>
+                                </div>
+
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        var btn = document.getElementById('showMoreFeatured');
+                                        var featuredItems = document.querySelectorAll('.featured-item');
+                                        var expanded = false;
+                                        btn.addEventListener('click', function () {
+                                            expanded = !expanded;
+                                            featuredItems.forEach(function (item, idx) {
+                                                if (expanded) {
+                                                    item.style.display = '';
+                                                } else {
+                                                    if (idx >= 2)
+                                                        item.style.display = 'none';
+                                                }
+                                            });
+                                            btn.innerHTML = expanded ? '▲' : '▼';
+                                        });
+                                    });
+                                </script>
+
+                                <div class="widget static-contact-entry widget-courses">
+                                    <h5 class="widget-title style-1">Static Contact</h5>
+                                    <div><a href="contact-1.jsp"><i class="fa fa-envelope-o"></i> Contact</a></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- contact area END -->
-
             </div>
+
+            <div class="chatbot-icon" id="chatbotIcon">
+                💬
+            </div>
+
+            <div class="chat-container" id="chatContainer">
+                <div class="chat-header" id="chatHeader">
+                    Chatbot Tư Vấn Khóa Học
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot">Chào bạn! Tôi là Chatbot tư vấn khóa học. Bạn muốn tìm hiểu khóa học nào?</div>
+                </div>
+                <div class="resizer bottom-right"></div>
+                <div class="resizer bottom"></div>
+                <div class="resizer right"></div>
+
+                <div class="prompt-suggestions" id="promptSuggestions">
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="userInput" placeholder="Nhập tin nhắn của bạn...">
+                    <button onclick="sendMessage()">Gửi</button>
+                </div>
+            </div>
+
+
             <!-- Content END-->
             <!-- Footer ==== -->
             <footer>
@@ -662,6 +696,216 @@
         <script src="assets/js/functions.js"></script>
         <script src="assets/js/contact.js"></script>
         <script src="assets/vendors/switcher/switcher.js"></script>
+
+        <script>
+                const chatbotIcon = document.getElementById('chatbotIcon');
+                const chatContainer = document.getElementById('chatContainer');
+                const chatMessages = document.getElementById('chatMessages');
+                const userInput = document.getElementById('userInput');
+                const promptSuggestionsContainer = document.getElementById('promptSuggestions');
+                const chatHeader = document.getElementById('chatHeader'); // For dragging
+
+                let isDragging = false;
+                let offsetX, offsetY;
+                let isResizing = false;
+                let resizeDirection = ''; // 'bottom-right', 'bottom', 'right'
+                let startX, startY, startWidth, startHeight;
+
+                // Toggle chatbot visibility
+                chatbotIcon.addEventListener('click', () => {
+                    chatContainer.classList.toggle('open');
+                    if (chatContainer.classList.contains('open')) {
+                        scrollToBottom();
+                        displayPromptSuggestions();
+                    }
+                });
+
+                // Make chatbot draggable
+                chatHeader.addEventListener('mousedown', (e) => {
+                    if (e.target === chatHeader) { // Only drag if clicking on the header itself, not children
+                        isDragging = true;
+                        offsetX = e.clientX - chatContainer.getBoundingClientRect().left;
+                        offsetY = e.clientY - chatContainer.getBoundingClientRect().top;
+                        chatContainer.style.cursor = 'grabbing';
+                        // Prevent selection issues during drag
+                        document.body.style.userSelect = 'none';
+                    }
+                });
+
+                // Add event listeners for resizers
+                document.querySelectorAll('.resizer').forEach(resizer => {
+                    resizer.addEventListener('mousedown', (e) => {
+                        isResizing = true;
+                        resizeDirection = resizer.classList[1]; // e.g., 'bottom-right'
+                        startX = e.clientX;
+                        startY = e.clientY;
+                        startWidth = chatContainer.offsetWidth;
+                        startHeight = chatContainer.offsetHeight;
+                        // Prevent selection issues during resize
+                        document.body.style.userSelect = 'none';
+                        e.preventDefault(); // Prevent default drag behavior
+                    });
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    // Handle dragging
+                    if (isDragging) {
+                        // Calculate new position
+                        let newLeft = e.clientX - offsetX;
+                        let newTop = e.clientY - offsetY;
+
+                        // Ensure it stays within viewport boundaries
+                        const viewportWidth = window.innerWidth;
+                        const viewportHeight = window.innerHeight;
+                        const containerWidth = chatContainer.offsetWidth;
+                        const containerHeight = chatContainer.offsetHeight;
+
+                        if (newLeft < 0)
+                            newLeft = 0;
+                        if (newTop < 0)
+                            newTop = 0;
+                        if (newLeft + containerWidth > viewportWidth)
+                            newLeft = viewportWidth - containerWidth;
+                        if (newTop + containerHeight > viewportHeight)
+                            newTop = viewportHeight - containerHeight;
+
+                        chatContainer.style.left = newLeft + 'px';
+                        chatContainer.style.top = newTop + 'px';
+                        // Reset right/bottom to allow dynamic positioning when dragging
+                        chatContainer.style.right = 'auto';
+                        chatContainer.style.bottom = 'auto';
+                    }
+
+                    // Handle resizing
+                    if (isResizing) {
+                        const dx = e.clientX - startX;
+                        const dy = e.clientY - startY;
+
+                        let newWidth = startWidth;
+                        let newHeight = startHeight;
+
+                        if (resizeDirection.includes('right')) {
+                            newWidth = startWidth + dx;
+                        }
+                        if (resizeDirection.includes('bottom')) {
+                            newHeight = startHeight + dy;
+                        }
+
+                        // Apply min/max constraints
+                        newWidth = Math.max(chatContainer.style.minWidth ? parseFloat(chatContainer.style.minWidth) : 280, newWidth);
+                        newHeight = Math.max(chatContainer.style.minHeight ? parseFloat(chatContainer.style.minHeight) : 350, newHeight);
+
+                        // Ensure it doesn't exceed viewport (max-width/height CSS already helps, but reinforce here)
+                        newWidth = Math.min(window.innerWidth * 0.9, newWidth);
+                        newHeight = Math.min(window.innerHeight * 0.9, newHeight);
+
+
+                        chatContainer.style.width = newWidth + 'px';
+                        chatContainer.style.height = newHeight + 'px';
+
+                        // Recalculate right/bottom from current position to keep it floating at the new size
+                        const currentRect = chatContainer.getBoundingClientRect();
+                        chatContainer.style.right = (window.innerWidth - (currentRect.left + newWidth)) + 'px';
+                        chatContainer.style.bottom = (window.innerHeight - (currentRect.top + newHeight)) + 'px';
+                        chatContainer.style.left = 'auto'; // Reset left/top when resizing with right/bottom anchors
+                        chatContainer.style.top = 'auto';
+
+                        scrollToBottom(); // Scroll to bottom when resizing
+                    }
+                });
+
+                document.addEventListener('mouseup', () => {
+                    isDragging = false;
+                    isResizing = false;
+                    chatContainer.style.cursor = 'grab'; // Reset cursor
+                    document.body.style.userSelect = ''; // Re-enable text selection
+                });
+
+                // Cuộn xuống cuối tin nhắn
+                function scrollToBottom() {
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+
+                // Thêm tin nhắn vào khung chat
+                function addMessage(text, sender) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.classList.add('message', sender);
+                    messageDiv.innerText = text;
+                    chatMessages.appendChild(messageDiv);
+                    scrollToBottom();
+                }
+
+                // Hàm tạo và hiển thị gợi ý prompt
+                function displayPromptSuggestions() {
+                    const suggestions = [
+                        "Thông tin khóa học Full-Stack Web Development",
+                        "Loại của khóa học Game Development with Unity",
+                        "Giá khóa học Mastering Python & Java?",
+                        "Các khóa học có Java",
+                        "Thông tin khóa học Software Architecture with Git"
+                    ];
+
+                    promptSuggestionsContainer.innerHTML = '';
+                    suggestions.forEach(text => {
+                        const button = document.createElement('button');
+                        button.textContent = text;
+                        button.classList.add('prompt-suggestion-button');
+                        button.onclick = function () {
+                            userInput.value = text;
+                            sendMessage();
+                        };
+                        promptSuggestionsContainer.appendChild(button);
+                    });
+                    promptSuggestionsContainer.style.display = 'flex';
+                }
+
+                // Hàm ẩn các gợi ý prompt
+                function hidePromptSuggestions() {
+                    promptSuggestionsContainer.style.display = 'none';
+                }
+
+                async function sendMessage() {
+                    const message = userInput.value.trim();
+                    if (message === '')
+                        return;
+
+                    addMessage(message, 'user');
+                    userInput.value = '';
+                    hidePromptSuggestions();
+
+                    try {
+                        const response = await fetch('<%= request.getContextPath() %>/chat', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({message: message})
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+                        addMessage(data.response, 'bot');
+
+                        displayPromptSuggestions();
+
+                    } catch (error) {
+                        console.error('Error:', error);
+                        addMessage('Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.', 'bot');
+                        displayPromptSuggestions();
+                    }
+                }
+
+                // Cho phép gửi tin nhắn bằng phím Enter
+                userInput.addEventListener('keypress', function (event) {
+                    if (event.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+        </script>
+
     </body>
 
 </html>

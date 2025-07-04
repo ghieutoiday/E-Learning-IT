@@ -476,6 +476,43 @@ public class RegistrationDAO extends DBContext {
         }
         return false;
     }
+    
+    //Lấy đơn đăng kí của user cho 1 course
+    public Registration getRegistrationByUserAndCourse(int userId, int courseId) {
+        String sql = "SELECT * FROM Registration WHERE userID = ? AND courseID = ? AND status != 'Cancelled'";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, courseId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    // Tận dụng lại hàm đã có để không phải viết lại code mapping
+                    return getRegistrationByRegistrationID(rs.getInt("registrationID"));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Lỗi trong getRegistrationByUserAndCourse: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    //Update gói 
+    public boolean updateRegistrationPackage(int registrationId, int newPricePackageId, double newTotalCost) {
+        // Cập nhật gói cước, chi phí, và reset trạng thái về 'Submitted' để chờ xử lý lại.
+        // Cập nhật cả registrationTime để ghi nhận thời điểm thay đổi.
+        String sql = "UPDATE Registration SET pricePackageID = ?, totalCost = ?, status = 'Submitted', registrationTime = GETDATE() WHERE registrationID = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, newPricePackageId);
+            ps.setDouble(2, newTotalCost);
+            ps.setInt(3, registrationId);
+            
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Lỗi trong updateRegistrationPackage: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     public static void main(String[] args) {
         RegistrationDAO d = new RegistrationDAO();

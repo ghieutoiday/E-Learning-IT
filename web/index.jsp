@@ -283,10 +283,15 @@
                                             </div>
                                             <div class="topbar-right">
                                                 <ul>
-
-                                                    <li><a href="login.jsp" style="color:white">Login</a></li>
-                                                    <li><a href="register.jsp" style="color:white">Register</a>
-                                                    </li>
+                                                    <c:if test="${sessionScope.loggedInUser eq null}">
+                                                        <button id="openLoginModal" class="btn btn-primary">Login</button>
+                                                    </c:if>
+                                                    <c:if test="${sessionScope.loggedInUser eq null}">
+                                                        <button id="openSignupModal" class="btn btn-success">Sign Up</button>
+                                                    </c:if>
+                                                    <c:if test="${sessionScope.loggedInUser ne null}">
+                                                        <li><a href="logout" style="color:white">Logout</a></li>
+                                                    </c:if>
                                                 </ul>
                                             </div>
                                         </div>
@@ -391,8 +396,8 @@
                                                 <li class="add-menu-left">
                                                     <h5 class="menu-adv-title">Our Courses</h5>
                                                     <ul>
-                                                        <li><a href="courses.jsp">Courses </a></li>
-                                                        <li><a href="courses-details.jsp">Courses Details</a>
+                                                        <li><a href="courseslist?pageforward=courselist">Courses </a></li>
+                                                        <li><a href="courseslist?pageforward=coursedetail">Courses Details</a>
                                                         </li>
                                                         <li><a href="profile.jsp">Instructor Profile</a></li>
                                                         <li><a href="event.jsp">Upcoming Event</a></li>
@@ -849,6 +854,7 @@
             },
         });
     </script>
+      <%@ include file="login-register-modal.jsp" %>
 </body>
 
 </html>
