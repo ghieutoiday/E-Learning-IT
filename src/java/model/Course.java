@@ -15,7 +15,7 @@ public class Course {
     private int courseID;
     private String courseName;
     private CourseCategory courseCategory;
-    private String thumbnail, description;
+    private String briefInfo, thumbnail, description;
     private User owner;
     private String status;
     private int numberOfLesson;
@@ -74,6 +74,33 @@ public class Course {
         this.feature = feature;
         this.createDate = createDate;
     }
+
+    public Course(int courseID, String courseName, CourseCategory courseCategory, String briefInfo, String thumbnail, String description, User owner, String status, int numberOfLesson, int feature, Date createDate) {
+        this.courseID = courseID;
+        this.courseName = courseName;
+        this.courseCategory = courseCategory;
+        this.briefInfo = briefInfo;
+        this.thumbnail = thumbnail;
+        this.description = description;
+        this.owner = owner;
+        this.status = status;
+        this.numberOfLesson = numberOfLesson;
+        this.feature = feature;
+        this.createDate = createDate;
+    }
+
+    
+
+    
+
+    public String getBriefInfo() {
+        return briefInfo;
+    }
+
+    public void setBriefInfo(String briefInfo) {
+        this.briefInfo = briefInfo;
+    }
+    
 
     public int getFeature() {
         return feature;

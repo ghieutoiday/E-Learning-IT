@@ -70,6 +70,63 @@ public class CourseDAO extends DBContext {
         return course;
     }
 
+    // Hàm get course theo getCoureByCourseIDAndPrice
+    public Course getCoureByCourseIDAndPrice(int courseID) {
+        Course course = null;
+        String sql = "SELECT c.courseID, "
+                + "       c.courseName, "
+                + "       c.courseCategoryID, "
+                + "       c.description, "
+                + "       c.briefInfo, "
+                + "       c.ownerID, "
+                + "       c.status, "
+                + "       c.numberOfLesson, "
+                + "       c.feature, "
+                + "       c.createDate, "
+                + "       i.thumbnail, "
+                + "       pp.[listPrice], "
+                + "       pp.[salePrice] "
+                + "FROM Course c "
+                + "LEFT JOIN Image i ON c.courseID = i.courseID "
+                + "OUTER APPLY ( "
+                + "    SELECT TOP 1 listPrice, salePrice FROM [dbo].[PricePackage] pp "
+                + "    WHERE pp.courseID = c.courseID "
+                + "    ORDER BY pp.salePrice ASC "
+                + ") pp "
+                + "WHERE c.courseID = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, courseID);
+            ResultSet rs = ps.executeQuery();
+            CourseCategoryDAO courseCategoryDAO = new CourseCategoryDAO();
+            UserDAO userDao = new UserDAO();
+            while (rs.next()) {
+                CourseCategory courseCategory = courseCategoryDAO.getCategoryById(rs.getInt("courseCategoryID"));
+                User user = userDao.getUserByID(rs.getInt("ownerID"));
+                String courseThumbnailLink = rs.getString("thumbnail");
+                Double listPrice = rs.getDouble("listPrice");
+                Double salePrice = rs.getDouble("salePrice");
+                course = new Course(rs.getInt("courseID"),
+                        rs.getString("courseName"),
+                        courseCategory,
+                        rs.getString("briefInfo"),
+                        courseThumbnailLink, //Truyền link ảnh vào đây
+                        rs.getString("description"),
+                        user,
+                        rs.getString("status"),
+                        rs.getInt("numberOfLesson"),
+                        rs.getInt("feature"),
+                        rs.getDate("createDate"));
+                course.setListPrice(listPrice);
+                course.setSalePrice(salePrice);
+
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return course;
+    }
+
 //    public List<Course> getAllCourse() {
 //        List<Course> list = new ArrayList<>();
 //        String sql = "SELECT [courseID]\n"
@@ -575,26 +632,31 @@ public class CourseDAO extends DBContext {
         String sql = "UPDATE [dbo].[Course] SET "
                 + "[courseName] = ?, "
                 + "[courseCategoryID] = ?, "
-                + "[thumbnail] = ?, "
                 + "[description] = ?, "
                 + "[status] = ?, "
                 + "[numberOfLesson] = ?, "
                 + "[feature] = ? "
                 + "WHERE [courseID] = ?";
 
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, course.getCourseName());
-            //CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
-            ps.setInt(2, course.getCourseCategory().getCourseCategory());
-            ps.setString(3, course.getThumbnail());
-            ps.setString(4, course.getDescription());
-            ps.setString(5, course.getStatus());
-            ps.setInt(6, course.getNumberOfLesson());
-            ps.setInt(7, course.getFeature());
-            ps.setInt(8, course.getCourseID());
+        String sql2 = "UPDATE [dbo].[Image] SET [thumbnail] = ? WHERE [courseID] = ?";
 
-            rowsAffected = ps.executeUpdate();
+        try {
+
+            PreparedStatement ps1 = connection.prepareStatement(sql);
+            ps1.setString(1, course.getCourseName());
+            ps1.setInt(2, course.getCourseCategory().getCourseCategory());
+            ps1.setString(3, course.getDescription());
+            ps1.setString(4, course.getStatus());
+            ps1.setInt(5, course.getNumberOfLesson());
+            ps1.setInt(6, course.getFeature());
+            ps1.setInt(7, course.getCourseID());
+            rowsAffected += ps1.executeUpdate();
+
+            PreparedStatement ps2 = connection.prepareStatement(sql2);
+            ps2.setString(1, course.getThumbnail());
+            ps2.setInt(2, course.getCourseID());
+            rowsAffected += ps2.executeUpdate();
+
 
         } catch (SQLException ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -677,7 +739,7 @@ public class CourseDAO extends DBContext {
             sql += " AND c.courseCategoryID = ? ";
         }
 
-        sql += " ORDER BY c.[createDate] DESC "
+        sql += " ORDER BY c.[updateDate] DESC "
                 + " OFFSET " + ((index - 1) * 9) + " ROWS FETCH NEXT 9 ROWS ONLY;";
 
         try {
@@ -741,7 +803,7 @@ public class CourseDAO extends DBContext {
                 + "  LEFT JOIN [dbo].[Image] i ON c.courseID = i.courseID\n"
                 + "  OUTER APPLY (\n"
                 + "      SELECT TOP 1 listPrice, salePrice FROM [dbo].[PricePackage] pp\n"
-                + "      WHERE pp.courseID = c.courseID and pp.name = 'Basic' \n"
+                + "      WHERE pp.courseID = c.courseID \n"
                 + "      ORDER BY pp.salePrice ASC\n"
                 + "  ) pp\n"
                 + "   WHERE c.[status] = 'Active' AND c.[feature] = 1\n "
@@ -880,10 +942,31 @@ public class CourseDAO extends DBContext {
     }
 
     public static void main(String[] args) {
-        CourseDAO courseDao = new CourseDAO();
-        Course course = courseDao.getCoureByCourseID(8);
-        System.out.println(course.getThumbnail());
+        CourseDAO dao = new CourseDAO();
 
+        // Thay bằng courseID có thật trong DB
+        int testCourseId = 8;
+
+        Course course = dao.getCoureByCourseIDAndPrice(testCourseId);
+
+        if (course != null) {
+            System.out.println("===== Course Detail =====");
+            System.out.println("ID: " + course.getCourseID());
+            System.out.println("Name: " + course.getCourseName());
+            System.out.println("Category: " + course.getCourseCategory().getCourseCategoryName());
+            System.out.println("Brief Info: " + course.getBriefInfo());
+            System.out.println("Description: " + course.getDescription());
+            System.out.println("Owner: " + course.getOwner().getFullName());
+            System.out.println("Status: " + course.getStatus());
+            System.out.println("Number of Lessons: " + course.getNumberOfLesson());
+            System.out.println("Feature: " + course.getFeature());
+            System.out.println("Create Date: " + course.getCreateDate());
+            System.out.println("Thumbnail: " + course.getThumbnail());
+            System.out.println("List Price: " + course.getListPrice());
+            System.out.println("Sale Price: " + course.getSalePrice());
+        } else {
+            System.out.println("❌ No course found with ID: " + testCourseId);
+        }
     }
 
 }
