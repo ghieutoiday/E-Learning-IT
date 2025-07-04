@@ -15,6 +15,14 @@
                     </div>
                 </c:if>
 
+                <%-- M?I: HI?N TH? THÔNG BÁO ??NG KÝ THÀNH CÔNG --%>
+                <c:if test="${not empty requestScope.signupSuccessMessage}">
+                    <div id="signupSuccessMessageDiv" style="color: graytext; margin-bottom: 15px; text-align: center;">
+                        ${requestScope.signupSuccessMessage}
+                    </div>
+                </c:if>
+
+
                 <div class="form-group">
                     <label>Full Name</label>
                     <input name="fullName" type="text" required class="form-control" 
@@ -69,6 +77,8 @@
                 <h2 class="title-head">Login to your <span>Account</span></h2>
                 <p>Don't have an account? <a href="#" onclick="event.preventDefault(); switchToSignup();">Create one here</a></p>
             </div>
+            
+            
 
             <form class="contact-bx" action="loginregistercontroller?action=login" method="post">
                 <div id="loginErrorMessageDiv" style="color: red; margin-bottom: 15px; text-align: center;"></div>

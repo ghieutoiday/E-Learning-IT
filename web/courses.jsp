@@ -292,8 +292,11 @@
 
                                             <div class="input-group">
                                                 <label>Search Courses</label>
-                                                <form method="get" action="courseslist" >
-                                                    <input  style="width: 100%; height: 40px; " name="search" type="text" value="${requestScope.search}" class="form-control">
+                                                <form role="search" method="get" action="courseslist" >
+                                                    <input type="hidden" name="pageforward" value="courselist" />
+                                                    <div class="input-group">
+                                                        <input  style="width: 100%; height: 40px; " name="search" type="text" value="${requestScope.search}" class="form-control">
+                                                    </div>
                                                 </form>
                                             </div>
                                         </div>
@@ -301,9 +304,9 @@
                                     <div class="widget widget_archive">
                                         <h5 class="widget-title style-1">Subject Category</h5>
                                         <ul>
-                                            <li class="${requestScope.categoryId == null ? 'active' : ''}"><a href="courseslist?search=${requestScope.search}">All Categories</a></li>
+                                            <li class="${requestScope.categoryId == null ? 'active' : ''}"><a href="courseslist?search=${requestScope.search}&pageforward=courselist">All Categories</a></li>
                                                 <c:forEach var="cat" items="${sessionScope.courseCategoryList}">
-                                                <li class="${requestScope.categoryId == cat.courseCategory ? 'active' : ''}"><a href="courseslist?categoryId=${cat.courseCategory}&search=${requestScope.search}">${cat.courseCategoryName}</a></li>
+                                                <li class="${requestScope.categoryId == cat.courseCategory ? 'active' : ''}"><a href="courseslist?categoryId=${cat.courseCategory}&search=${requestScope.search}&pageforward=courselist">${cat.courseCategoryName}</a></li>
                                                 </c:forEach>
 
                                         </ul>
@@ -324,13 +327,20 @@
                                                     </div>
                                                     <div class="ttr-post-info">
                                                         <div class="ttr-post-header">
-                                                            <h6 class="post-title"><a href="coursecontroller?action=detail&service=overview&id=${course.courseID}">${course.courseName}</a></h6>
+                                                            <h6 class="post-title"><a href="courseslist?courseId=${course.courseID}&pageforward=coursedetail">${course.courseName}</a></h6>
                                                         </div>
                                                         <div class="ttr-post-meta">
                                                             <ul>
                                                                 <li class="price">
-                                                                    <del>$${course.listPrice}</del>
-                                                                    <h5>$${course.salePrice}</h5>
+                                                                    <c:choose>
+                                                                        <c:when test="${course.salePrice == 0}">
+                                                                            <h5 style="color: green;">Free</h5>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <del>List Price: $${course.listPrice}</del>
+                                                                            <h5>Sale Price: $${course.salePrice}</h5>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
                                                                 </li>
                                                             </ul>
                                                         </div>
@@ -381,7 +391,7 @@
                                                            class="btn">Registration</a>
                                                     </div>
                                                     <div class="info-bx text-center">
-                                                        <h5><a  class="category-ellipsis-1lines" href="coursecontroller?action=detail&service=overview&id=${course.courseID}"
+                                                        <h5><a  class="category-ellipsis-1lines" href="courseslist?courseId=${course.courseID}&pageforward=coursedetail"
                                                                 style="color: black">${course.courseName}</a>
                                                         </h5>
                                                         <span class="category-ellipsis-1lines">${course.courseCategory}</span>
@@ -398,7 +408,7 @@
                                                                     <h6>Sale Price: $${course.salePrice}</h6>
                                                                 </c:otherwise>
                                                             </c:choose>
-                                                        </div>
+                                                        fhhf</div>
                                                     </div>
                                                 </div>
                                             </div>
