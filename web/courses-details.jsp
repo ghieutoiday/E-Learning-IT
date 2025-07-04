@@ -51,6 +51,204 @@
         <link rel="stylesheet" type="text/css" href="assets/css/style.css">
         <link class="skin" rel="stylesheet" type="text/css" href="assets/css/color/color-1.css">
 
+        <title>Course Details - ${courseDetail.courseName}</title>
+        <style>
+        /* Base styles for the entire page (if not already defined by your template) */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+        }
+
+        /* Styles for the chatbot icon */
+        .chatbot-icon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+
+        .chatbot-icon:hover {
+            background-color: #45a049;
+        }
+
+        /* Styles for the chat container */
+        .chat-container {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px; /* Kích thước mặc định */
+            height: 450px; /* Kích thước mặc định */
+            min-width: 280px; /* Kích thước tối thiểu */
+            min-height: 350px; /* Kích thước tối thiểu */
+            max-width: 90vw; /* Giới hạn kích thước tối đa theo viewport */
+            max-height: 90vh; /* Giới hạn kích thước tối đa theo viewport */
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            z-index: 999;
+            transition: all 0.3s ease-in-out;
+            transform-origin: bottom right;
+            transform: scale(0);
+            resize: none; /* Tắt resize mặc định của trình duyệt */
+            /* Thêm relative để các grips định vị theo nó */
+            position: fixed; /* Quan trọng để nó nổi */
+        }
+
+        .chat-container.open {
+            display: flex;
+            transform: scale(1);
+        }
+
+        /* Resizable Grips */
+        .resizer {
+            position: absolute;
+            background: transparent; /* Hoặc một màu nhỏ để dễ debug, sau đó làm transparent */
+            z-index: 1001; /* Đảm bảo grips nằm trên cùng */
+        }
+
+        .resizer.bottom-right {
+            width: 15px;
+            height: 15px;
+            bottom: 0;
+            right: 0;
+            cursor: nwse-resize;
+        }
+
+        .resizer.bottom {
+            width: 100%;
+            height: 8px;
+            bottom: 0;
+            left: 0;
+            cursor: ns-resize;
+        }
+
+        .resizer.right {
+            width: 8px;
+            height: 100%;
+            top: 0;
+            right: 0;
+            cursor: ew-resize;
+        }
+
+        /* Existing Chatbot CSS (modified for floating behavior) */
+        .chat-header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            font-size: 1.1em;
+            text-align: center;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            cursor: grab; /* Chỉ ra nó có thể được kéo */
+            flex-shrink: 0; /* Đảm bảo header không bị co lại */
+        }
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            border-bottom: 1px solid #eee;
+            background-color: #e5ddd5;
+            /* Thay flex-basis: 0; bằng min-height: 0; để không bị lỗi trên một số trình duyệt */
+            min-height: 0; /* Cho phép nó co lại khi container thay đổi kích thước */
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .message.user {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+            margin-left: auto;
+            text-align: right;
+        }
+        .message.bot {
+            background-color: #fff;
+            align-self: flex-start;
+            margin-right: auto;
+            border: 1px solid #ddd;
+        }
+        /* CSS cho các gợi ý prompt */
+        .prompt-suggestions {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 10px 15px;
+            gap: 10px;
+            border-top: 1px solid #eee;
+            background-color: #f8f8f8;
+            -webkit-overflow-scrolling: touch;
+            flex-shrink: 0;
+        }
+
+        .prompt-suggestion-button {
+            flex-shrink: 0;
+            padding: 8px 12px;
+            border: 1px solid #007bff;
+            border-radius: 20px;
+            background-color: #eaf5ff;
+            color: #007bff;
+            cursor: pointer;
+            font-size: 13px;
+            white-space: nowrap;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .prompt-suggestion-button:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        /* Kết thúc CSS cho gợi ý prompt */
+
+        .chat-input {
+            display: flex;
+            padding: 10px 15px;
+            border-top: 1px solid #eee;
+            flex-shrink: 0;
+        }
+        .chat-input input[type="text"] {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 10px;
+            outline: none;
+            font-size: 0.95em;
+        }
+        .chat-input button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background-color 0.3s ease;
+        }
+        .chat-input button:hover {
+            background-color: #45a049;
+        }
+    </style>
+
     </head>
     <body id="bg">
         <div class="page-wraper">
@@ -225,11 +423,9 @@
             <!-- header END ==== -->
             <!-- Content -->
             <div class="content-block">
-                <!-- Subject Details Page -->
                 <div class="section-area section-sp1">
                     <div class="container">
                         <div class="row">
-                            <!-- Main Content Left -->
                             <div class="col-lg-9 col-md-8 col-sm-12">
                                 <div class="courses-post">
                                     <div class="ttr-post-media media-effect">
@@ -264,9 +460,7 @@
                                 </div>
                             </div>
 
-                            <!-- Sidebar Right -->
                             <div class="col-lg-3 col-md-4 col-sm-12 m-b30">
-                                <!-- Search -->
                                 <div class="widget courses-search-bx placeani">
                                     <div class="form-group ${requestScope.search != null ? 'focused' : ''}">
                                         <label>Search Courses</label>
@@ -279,7 +473,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Categories -->
                                 <div class="widget widget_archive">
                                     <h5 class="widget-title style-1">Subject Category</h5>
                                     <ul>
@@ -294,7 +487,6 @@
                                     </ul>
                                 </div>
 
-                                <!-- Featured Courses -->
                                 <div class="widget recent-posts-entry widget-courses">
                                     <div style="display: flex; align-items: center; justify-content: space-between;">
                                         <h5 class="widget-title style-1">Featured Subject</h5>
@@ -324,7 +516,6 @@
                                     </div>
                                 </div>
 
-                                <!-- JS Toggle Show More -->
                                 <script>
                                     document.addEventListener('DOMContentLoaded', function () {
                                         var btn = document.getElementById('showMoreFeatured');
@@ -345,15 +536,36 @@
                                     });
                                 </script>
 
-                                <!-- Static Contact -->
                                 <div class="widget static-contact-entry widget-courses">
                                     <h5 class="widget-title style-1">Static Contact</h5>
                                     <div><a href="contact-1.jsp"><i class="fa fa-envelope-o"></i> Contact</a></div>
                                 </div>
                             </div>
-                            <!-- Sidebar END -->
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="chatbot-icon" id="chatbotIcon">
+                💬
+            </div>
+
+            <div class="chat-container" id="chatContainer">
+                <div class="chat-header" id="chatHeader">
+                    Chatbot Tư Vấn Khóa Học
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot">Chào bạn! Tôi là Chatbot tư vấn khóa học. Bạn muốn tìm hiểu khóa học nào?</div>
+                </div>
+                <div class="resizer bottom-right"></div>
+                <div class="resizer bottom"></div>
+                <div class="resizer right"></div>
+
+                <div class="prompt-suggestions" id="promptSuggestions">
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="userInput" placeholder="Nhập tin nhắn của bạn...">
+                    <button onclick="sendMessage()">Gửi</button>
                 </div>
             </div>
 
@@ -484,6 +696,216 @@
         <script src="assets/js/functions.js"></script>
         <script src="assets/js/contact.js"></script>
         <script src="assets/vendors/switcher/switcher.js"></script>
+
+        <script>
+                const chatbotIcon = document.getElementById('chatbotIcon');
+                const chatContainer = document.getElementById('chatContainer');
+                const chatMessages = document.getElementById('chatMessages');
+                const userInput = document.getElementById('userInput');
+                const promptSuggestionsContainer = document.getElementById('promptSuggestions');
+                const chatHeader = document.getElementById('chatHeader'); // For dragging
+
+                let isDragging = false;
+                let offsetX, offsetY;
+                let isResizing = false;
+                let resizeDirection = ''; // 'bottom-right', 'bottom', 'right'
+                let startX, startY, startWidth, startHeight;
+
+                // Toggle chatbot visibility
+                chatbotIcon.addEventListener('click', () => {
+                    chatContainer.classList.toggle('open');
+                    if (chatContainer.classList.contains('open')) {
+                        scrollToBottom();
+                        displayPromptSuggestions();
+                    }
+                });
+
+                // Make chatbot draggable
+                chatHeader.addEventListener('mousedown', (e) => {
+                    if (e.target === chatHeader) { // Only drag if clicking on the header itself, not children
+                        isDragging = true;
+                        offsetX = e.clientX - chatContainer.getBoundingClientRect().left;
+                        offsetY = e.clientY - chatContainer.getBoundingClientRect().top;
+                        chatContainer.style.cursor = 'grabbing';
+                        // Prevent selection issues during drag
+                        document.body.style.userSelect = 'none';
+                    }
+                });
+
+                // Add event listeners for resizers
+                document.querySelectorAll('.resizer').forEach(resizer => {
+                    resizer.addEventListener('mousedown', (e) => {
+                        isResizing = true;
+                        resizeDirection = resizer.classList[1]; // e.g., 'bottom-right'
+                        startX = e.clientX;
+                        startY = e.clientY;
+                        startWidth = chatContainer.offsetWidth;
+                        startHeight = chatContainer.offsetHeight;
+                        // Prevent selection issues during resize
+                        document.body.style.userSelect = 'none';
+                        e.preventDefault(); // Prevent default drag behavior
+                    });
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    // Handle dragging
+                    if (isDragging) {
+                        // Calculate new position
+                        let newLeft = e.clientX - offsetX;
+                        let newTop = e.clientY - offsetY;
+
+                        // Ensure it stays within viewport boundaries
+                        const viewportWidth = window.innerWidth;
+                        const viewportHeight = window.innerHeight;
+                        const containerWidth = chatContainer.offsetWidth;
+                        const containerHeight = chatContainer.offsetHeight;
+
+                        if (newLeft < 0)
+                            newLeft = 0;
+                        if (newTop < 0)
+                            newTop = 0;
+                        if (newLeft + containerWidth > viewportWidth)
+                            newLeft = viewportWidth - containerWidth;
+                        if (newTop + containerHeight > viewportHeight)
+                            newTop = viewportHeight - containerHeight;
+
+                        chatContainer.style.left = newLeft + 'px';
+                        chatContainer.style.top = newTop + 'px';
+                        // Reset right/bottom to allow dynamic positioning when dragging
+                        chatContainer.style.right = 'auto';
+                        chatContainer.style.bottom = 'auto';
+                    }
+
+                    // Handle resizing
+                    if (isResizing) {
+                        const dx = e.clientX - startX;
+                        const dy = e.clientY - startY;
+
+                        let newWidth = startWidth;
+                        let newHeight = startHeight;
+
+                        if (resizeDirection.includes('right')) {
+                            newWidth = startWidth + dx;
+                        }
+                        if (resizeDirection.includes('bottom')) {
+                            newHeight = startHeight + dy;
+                        }
+
+                        // Apply min/max constraints
+                        newWidth = Math.max(chatContainer.style.minWidth ? parseFloat(chatContainer.style.minWidth) : 280, newWidth);
+                        newHeight = Math.max(chatContainer.style.minHeight ? parseFloat(chatContainer.style.minHeight) : 350, newHeight);
+
+                        // Ensure it doesn't exceed viewport (max-width/height CSS already helps, but reinforce here)
+                        newWidth = Math.min(window.innerWidth * 0.9, newWidth);
+                        newHeight = Math.min(window.innerHeight * 0.9, newHeight);
+
+
+                        chatContainer.style.width = newWidth + 'px';
+                        chatContainer.style.height = newHeight + 'px';
+
+                        // Recalculate right/bottom from current position to keep it floating at the new size
+                        const currentRect = chatContainer.getBoundingClientRect();
+                        chatContainer.style.right = (window.innerWidth - (currentRect.left + newWidth)) + 'px';
+                        chatContainer.style.bottom = (window.innerHeight - (currentRect.top + newHeight)) + 'px';
+                        chatContainer.style.left = 'auto'; // Reset left/top when resizing with right/bottom anchors
+                        chatContainer.style.top = 'auto';
+
+                        scrollToBottom(); // Scroll to bottom when resizing
+                    }
+                });
+
+                document.addEventListener('mouseup', () => {
+                    isDragging = false;
+                    isResizing = false;
+                    chatContainer.style.cursor = 'grab'; // Reset cursor
+                    document.body.style.userSelect = ''; // Re-enable text selection
+                });
+
+                // Cuộn xuống cuối tin nhắn
+                function scrollToBottom() {
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+
+                // Thêm tin nhắn vào khung chat
+                function addMessage(text, sender) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.classList.add('message', sender);
+                    messageDiv.innerText = text;
+                    chatMessages.appendChild(messageDiv);
+                    scrollToBottom();
+                }
+
+                // Hàm tạo và hiển thị gợi ý prompt
+                function displayPromptSuggestions() {
+                    const suggestions = [
+                        "Thông tin khóa học Full-Stack Web Development",
+                        "Loại của khóa học Game Development with Unity",
+                        "Giá khóa học Mastering Python & Java?",
+                        "Các khóa học có Java",
+                        "Thông tin khóa học Software Architecture with Git"
+                    ];
+
+                    promptSuggestionsContainer.innerHTML = '';
+                    suggestions.forEach(text => {
+                        const button = document.createElement('button');
+                        button.textContent = text;
+                        button.classList.add('prompt-suggestion-button');
+                        button.onclick = function () {
+                            userInput.value = text;
+                            sendMessage();
+                        };
+                        promptSuggestionsContainer.appendChild(button);
+                    });
+                    promptSuggestionsContainer.style.display = 'flex';
+                }
+
+                // Hàm ẩn các gợi ý prompt
+                function hidePromptSuggestions() {
+                    promptSuggestionsContainer.style.display = 'none';
+                }
+
+                async function sendMessage() {
+                    const message = userInput.value.trim();
+                    if (message === '')
+                        return;
+
+                    addMessage(message, 'user');
+                    userInput.value = '';
+                    hidePromptSuggestions();
+
+                    try {
+                        const response = await fetch('<%= request.getContextPath() %>/chat', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({message: message})
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+                        addMessage(data.response, 'bot');
+
+                        displayPromptSuggestions();
+
+                    } catch (error) {
+                        console.error('Error:', error);
+                        addMessage('Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.', 'bot');
+                        displayPromptSuggestions();
+                    }
+                }
+
+                // Cho phép gửi tin nhắn bằng phím Enter
+                userInput.addEventListener('keypress', function (event) {
+                    if (event.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+        </script>
+
     </body>
 
 </html>
