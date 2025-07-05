@@ -484,26 +484,39 @@
                                     <p>Please select a lesson from the sidebar.</p>
                                 </c:when>
                                 <c:otherwise>
-                                    <c:if test="${not empty b.contentVideo}">
-                                        <div class="video-container">
-                                            <div id="player"></div>
-                                            <iframe class="fallback-iframe" src="${b.contentVideo}" frameborder="0" allowfullscreen></iframe>
-                                            <div id="video-error" class="error-message"></div>
-                                            <c:if test="${prevLessonID > 0}">
-                                                <a href="lessonviewcontroller?lessonID=${prevLessonID}" class="nav-button prev-button"><i class="fas fa-chevron-left"></i></a>
-                                            </c:if>
-                                            <c:if test="${prevLessonID <= 0}">
-                                                <span class="nav-button prev-button disabled"><i class="fas fa-chevron-left"></i></span>
-                                            </c:if>
-                                            <c:if test="${nextLessonID > 0 && isLessonCompleted}">
-                                                <a href="lessonviewcontroller?lessonID=${nextLessonID}" class="nav-button next-button"><i class="fas fa-chevron-right"></i></a>
-                                            </c:if>
-                                            <c:if test="${nextLessonID <= 0 || !isLessonCompleted}">
-                                                <span class="nav-button next-button disabled"><i class="fas fa-chevron-right"></i></span>
-                                            </c:if>
-                                        </div>
+                                    
+                                    <!--Test xem nếu Lesson type = lesson thì hiển thị video hoặc HTML-->
+                                    <c:if test="${b.type eq 'Lesson'}">
+                                        
+                                        <!--Nếu có link video thì hiển thị-->
+                                        <c:if test="${not empty b.contentVideo}">
+                                            <div class="video-container">
+                                                <div id="player"></div>
+                                                <iframe class="fallback-iframe" src="${b.contentVideo}" frameborder="0" allowfullscreen></iframe>
+                                                <div id="video-error" class="error-message"></div>
+                                                <c:if test="${prevLessonID > 0}">
+                                                    <a href="lessonviewcontroller?lessonID=${prevLessonID}" class="nav-button prev-button"><i class="fas fa-chevron-left"></i></a>
+                                                </c:if>
+                                                <c:if test="${prevLessonID <= 0}">
+                                                    <span class="nav-button prev-button disabled"><i class="fas fa-chevron-left"></i></span>
+                                                </c:if>
+                                                <c:if test="${nextLessonID > 0 && isLessonCompleted}">
+                                                    <a href="lessonviewcontroller?lessonID=${nextLessonID}" class="nav-button next-button"><i class="fas fa-chevron-right"></i></a>
+                                                </c:if>
+                                                <c:if test="${nextLessonID <= 0 || !isLessonCompleted}">
+                                                    <span class="nav-button next-button disabled"><i class="fas fa-chevron-right"></i></span>
+                                                </c:if>
+                                            </div>
+                                        </c:if>
+                                        
+                                        <!--Nếu có HTML thì hiển thị-->
+                                        <c:if test="${not empty b.contentHtml}">
+                                            <div class="content-html">${b.contentHtml}</div>
+                                        </c:if>
                                     </c:if>
-                                    <c:if test="${empty b.contentVideo}">
+                                    
+                                    <!--Nếu type = Quiz thì hiển thị bài Quiz Lesson-->
+                                    <c:if test="${b.type eq 'Quiz'}">
                                         <div class="nav-buttons-container">
                                             <c:if test="${prevLessonID > 0}">
                                                 <a href="lessonviewcontroller?lessonID=${prevLessonID}" class="nav-button"><i class="fas fa-chevron-left"></i></a>
@@ -519,9 +532,7 @@
                                             </c:if>
                                         </div>
                                     </c:if>
-                                    <c:if test="${not empty b.contentHtml}">
-                                        <div class="content-html">${b.contentHtml}</div>
-                                    </c:if>
+                                    
                                     <!--Phần ghi chú-->
                                     <div class="section-area section-sp1">
                                         <div class="container">
