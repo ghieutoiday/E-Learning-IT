@@ -126,6 +126,7 @@ public class LoginRegisterController extends HttpServlet {
             } else if (userDAO.getUserByEmail(email) != null) {
                 signupErrorMessage = "Email này đã được đăng ký. Vui lòng sử dụng email khác.";
             } else {
+                //Mã hóa mật khẩu bằng BCrypt 
                 String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
                 User newUser = new User();

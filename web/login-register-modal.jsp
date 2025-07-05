@@ -106,7 +106,6 @@
 </div>
 
 <style>
-    /* ??m b?o các ki?u CSS này n?m trong th? <style> c?a b?n */
     .modal-overlay {
         position: fixed;
         top: 0;
@@ -119,14 +118,19 @@
         align-items: center;
         z-index: 9999;
     }
+
     .modal-content {
         background: white;
-        padding: 30px;
+        padding: 16px;
         border-radius: 10px;
         width: 100%;
-        max-width: 500px;
+        max-width: 400px;      /* Thu nh? chi?u ngang modal */
+        max-height: 90vh;      /* Gi?i h?n chi?u cao */
+        overflow-y: auto;      /* Cho phép cu?n n?u v??t quá chi?u cao */
         position: relative;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     }
+
     .close-btn {
         position: absolute;
         top: 10px;
@@ -136,72 +140,112 @@
         color: #999;
         cursor: pointer;
     }
+
     .close-btn:hover {
         color: #000;
     }
 
     .account-container {
         background: #ffffff;
-        border-radius: 15px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        padding: 30px;
-        max-width: 500px;
-        width: 100%;
+        border-radius: 10px;
+        padding: 16px;
+        max-width: 100%;
+        box-shadow: none;
     }
+
     .heading-bx h2 {
-        font-size: 30px;
+        font-size: 22px;
         font-weight: bold;
-        margin-bottom: 10px;
+        margin-bottom: 6px;
     }
+
     .heading-bx p {
-        margin-bottom: 20px;
-        font-size: 14px;
+        margin-bottom: 12px;
+        font-size: 12px;
     }
+
     .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 12px;
     }
+
     label {
         font-weight: 600;
         color: #333;
+        font-size: 13px;
     }
+
     .form-control {
         width: 100%;
-        padding: 10px 15px;
+        padding: 8px 10px;
         border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 15px;
+        border-radius: 6px;
+        font-size: 14px;
     }
+
     .form-control:focus {
         border-color: #0d6efd;
         outline: none;
     }
+
     .btn.button-md {
         background-color: #0d6efd;
         color: white;
         border: none;
-        padding: 12px;
-        border-radius: 8px;
-        font-size: 16px;
+        padding: 10px;
+        border-radius: 6px;
+        font-size: 14px;
         font-weight: 600;
         width: 100%;
         transition: background-color 0.3s ease;
     }
+
     .btn.button-md:hover {
         background-color: #0b5ed7;
     }
+
+    .social-login {
+        text-align: center;
+        margin-top: 16px;
+    }
+
+    .social-login h6 {
+        font-size: 13px;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+
     .google-plus {
         display: inline-block;
-        margin-top: 10px;
         background-color: #db4437;
         color: white;
-        padding: 10px 20px;
+        padding: 8px 16px;
         border-radius: 6px;
         text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
     }
+
     .google-plus:hover {
         background-color: #c23321;
     }
+
+    /* Responsive for small screens */
+    @media (max-width: 480px) {
+        .modal-content {
+            max-width: 90%;
+            padding: 12px;
+        }
+
+        .form-control {
+            font-size: 13px;
+        }
+
+        .btn.button-md {
+            font-size: 13px;
+        }
+    }
 </style>
+
 
 <script>
     window.onload = function () {
