@@ -291,7 +291,7 @@
                                                     </c:if>
                                                     <c:if test="${sessionScope.loggedInUser ne null}">
                                                         <li><a href="logout" style="color:white">Logout</a></li>
-                                                    </c:if>
+                                                        </c:if>
                                                 </ul>
                                             </div>
                                         </div>
@@ -566,8 +566,7 @@
                                                         <img src="${i.thumbnail}" alt="" style="width: 100%;
                                                              height: 200px;
                                                              object-fit: cover;">
-
-                                                        <a href="course/${i.courseID}" class="btn">Read More</a>
+                                                        <a href="courseslist?courseId=${i.courseID}&pageforward=coursedetail" class="btn">Read More</a>
                                                     </div>
                                                     <div class="info-bx text-center">
                                                         <h5><a href="course/${i.courseID}">${i.courseName}</a>
@@ -854,7 +853,7 @@
             },
         });
     </script>
-      <%@ include file="login-register-modal.jsp" %>
+    <%@ include file="login-register-modal.jsp" %>
 </body>
 
 </html>
