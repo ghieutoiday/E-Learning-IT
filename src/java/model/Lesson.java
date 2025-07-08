@@ -20,6 +20,10 @@ public class Lesson {
 
     public Lesson() {
     }
+    
+    public Lesson(int lessonID) {
+    this.lessonID = lessonID;
+}
 
     public Lesson(int lessonID, Course course, Lesson topic, String name, String type, int orderNum, String status, String contentVideo, String contentHtml, int duration) {
         this.lessonID = lessonID;

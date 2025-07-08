@@ -1,30 +1,27 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-/**
- *
- * @author ASUS
- */
 public class Question {
+
     private int questionID;
-    private Course course;
-    private Lesson lesson;
-    private int demension;
-    private String content, media, explanation;
+    private int courseID;
+    private int lessonID;
+    private int dimensionID;
+    private int typeQuestionID;
+    private String content;
+    private String media;
+    private String explanation;
     private int level;
     private String status;
 
     public Question() {
     }
 
-    public Question(int questionID, Course course, Lesson lesson, int demension, String content, String media, String explanation, int level, String status) {
-        this.questionID = questionID;
-        this.course = course;
-        this.lesson = lesson;
-        this.demension = demension;
+    public Question(int courseID, int lessonID, int dimensionID, int typeQuestionID, String content,
+            String media, String explanation, int level, String status) {
+        this.courseID = courseID;
+        this.lessonID = lessonID;
+        this.dimensionID = dimensionID;
+        this.typeQuestionID = typeQuestionID;
         this.content = content;
         this.media = media;
         this.explanation = explanation;
@@ -32,6 +29,7 @@ public class Question {
         this.status = status;
     }
 
+    // Getters and setters
     public int getQuestionID() {
         return questionID;
     }
@@ -40,28 +38,36 @@ public class Question {
         this.questionID = questionID;
     }
 
-    public Course getCourse() {
-        return course;
+    public int getCourseID() {
+        return courseID;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setCourseID(int courseID) {
+        this.courseID = courseID;
     }
 
-    public Lesson getLesson() {
-        return lesson;
+    public int getLessonID() {
+        return lessonID;
     }
 
-    public void setLesson(Lesson lesson) {
-        this.lesson = lesson;
+    public void setLessonID(int lessonID) {
+        this.lessonID = lessonID;
     }
 
-    public int getDemension() {
-        return demension;
+    public int getDimensionID() {
+        return dimensionID;
     }
 
-    public void setDemension(int demension) {
-        this.demension = demension;
+    public void setDimensionID(int dimensionID) {
+        this.dimensionID = dimensionID;
+    }
+
+    public int getTypeQuestionID() {
+        return typeQuestionID;
+    }
+
+    public void setTypeQuestionID(int typeQuestionID) {
+        this.typeQuestionID = typeQuestionID;
     }
 
     public String getContent() {
@@ -103,6 +109,4 @@ public class Question {
     public void setStatus(String status) {
         this.status = status;
     }
-    
-    
 }

@@ -1,29 +1,19 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-/**
- *
- * @author ASUS
- */
 public class AnswerOption {
+
     private int answerOptionID;
-    private Question question;
+    private int questionID;
     private String content;
     private boolean isCorrect;
 
-    public AnswerOption() {
-    }
-
-    public AnswerOption(int answerOptionID, Question question, String content, boolean isCorrect) {
-        this.answerOptionID = answerOptionID;
-        this.question = question;
+    public AnswerOption(int questionID, String content, boolean isCorrect) {
+        this.questionID = questionID;
         this.content = content;
         this.isCorrect = isCorrect;
     }
 
+    // Getters and setters
     public int getAnswerOptionID() {
         return answerOptionID;
     }
@@ -32,12 +22,12 @@ public class AnswerOption {
         this.answerOptionID = answerOptionID;
     }
 
-    public Question getQuestion() {
-        return question;
+    public int getQuestionID() {
+        return questionID;
     }
 
-    public void setQuestion(Question question) {
-        this.question = question;
+    public void setQuestionID(int questionID) {
+        this.questionID = questionID;
     }
 
     public String getContent() {
@@ -48,13 +38,11 @@ public class AnswerOption {
         this.content = content;
     }
 
-    public boolean isIsCorrect() {
+    public boolean isCorrect() {
         return isCorrect;
     }
 
-    public void setIsCorrect(boolean isCorrect) {
+    public void setCorrect(boolean isCorrect) {
         this.isCorrect = isCorrect;
     }
-    
-    
 }

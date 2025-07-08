@@ -27,6 +27,10 @@ public class Course {
     public Course() {
     }
 
+    public Course(int courseID) {
+        this.courseID = courseID;
+    }
+    
     public Course(int courseID, String courseName, CourseCategory courseCategory, String description, User owner, String status, int numberOfLesson, int feature, Date createDate) {
         this.courseID = courseID;
         this.courseName = courseName;
