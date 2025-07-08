@@ -178,6 +178,263 @@ public class LessonDAO extends DBContext {
         }
         return listLesson;
     }
+    public List<Lesson> getLessonsByCourse(int courseId, String searchQuery, Integer topicId, String status, int pageIndex, int pageSize) {
+        List<Lesson> lessons = new ArrayList<>();
+
+        try {
+            // Xây dựng câu lệnh SQL động để linh hoạt trong việc lọc
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT l.*, c.courseName FROM Lesson l ");
+            sql.append("JOIN Course c ON l.courseID = c.courseID ");
+            sql.append("WHERE l.courseID = ? ");
+
+            if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+                sql.append("AND l.name LIKE ? ");
+            }
+            if (topicId != null) {
+                // Chức năng này chưa được triển khai ở Servlet, nhưng DAO đã sẵn sàng
+                sql.append("AND l.topicID = ? ");
+            }
+            if (status != null && !status.trim().isEmpty() && !status.equals("All")) {
+                sql.append("AND l.status = ? ");
+            }
+
+            // Sắp xếp theo orderNum và thêm phân trang
+            sql.append("ORDER BY l.lessonID ASC ");
+            sql.append("OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+
+            PreparedStatement ps = connection.prepareStatement(sql.toString());
+
+            // Gán các tham số vào câu lệnh
+            int paramIndex = 1;
+            ps.setInt(paramIndex++, courseId);
+
+            if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+                ps.setString(paramIndex++, "%" + searchQuery + "%");
+            }
+            if (topicId != null) {
+                ps.setInt(paramIndex++, topicId);
+            }
+            if (status != null && !status.trim().isEmpty() && !status.equals("All")) {
+                ps.setString(paramIndex++, status);
+            }
+
+            ps.setInt(paramIndex++, (pageIndex - 1) * pageSize);
+            ps.setInt(paramIndex++, pageSize);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Lesson lesson = new Lesson();
+                lesson.setLessonID(rs.getInt("lessonID"));
+                lesson.setName(rs.getString("name"));
+                lesson.setOrderNum(rs.getInt("orderNum"));
+                lesson.setType(rs.getString("type"));
+                lesson.setStatus(rs.getString("status"));
+                lesson.setContentVideo(rs.getString("contentVideo"));
+                lesson.setContentHtml(rs.getString("contentHtml"));
+                lesson.setDuration(rs.getInt("duration"));
+
+                // Tạo đối tượng Course đơn giản để chứa thông tin cơ bản
+                Course course = new Course();
+                course.setCourseID(rs.getInt("courseID"));
+                course.setCourseName(rs.getString("courseName"));
+                lesson.setCourse(course);
+
+                // Xử lý topicID
+                int tId = rs.getInt("topicID");
+                if (!rs.wasNull()) {
+                    Lesson topic = new Lesson();
+                    topic.setLessonID(tId);
+                    lesson.setTopic(topic);
+                }
+
+                lessons.add(lesson);
+            }
+        } catch (SQLException e) {
+            System.out.println("getLessonsByCourse: " + e.getMessage());
+        }
+        return lessons;
+    }
+
+    /**
+     * Đếm tổng số bài học thỏa mãn điều kiện lọc để phục vụ việc phân trang.
+     *
+     * @param courseId ID của khóa học.
+     * @param searchQuery Từ khóa tìm kiếm.
+     * @param topicId ID của chủ đề.
+     * @param status Trạng thái.
+     * @return Tổng số bài học.
+     */
+    public int countLessonsByCourse(int courseId, String searchQuery, Integer topicId, String status) {
+        try {
+            StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM Lesson WHERE courseID = ? ");
+            
+            if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+                sql.append("AND name LIKE ? ");
+            }
+            if (topicId != null) {
+                sql.append("AND topicID = ? ");
+            }
+            if (status != null && !status.trim().isEmpty() && !status.equals("All")) {
+                sql.append("AND status = ? ");
+            }
+
+            PreparedStatement ps = connection.prepareStatement(sql.toString());
+            int paramIndex = 1;
+            ps.setInt(paramIndex++, courseId);
+
+            if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+                ps.setString(paramIndex++, "%" + searchQuery + "%");
+            }
+            if (topicId != null) {
+                ps.setInt(paramIndex++, topicId);
+            }
+            if (status != null && !status.trim().isEmpty() && !status.equals("All")) {
+                ps.setString(paramIndex++, status);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("countLessonsByCourse: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    //Thêm bài học 
+    public void addLesson(Lesson lesson) {
+        String sql = "INSERT INTO Lesson (courseID, topicID, name, type, orderNum, status, contentVideo, contentHtml, duration) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, lesson.getCourse().getCourseID());
+
+            // Topic có thể là null
+            if (lesson.getTopic() != null) {
+                ps.setInt(2, lesson.getTopic().getLessonID());
+            } else {
+                ps.setNull(2, java.sql.Types.INTEGER);
+            }
+
+            ps.setString(3, lesson.getName());
+            ps.setString(4, lesson.getType());
+            ps.setInt(5, lesson.getOrderNum());
+            ps.setString(6, lesson.getStatus());
+            ps.setString(7, lesson.getContentVideo());
+            ps.setString(8, lesson.getContentHtml());
+            ps.setInt(9, lesson.getDuration());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error adding lesson: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Cập nhật trạng thái của một bài học dựa vào lessonId.
+     *
+     * @param lessonId ID của bài học cần cập nhật.
+     * @param newStatus Trạng thái mới ('Active' hoặc 'Inactive').
+     */
+    public void updateLessonStatus(int lessonId, String newStatus) {
+        String sql = "UPDATE Lesson SET status = ? WHERE lessonID = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, newStatus);
+            ps.setInt(2, lessonId);
+            ps.executeUpdate(); // Thực thi lệnh cập nhật
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println("Error updating lesson status: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    
+/**
+ * Lấy toàn bộ thông tin của một bài học dựa vào ID.
+ * Phương thức này không giống getLessonByLessonID cũ vì nó không join,
+ * và lấy tất cả các thuộc tính.
+ * @param lessonId ID của bài học.
+ * @return Đối tượng Lesson hoặc null nếu không tìm thấy.
+ */
+public Lesson getLessonById(int lessonId) {
+    String sql = "SELECT * FROM Lesson WHERE lessonID = ?";
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, lessonId);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            Lesson lesson = new Lesson();
+            lesson.setLessonID(rs.getInt("lessonID"));
+            
+            Course course = new Course();
+            course.setCourseID(rs.getInt("courseID"));
+            lesson.setCourse(course);
+
+            int topicId = rs.getInt("topicID");
+            if (!rs.wasNull()) {
+                Lesson topic = new Lesson();
+                topic.setLessonID(topicId);
+                lesson.setTopic(topic);
+            }
+            
+            lesson.setName(rs.getString("name"));
+            lesson.setType(rs.getString("type"));
+            lesson.setOrderNum(rs.getInt("orderNum"));
+            lesson.setStatus(rs.getString("status"));
+            lesson.setContentVideo(rs.getString("contentVideo"));
+            lesson.setContentHtml(rs.getString("contentHtml"));
+            lesson.setDuration(rs.getInt("duration"));
+            return lesson;
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
+
+/**
+ * Cập nhật thông tin của một bài học hiện có trong database.
+ * @param lesson Đối tượng Lesson chứa thông tin mới.
+ */
+public void updateLesson(Lesson lesson) {
+    String sql = "UPDATE Lesson SET "
+               + "name = ?, "
+               + "type = ?, "
+               + "topicID = ?, "
+               + "orderNum = ?, "
+               + "status = ?, "
+               + "contentVideo = ?, "
+               + "contentHtml = ?, "
+               + "duration = ? "
+               + "WHERE lessonID = ?";
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, lesson.getName());
+        ps.setString(2, lesson.getType());
+        
+        if (lesson.getTopic() != null && lesson.getTopic().getLessonID() > 0) {
+            ps.setInt(3, lesson.getTopic().getLessonID());
+        } else {
+            ps.setNull(3, java.sql.Types.INTEGER);
+        }
+        
+        ps.setInt(4, lesson.getOrderNum());
+        ps.setString(5, lesson.getStatus());
+        ps.setString(6, lesson.getContentVideo());
+        ps.setString(7, lesson.getContentHtml());
+        ps.setInt(8, lesson.getDuration());
+        ps.setInt(9, lesson.getLessonID()); // lessonID cho mệnh đề WHERE
+
+        ps.executeUpdate();
+        ps.close();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
 
     public static void main(String[] args) {
         System.out.println(LessonDAO.getInstance().getTotalNumberOfLessonInCourse(4));
