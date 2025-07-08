@@ -1,9 +1,6 @@
-<!DOCTYPE html>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
 
 <!DOCTYPE html>
 
@@ -30,7 +27,7 @@
         <link rel="shortcut icon" type="image/x-icon" href="<%=request.getContextPath()%>/admin/assets/images/favicon.png" />
 
         <!-- PAGE TITLE HERE ============================================= -->
-        <title>Posts List</title>
+        <title>Sliders List</title>
 
         <!-- MOBILE SPECIFIC ============================================= -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -65,7 +62,7 @@
                 padding: 0;
             }
 
-            /* Container ch?nh */
+            /* Container chính */
             .container-fluid {
                 padding: 20px;
             }
@@ -89,7 +86,7 @@
 
             .search-input {
                 flex: 1;
-                min-width: 365%; /* ? Search d?i ra */
+                min-width: 50%;
                 padding: 6px 12px;
                 font-size: 14px;
             }
@@ -100,17 +97,12 @@
                 font-size: 14px;
                 background-color: #f8c61b;
                 margin-left: 20px;
-
-
-
             }
 
             .sort-select {
-                width: 100px;
+                width: auto;
                 padding: 6px 14px;
                 font-size: 14px;
-
-
             }
 
             .sort-by-select {
@@ -118,12 +110,10 @@
                 text-align: center;
             }
 
-
-            /* B? l?c */
+            /* Bộ lọc */
             .filters {
                 display: flex;
                 gap: 70px;
-
             }
 
             .filters select {
@@ -137,16 +127,11 @@
                 text-align: center;
                 margin-left: 10px;
                 width: 150px;
-
             }
+
             .filters select option {
                 text-align: left;
-
             }
-
-
-
-
 
             .filters button {
                 white-space: nowrap;
@@ -154,11 +139,8 @@
                 font-size: 14px;
                 background-color: #f8c61b;
                 margin-left: 15px;
-                gap: 20px;
-
+                gap: 15px;
             }
-
-
 
             table {
                 width: 100%;
@@ -191,7 +173,7 @@
                 border-radius: 4px;
             }
 
-            /* Tr?ng th?i Active/Inactive */
+            /* Trạng thái Active/Inactive */
             .status {
                 display: inline-flex;
                 align-items: center;
@@ -213,9 +195,8 @@
                 background-color: #dc3545;
             }
 
-            /* N?t h?nh ??ng */
+            /* Nút hành động */
             .action-buttons a {
-
                 text-decoration: none;
                 color: #007bff;
                 font-size: 14px;
@@ -226,7 +207,7 @@
                 text-decoration: underline;
             }
 
-            /* Ph?n trang */
+            /* Phân trang */
             .pagination {
                 display: flex;
                 justify-content: center;
@@ -257,39 +238,35 @@
             .pagination a:hover {
                 background-color: #f0f0f0;
             }
-            .select  {
+
+            .select {
                 display: block;
             }
-            .option{
+
+            .option {
                 display: block;
             }
-            .add-post-btn{
+
+            .add-slider-btn {
                 margin-left: 915px;
             }
-            .reset{
+
+            .reset {
                 padding-left: 7px;
                 padding-right: 8px;
-
             }
-            .search{
+
+            .search {
                 padding-left: 25px;
                 padding-right: 20px;
                 margin-left: 20px;
             }
-            .action{
 
-            }
             .search-container {
                 display: flex;
                 align-items: center;
                 gap: 10px;
                 margin-bottom: 20px;
-            }
-
-            .search-input {
-                flex: 1;
-                min-width: 300px;
-                padding: 8px;
             }
 
             .filters {
@@ -303,12 +280,10 @@
                 min-width: 150px;
             }
 
-            .btn-add-post {
+            .btn-add-slider {
                 white-space: nowrap;
                 margin-right: 10px;
             }
-
-
         </style>
     </head>
     <body class="ttr-opened-sidebar ttr-pinned-sidebar">
@@ -346,7 +321,7 @@
                                 MENU <i class="fa fa-angle-down"></i></a>
                             <div class="ttr-header-submenu">
                                 <ul>
-                                    <li><a href="home">Our Posts List</a></li>
+                                    <li><a href="home">Our Sliders List</a></li>
                                     <li><a href="event.jsp">New Event</a></li>
                                     <li><a href="membership.jsp">Membership</a></li>
                                 </ul>
@@ -509,10 +484,6 @@
                 <!-- side menu logo start -->
                 <div class="ttr-sidebar-logo">
                     <a href="#"><img alt="" src="assets/images/logo.png" width="122" height="27"></a>
-                    <!-- <div class="ttr-sidebar-pin-button" title="Pin/Unpin Menu">
-                            <i class="material-icons ttr-fixed-icon">gps_fixed</i>
-                            <i class="material-icons ttr-not-fixed-icon">gps_not_fixed</i>
-                    </div> -->
                     <div class="ttr-sidebar-toggle-button">
                         <i class="ti-arrow-left"></i>
                     </div>
@@ -579,9 +550,9 @@
                             </a>
                         </li>
                         <li>
-                            <a href="review.jsp" class="ttr-material-button">
+                            <a href="quizcontroller" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-comments"></i></span>
-                                <span class="ttr-label">Review</span>
+                                <span class="ttr-label">Quizzes List</span>
                             </a>
                         </li>
                         <li>
@@ -621,72 +592,61 @@
                         <div class="widget-box">
                             <div class="wc-title">
                                 <div class="db-breadcrumb">
-                                    <h4 class="breadcrumb-title" style="font-size: 24px;">Posts List</h4>
+                                    <h4 class="breadcrumb-title" style="font-size: 24px;">Quizzes List</h4>
                                     <ul class="db-breadcrumb-list">
+                                        &nbsp;
                                         <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
-                                        <li>Posts List</li>
+                                        <li>Quizzes List</li>
                                     </ul>
                                 </div>
-                                <div class="top-bar">
-                                    <div class="search-container">
-                                        <form action="postcontroller" method="GET" class="d-flex">
-                                            <input type="text" name="search" value="${param.search}" placeholder="Search by title..." class="search-input" />
-                                            <input type="hidden" name="page" value="1" />
-                                            <button type="submit" class="btn btn-warning search">Search</button>
-                                        </form>
-                                        <a href="postcontroller?action=showAddForm" class="btn btn-warning btn-add-post">Add Post</a>
+
+                                <form action="quizcontroller" method="GET" class="d-flex flex-wrap align-items-center" style="color: black;">
+                                    <input type="hidden" name="action" value="list" />
+
+                                    <div class="top-bar" style="width: 80%; display: flex; align-items: center; justify-content: flex-start; gap: 10px; flex-wrap: nowrap; margin-bottom: 15px; padding-top: 0px;">
+                                        <input type="text" name="search" value="${param.search}" placeholder="Search by quiz name" class="search-input flex-grow-1" style="min-width: 50px; padding: 8px;" />
+                                        <button type="submit" class="btn btn-warning search">Search</button>
+
+                                        <select name="filterbysubject" class="sort-select">
+                                            <option value="-1" ${param.filterbysubject eq '-1' ? 'selected' : ''}>All Subject</option>
+                                            <c:forEach var="b" items="${requestScope.listAllCourse}">
+                                                <option value="${b.courseID}" ${param.filterbysubject == b.courseID ? 'selected' : ''}>${b.courseName}</option>
+                                            </c:forEach>
+                                        </select>
+
+                                        <select name="quiztype" class="sort-select">
+                                            <option value="-1" ${param.quiztype eq '-1' ? 'selected' : ''}>All Quiz Type</option>
+                                            <c:forEach var="c" items="${requestScope.listAllQuizType}">
+                                                <option value="${c}" ${param.quiztype == c ? 'selected' : ''}>${c}</option>
+                                            </c:forEach>
+                                        </select>
+
+
                                     </div>
-                                </div>
 
-                                <!-- Filters -->
-                                <div class="filters">
-                                    <form action="postcontroller" method="GET" class="d-flex align-items-center text-black" style="color: black;">
-                                        <select name="sortBy" class="sort-select">
-                                            <option value="" disabled selected hidden>Sort by</option>
-                                            <option style="color: black;" value="title" ${param.sortBy eq 'title' ? 'selected' : ''}>Title</option>
-                                            <option value="category" ${param.sortBy eq 'category' ? 'selected' : ''}>Category</option>
-                                            <option value="author" ${param.sortBy eq 'author' ? 'selected' : ''}>Author</option>
-                                            <option value="date" ${param.sortBy eq 'date' ? 'selected' : ''}>Date</option>
-                                            <option value="status" ${param.sortBy eq 'status' ? 'selected' : ''}>Status</option>
-                                            <option value="feature" ${param.sortBy eq 'feature' ? 'selected' : ''}>Feature</option>
-                                        </select>
+                                    <div class="filters" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 20px; width: 100%;">
+                                        <div class="d-flex align-items-center">
+                                            <span>Records per page:</span>
+                                            <input type="number" name="rowsPerPage" value="${param.rowsPerPage != null ? param.rowsPerPage : 5}" min="1" class="form-control" style="height: 32px;width: 75px; margin-left: 10px; padding: 6px;" />
+                                        </div>
 
-                                        <select name="category" class="sort-select">
-                                            <option value="" disabled selected hidden>Category</option>
-                                            <c:forEach var="category" items="${categories}">
-                                                <option value="${category.postCategoryID}" ${param.category eq category.postCategoryID ? 'selected' : ''}>
-                                                    ${category.postCategoryName}
-                                                </option>
-                                            </c:forEach>
-                                        </select>
-
-                                        <select name="author" class="sort-select">
-                                            <option value="" disabled selected hidden>Author</option>
-                                            <c:forEach var="author" items="${authors}">
-                                                <option value="${author.userID}" ${param.author eq author.userID ? 'selected' : ''}>
-                                                    ${author.fullName}
-                                                </option>
-                                            </c:forEach>
-                                        </select>
-
-                                        <select name="status" class="sort-select">
-                                            <option value="" disabled selected hidden>Status</option>
-                                            <option value="active" ${param.status eq 'active' ? 'selected' : ''}>Active</option>
-                                            <option value="inactive" ${param.status eq 'inactive' ? 'selected' : ''}>Inactive</option>
-                                        </select>
-
-                                        <select name="feature" class="sort-select">
-                                            <option value="" disabled selected hidden>Feature</option>
-                                            <option value="true" ${param.feature eq 'true' ? 'selected' : ''}>Yes</option>
-                                            <option value="false" ${param.feature eq 'false' ? 'selected' : ''}>No</option>
-                                        </select>
+                                        <div class="d-flex align-items-center">
+                                            <span>Choose column to hide: </span>
+                                            <label style="margin-left: 15px;margin-top: 13px;font-weight: normal"><input type="checkbox" name="hideID" value="true" ${param.hideID == 'true' ? 'checked' : ''}> ID</label>
+                                            <label style="margin-left: 15px;margin-top: 13px;font-weight: normal"><input type="checkbox" name="hideName" value="true" ${param.hideName == 'true' ? 'checked' : ''}> Name</label>
+                                            <label style="margin-left: 15px;margin-top: 13px;font-weight: normal"><input type="checkbox" name="hideSubject" value="true" ${param.hideSubject == 'true' ? 'checked' : ''}> Subject</label>
+                                            <label style="margin-left: 15px;margin-top: 13px;font-weight: normal"><input type="checkbox" name="hideLevel" value="true" ${param.hideLevel == 'true' ? 'checked' : ''}> Level</label>
+                                            <label style="margin-left: 15px;margin-top: 13px;font-weight: normal"><input type="checkbox" name="hideNOQ" value="true" ${param.hideNOQ == 'true' ? 'checked' : ''}> Number of Question</label>
+                                            <label style="margin-left: 15px;margin-top: 13px;font-weight: normal"><input type="checkbox" name="hideDuration" value="true" ${param.hideDuration == 'true' ? 'checked' : ''}> Duration</label>
+                                            <label style="margin-left: 15px;margin-top: 13px;font-weight: normal"><input type="checkbox" name="hidePassRate" value="true" ${param.hidePassRate == 'true' ? 'checked' : ''}> Pass Rate</label>
+                                            <label style="margin-left: 15px;margin-top: 13px;font-weight: normal"><input type="checkbox" name="hideQuizType" value="true" ${param.hideQuizType == 'true' ? 'checked' : ''}> Quiz Type</label>
+                                        </div>
 
                                         <input type="hidden" name="page" value="1" />
-                                        <input type="hidden" name="search" value="${param.search}" />
                                         <button type="submit" class="btn btn-warning">Apply Filters</button>
-                                        <a href="postcontroller" class="btn btn-warning reset">Reset Filters</a>
-                                    </form>
-                                </div>
+                                        <a href="quizcontroller" class="btn btn-warning reset">Reset Filters</a>
+                                    </div>
+                                </form>
                             </div>
 
                             <div class="widget-inner">
@@ -694,50 +654,58 @@
                                     <table border="1">
                                         <thead>
                                             <tr>
-                                                <th>ID</th>
-                                                <th>Thumbnail</th>
-                                                <th>Title</th>
-                                                <th>Category</th>
-                                                <th>Owner</th>
-                                                <th>Create Date</th> 
-                                                <th>Status</th>
-                                                <th>Feature</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <c:forEach var="post" items="${posts}" varStatus="loop">
-                                                <tr> 
-                                                    <td>${post.postID}</td>
-                                                    <td><img src="assets/images/post/${post.thumbnail}" alt="Thumbnail" style="width: 50px; height: 50px; object-fit: cover;"></td>
-                                                    <td>${post.title}</td>
-                                                    <td>${post.postCategory.postCategoryName}</td>
-                                                    <td>${post.owner.fullName}</td>
-                                                    <td><fmt:formatDate value="${post.createDate}" pattern="dd/MM/yyyy"/></td> 
-                                                    <td>
-                                                        <span class="status">
-                                                            <span class="dot ${post.status eq 'Active' ? 'active' : 'inactive'}"></span>
-                                                            ${post.status}
-                                                        </span>
-                                                    </td>
-                                                    <td>${post.feature ? 'Yes' : 'No'}</td>
-                                                    <td class="action-buttons">
-                                                        <a href="postcontroller?action=view&id=${post.postID}">View</a>
-                                                        <a href="postcontroller?action=showEditForm&id=${post.postID}">Edit</a>
-                                                        <a href="postcontroller?action=delete&id=${post.postID}" onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
-                                                    </td>
+                                                <c:if test="${param.hideID != 'true'}"><th>ID</th></c:if>
+                                                <c:if test="${param.hideName != 'true'}"><th>Name</th></c:if>
+                                                <c:if test="${param.hideSubject != 'true'}"><th>Subject</th></c:if>
+                                                <c:if test="${param.hideLevel != 'true'}"><th>Level</th></c:if>
+                                                <c:if test="${param.hideNOQ != 'true'}"><th>Number of Question</th></c:if>
+                                                <c:if test="${param.hideDuration != 'true'}"><th>Duration</th></c:if>
+                                                <c:if test="${param.hidePassRate != 'true'}"><th>Pass Rate</th></c:if>
+                                                <c:if test="${param.hideQuizType != 'true'}"><th>Quiz Type</th></c:if>
+                                                    <th>Action</th>
                                                 </tr>
+                                            </thead>
+                                            <tbody>
+                                            <c:forEach var="a" items="${listAllQuiz}" varStatus="loop">
+                                                <tr>
+                                                    <c:if test="${param.hideID != 'true'}"><td>${a.quizID}</td></c:if>
+                                                    <c:if test="${param.hideName != 'true'}"><td>${a.name}</td></c:if>
+                                                    <c:if test="${param.hideSubject != 'true'}"><td>${a.course.courseName}</td></c:if>
+                                                    <c:if test="${param.hideLevel != 'true'}"><td>${a.level}</td></c:if>
+                                                    <c:if test="${param.hideNOQ != 'true'}"><td>${a.numberQuestions}</td></c:if>
+                                                    <c:if test="${param.hideDuration != 'true'}"><td>${a.duration}</td></c:if>
+                                                    <c:if test="${param.hidePassRate != 'true'}"><td>${a.passRate}</td></c:if>
+                                                    <c:if test="${param.hideQuizType != 'true'}"><td>${a.quizType}</td></c:if>
+
+                                                        <td class="action-buttons">
+                                                            <a href="#">Edit</a>
+                                                            <a href="#">Delete</a>
+                                                        </td>
+                                                    </tr>
                                             </c:forEach>
                                         </tbody>
                                     </table>
                                 </div>
-
                                 <!-- Pagination -->
                                 <div class="pagination-bx rounded-sm gray clearfix">
                                     <ul class="pagination">
+                                        <c:set var="baseQuery" value="action=list" />
+                                        <c:if test="${not empty param.search}"><c:set var="baseQuery" value="${baseQuery}&search=${param.search}" /></c:if>
+                                        <c:if test="${not empty param.filterbysubject}"><c:set var="baseQuery" value="${baseQuery}&filterbysubject=${param.filterbysubject}" /></c:if>
+                                        <c:if test="${not empty param.quiztype}"><c:set var="baseQuery" value="${baseQuery}&quiztype=${param.quiztype}" /></c:if>
+                                        <c:if test="${not empty param.rowsPerPage}"><c:set var="baseQuery" value="${baseQuery}&rowsPerPage=${param.rowsPerPage}" /></c:if>
+                                        <c:if test="${param.hideID == 'true'}"><c:set var="baseQuery" value="${baseQuery}&hideID=true" /></c:if>
+                                        <c:if test="${param.hideName == 'true'}"><c:set var="baseQuery" value="${baseQuery}&hideName=true" /></c:if>
+                                        <c:if test="${param.hideSubject == 'true'}"><c:set var="baseQuery" value="${baseQuery}&hideSubject=true" /></c:if>
+                                        <c:if test="${param.hideLevel == 'true'}"><c:set var="baseQuery" value="${baseQuery}&hideLevel=true" /></c:if>
+                                        <c:if test="${param.hideNOQ == 'true'}"><c:set var="baseQuery" value="${baseQuery}&hideNOQ=true" /></c:if>
+                                        <c:if test="${param.hideDuration == 'true'}"><c:set var="baseQuery" value="${baseQuery}&hideDuration=true" /></c:if>
+                                        <c:if test="${param.hidePassRate == 'true'}"><c:set var="baseQuery" value="${baseQuery}&hidePassRate=true" /></c:if>
+                                        <c:if test="${param.hideQuizType == 'true'}"><c:set var="baseQuery" value="${baseQuery}&hideQuizType=true" /></c:if>
+
                                         <c:if test="${currentPage > 1}">
                                             <li class="previous">
-                                                <a href="postcontroller?page=${currentPage - 1}${not empty param.search ? '&search='.concat(param.search) : ''}${not empty param.sortBy ? '&sortBy='.concat(param.sortBy) : ''}${not empty param.category ? '&category='.concat(param.category) : ''}${not empty param.author ? '&author='.concat(param.author) : ''}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.feature ? '&feature='.concat(param.feature) : ''}">
+                                                <a href="quizcontroller?${baseQuery}&page=${currentPage - 1}">
                                                     <i class="ti-arrow-left"></i> Prev
                                                 </a>
                                             </li>
@@ -745,13 +713,13 @@
 
                                         <c:forEach begin="1" end="${totalPages}" var="i">
                                             <li class="${currentPage == i ? 'active' : ''}">
-                                                <a href="postcontroller?page=${i}${not empty param.search ? '&search='.concat(param.search) : ''}${not empty param.sortBy ? '&sortBy='.concat(param.sortBy) : ''}${not empty param.category ? '&category='.concat(param.category) : ''}${not empty param.author ? '&author='.concat(param.author) : ''}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.feature ? '&feature='.concat(param.feature) : ''}">${i}</a>
+                                                <a href="quizcontroller?${baseQuery}&page=${i}">${i}</a>
                                             </li>
                                         </c:forEach>
 
                                         <c:if test="${currentPage < totalPages}">
                                             <li class="next">
-                                                <a href="postcontroller?page=${currentPage + 1}${not empty param.search ? '&search='.concat(param.search) : ''}${not empty param.sortBy ? '&sortBy='.concat(param.sortBy) : ''}${not empty param.category ? '&category='.concat(param.category) : ''}${not empty param.author ? '&author='.concat(param.author) : ''}${not empty param.status ? '&status='.concat(param.status) : ''}${not empty param.feature ? '&feature='.concat(param.feature) : ''}">
+                                                <a href="quizcontroller?${baseQuery}&page=${currentPage + 1}">
                                                     Next <i class="ti-arrow-right"></i>
                                                 </a>
                                             </li>
@@ -762,7 +730,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </main>
         <div class="ttr-overlay"></div>
 
