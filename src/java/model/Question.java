@@ -4,7 +4,6 @@ public class Question {
 
     private int questionID;
     private int courseID;
-    private int lessonID;
     private int dimensionID;
     private int typeQuestionID;
     private String content;
@@ -16,10 +15,9 @@ public class Question {
     public Question() {
     }
 
-    public Question(int courseID, int lessonID, int dimensionID, int typeQuestionID, String content,
-            String media, String explanation, int level, String status) {
+    public Question(int questionID, int courseID, int dimensionID, int typeQuestionID, String content, String media, String explanation, int level, String status) {
+        this.questionID = questionID;
         this.courseID = courseID;
-        this.lessonID = lessonID;
         this.dimensionID = dimensionID;
         this.typeQuestionID = typeQuestionID;
         this.content = content;
@@ -29,7 +27,6 @@ public class Question {
         this.status = status;
     }
 
-    // Getters and setters
     public int getQuestionID() {
         return questionID;
     }
@@ -44,14 +41,6 @@ public class Question {
 
     public void setCourseID(int courseID) {
         this.courseID = courseID;
-    }
-
-    public int getLessonID() {
-        return lessonID;
-    }
-
-    public void setLessonID(int lessonID) {
-        this.lessonID = lessonID;
     }
 
     public int getDimensionID() {
@@ -109,4 +98,6 @@ public class Question {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    
 }
