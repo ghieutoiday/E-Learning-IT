@@ -9,23 +9,33 @@ package model;
  * @author ASUS
  */
 public class QuizQuestion {
-    private int quizID;
+    private int quizQuestionID;
+    private Quiz quiz;
     private Question question;
 
     public QuizQuestion() {
     }
 
-    public QuizQuestion(int quizID, Question question) {
-        this.quizID = quizID;
+    public QuizQuestion(int quizQuestionID, Quiz quiz, Question question) {
+        this.quizQuestionID = quizQuestionID;
+        this.quiz = quiz;
         this.question = question;
     }
 
-    public int getQuizID() {
-        return quizID;
+    public int getQuizQuestionID() {
+        return quizQuestionID;
     }
 
-    public void setQuizID(int quizID) {
-        this.quizID = quizID;
+    public void setQuizQuestionID(int quizQuestionID) {
+        this.quizQuestionID = quizQuestionID;
+    }
+
+    public Quiz getQuiz() {
+        return quiz;
+    }
+
+    public void setQuiz(Quiz quiz) {
+        this.quiz = quiz;
     }
 
     public Question getQuestion() {
@@ -35,7 +45,5 @@ public class QuizQuestion {
     public void setQuestion(Question question) {
         this.question = question;
     }
-    
-    
     
 }
