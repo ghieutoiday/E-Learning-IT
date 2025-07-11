@@ -40,6 +40,7 @@ public class LessonViewController extends HttpServlet {
         String courseID_raw = request.getParameter("courseID");
         int courseID = -1;
         
+        
         try {
             courseID = Integer.parseInt(courseID_raw);
         } catch (NumberFormatException e) {

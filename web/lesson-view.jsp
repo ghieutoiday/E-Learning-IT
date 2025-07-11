@@ -27,344 +27,401 @@
     <link class="skin" rel="stylesheet" type="text/css" href="admin/assets/css/color/color-1.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <style>
-        .ttr-sidebar-navi .ttr-label {
-            white-space: normal;
-            overflow-wrap: break-word;
-            width: 100%;
-            display: block;
-        }
+    .quiz-form1 {
+        margin: 0 1%;
+        padding: 20px;
+        border: 2px solid #f0f0f0; /* Thêm khung với viền màu xám nhạt */
+        background-color: #f0f0f0; /* Nền màu xám */
+        border-radius: 5px;
+    }
+
+    .quiz-form1 > :first-child {
+        font-size: 2em;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .quiz-form1 > :nth-child(2) {
+        font-size: 1.3em;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .quiz-form1 .exam-description {
+        background-color: #f0f0f0;
+        padding: 15px;
+        width: 80%;
+        max-width: 600px;
+        margin: 0 auto 20px auto;
+        text-align: center;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .quiz-form1 button[type="submit"] {
+        background-color: #6d28d2;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1em;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        color: white;
+    }
+
+    .quiz-form1 button[type="submit"]:hover {
+        background-color: #c0c0c0;
+    }
+
+    .ttr-sidebar-navi .ttr-label {
+        white-space: normal;
+        overflow-wrap: break-word;
+        width: 100%;
+        display: block;
+    }
+    .ttr-sidebar {
+        overflow: visible;
+        width: 30%;
+    }
+    .ttr-wrapper {
+        margin-left: 30% !important;
+    }
+    .ttr-sidebar-navi a {
+        line-height: unset;
+    }
+    body:not(.ttr-opened-sidebar) .ttr-sidebar {
+        transform: translateX(-100%);
+    }
+    body:not(.ttr-opened-sidebar) .ttr-wrapper {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+    .ttr-wrapper .video-container {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        margin-bottom: 20px;
+        background-color: #000;
+    }
+    .ttr-wrapper .video-container #player,
+    .ttr-wrapper .video-container .fallback-iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        z-index: 1;
+    }
+    .ttr-wrapper .video-container .nav-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 123, 255, 0.8);
+        color: white;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 28px;
+        z-index: 10;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .ttr-wrapper .video-container:hover .nav-button {
+        opacity: 1;
+    }
+    .ttr-wrapper .video-container .nav-button:hover {
+        background-color: rgba(0, 86, 179, 0.8);
+    }
+    .ttr-wrapper .video-container .nav-button.disabled {
+        background-color: rgba(204, 204, 204, 0.8);
+        pointer-events: none;
+        opacity: 0.5;
+    }
+    .ttr-wrapper .video-container .prev-button {
+        left: 10px;
+    }
+    .ttr-wrapper .video-container .next-button {
+        right: 10px;
+    }
+    .nav-buttons-container {
+        display: flex;
+        align-items: center; /* Căn giữa theo chiều dọc */
+        justify-content: space-between; /* Đặt nút ở hai bên */
+        margin-bottom: 20px;
+        max-width: 100%;
+        min-height: 60px; /* Đảm bảo đủ chiều cao để căn giữa */
+    }
+    .nav-buttons-container .quiz-form1 {
+        flex: 1; /* Để .quiz-form1 chiếm không gian giữa */
+    }
+    .nav-buttons-container .nav-button {
+        background-color: rgba(0, 123, 255, 0.8);
+        color: white;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 28px;
+    }
+    .nav-buttons-container .nav-button:hover {
+        background-color: rgba(0, 86, 179, 0.8);
+    }
+    .nav-buttons-container .nav-button.disabled {
+        background-color: rgba(204, 204, 204, 0.8);
+        pointer-events: none;
+    }
+    .media-preview {
+        max-height: 200px;
+        width: 100%;
+        object-fit: contain;
+        border-radius: 8px;
+        transition: transform 0.2s ease;
+    }
+    .media-preview:hover {
+        transform: scale(1.02);
+    }
+    .note-section {
+        transition: all 0.3s ease;
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+    }
+    .note-section:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        background-color: #f9fafb;
+    }
+    #mediaNotes .media-preview, #mediaNotes iframe {
+        display: block !important;
+        max-height: 200px !important;
+        width: 100% !important;
+        margin: 8px 0;
+        border-radius: 8px;
+    }
+    #mediaNotes .form-group {
+        border: 1px solid #e2e8f0;
+        padding: 12px;
+        border-radius: 8px;
+        background-color: #f7fafc;
+        margin-bottom: 12px;
+    }
+    #errorMessage:not(.hidden) {
+        display: block;
+        padding: 12px;
+        border: 1px solid #f87171;
+        border-radius: 8px;
+        background-color: #fef2f2;
+        margin-bottom: 16px;
+    }
+    .ttr-sidebar-navi .duration-label {
+        font-size: 0.8rem;
+        color: #6b7280;
+        margin-top: 4px;
+        display: block;
+    }
+    @media (max-width: 1024px) {
         .ttr-sidebar {
-            overflow: visible;
-            width: 30%;
+            width: 10%;
         }
         .ttr-wrapper {
-            margin-left: 30% !important;
+            margin-left: 10% !important;
         }
-        .ttr-sidebar-navi a {
-            line-height: unset;
-        }
-        body:not(.ttr-opened-sidebar) .ttr-sidebar {
-            transform: translateX(-100%);
-        }
-        body:not(.ttr-opened-sidebar) .ttr-wrapper {
-            margin-left: 0 !important;
-            width: 100% !important;
-        }
-        .ttr-wrapper .video-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            margin-bottom: 20px;
-            background-color: #000;
-        }
-        .ttr-wrapper .video-container #player,
-        .ttr-wrapper .video-container .fallback-iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
+    }
+    @media (max-width: 768px) {
+        .ttr-sidebar {
             width: 100%;
-            height: 100%;
-            border-radius: 5px;
-            z-index: 1;
+            position: fixed;
+            z-index: 1000;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .ttr-opened-sidebar .ttr-sidebar {
+            transform: translateX(0);
+        }
+        .ttr-wrapper {
+            margin-left: 0;
         }
         .ttr-wrapper .video-container .nav-button {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(0, 123, 255, 0.8);
-            color: white;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 28px;
-            z-index: 10;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .ttr-wrapper .video-container:hover .nav-button {
-            opacity: 1;
-        }
-        .ttr-wrapper .video-container .nav-button:hover {
-            background-color: rgba(0, 86, 179, 0.8);
-        }
-        .ttr-wrapper .video-container .nav-button.disabled {
-            background-color: rgba(204, 204, 204, 0.8);
-            pointer-events: none;
-            opacity: 0.5;
-        }
-        .ttr-wrapper .video-container .prev-button {
-            left: 10px;
-        }
-        .ttr-wrapper .video-container .next-button {
-            right: 10px;
-        }
-        .nav-buttons-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            max-width: 100%;
+            width: 30px;
+            height: 30px;
+            font-size: 20px;
         }
         .nav-buttons-container .nav-button {
-            background-color: rgba(0, 123, 255, 0.8);
-            color: white;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 28px;
+            width: 30px;
+            height: 30px;
+            font-size: 20px;
         }
-        .nav-buttons-container .nav-button:hover {
-            background-color: rgba(0, 86, 179, 0.8);
-        }
-        .nav-buttons-container .nav-button.disabled {
-            background-color: rgba(204, 204, 204, 0.8);
-            pointer-events: none;
-        }
-        .media-preview {
-            max-height: 200px;
-            width: 100%;
-            object-fit: contain;
-            border-radius: 8px;
-            transition: transform 0.2s ease;
-        }
-        .media-preview:hover {
-            transform: scale(1.02);
-        }
-        .note-section {
-            transition: all 0.3s ease;
-            background-color: #ffffff;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e5e7eb;
-        }
-        .note-section:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            background-color: #f9fafb;
-        }
-        #mediaNotes .media-preview, #mediaNotes iframe {
-            display: block !important;
-            max-height: 200px !important;
-            width: 100% !important;
-            margin: 8px 0;
-            border-radius: 8px;
-        }
-        #mediaNotes .form-group {
-            border: 1px solid #e2e8f0;
-            padding: 12px;
-            border-radius: 8px;
-            background-color: #f7fafc;
-            margin-bottom: 12px;
-        }
-        #errorMessage:not(.hidden) {
-            display: block;
-            padding: 12px;
-            border: 1px solid #f87171;
-            border-radius: 8px;
-            background-color: #fef2f2;
-            margin-bottom: 16px;
-        }
-        .ttr-sidebar-navi .duration-label {
-            font-size: 0.8rem;
-            color: #6b7280;
-            margin-top: 4px;
-            display: block;
-        }
-        @media (max-width: 1024px) {
-            .ttr-sidebar {
-                width: 10%;
-            }
-            .ttr-wrapper {
-                margin-left: 10% !important;
-            }
-        }
-        @media (max-width: 768px) {
-            .ttr-sidebar {
-                width: 100%;
-                position: fixed;
-                z-index: 1000;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-            .ttr-opened-sidebar .ttr-sidebar {
-                transform: translateX(0);
-            }
-            .ttr-wrapper {
-                margin-left: 0;
-            }
-            .ttr-wrapper .video-container .nav-button {
-                width: 30px;
-                height: 30px;
-                font-size: 20px;
-            }
-            .nav-buttons-container .nav-button {
-                width: 30px;
-                height: 30px;
-                font-size: 20px;
-            }
-        }
-        .delete-media-btn {
-            background-color: #ef4444;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            transition: background-color 0.2s ease;
-        }
-        .delete-media-btn:hover {
-            background-color: #dc2626;
-        }
-        .edit-media-btn {
-            background-color: #3b82f6;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            transition: background-color 0.2s ease;
-        }
-        .edit-media-btn:hover {
-            background-color: #2563eb;
-        }
-        .media-preview.error {
-            border: 2px solid #f87171;
-        }
-        .media-preview.loading::before {
-            content: '';
-            display: block;
-            width: 40px;
-            height: 40px;
-            margin: 0 auto;
-            border: 4px solid #3498db;
-            border-top: 4px solid transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        #noteList {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            max-height: 600px;
-            overflow-y: auto;
-            padding-right: 8px;
-            scrollbar-width: thin;
-            scrollbar-color: #cbd5e1 #f1f5f9;
-        }
-        #noteList::-webkit-scrollbar {
-            width: 8px;
-        }
-        #noteList::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 4px;
-        }
-        #noteList::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        #noteList .note-section {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        #noteList .note-content {
-            font-size: 1rem;
-            color: #1f2937;
-            line-height: 1.5;
-            word-break: break-word;
-        }
+    }
+    .delete-media-btn {
+        background-color: #ef4444;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: background-color 0.2s ease;
+    }
+    .delete-media-btn:hover {
+        background-color: #dc2626;
+    }
+    .edit-media-btn {
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: background-color 0.2s ease;
+    }
+    .edit-media-btn:hover {
+        background-color: #2563eb;
+    }
+    .media-preview.error {
+        border: 2px solid #f87171;
+    }
+    .media-preview.loading::before {
+        content: '';
+        display: block;
+        width: 40px;
+        height: 40px;
+        margin: 0 auto;
+        border: 4px solid #3498db;
+        border-top: 4px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    #noteList {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        max-height: 600px;
+        overflow-y: auto;
+        padding-right: 8px;
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 #f1f5f9;
+    }
+    #noteList::-webkit-scrollbar {
+        width: 8px;
+    }
+    #noteList::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+    }
+    #noteList::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    #noteList .note-section {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    #noteList .note-content {
+        font-size: 1rem;
+        color: #1f2937;
+        line-height: 1.5;
+        word-break: break-word;
+    }
+    #noteList .media-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin-top: 8px;
+    }
+    #noteList .media-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        background-color: #f9fafb;
+        padding: 8px;
+    }
+    #noteList .media-item iframe {
+        border-radius: 8px;
+        width: 100%;
+        height: 150px;
+    }
+    #noteList .media-note {
+        font-size: 0.875rem;
+        color: #4b5563;
+        margin-top: 8px;
+        padding: 0 8px;
+    }
+    #noteList .note-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 8px;
+        font-size: 0.75rem;
+        color: #6b7280;
+    }
+    #noteList .note-actions {
+        display: flex;
+        gap: 8px;
+    }
+    #noteList .note-actions button {
+        background: none;
+        border: none;
+        color: #ef4444;
+        font-size: 0.875rem;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+    }
+    #noteList .note-actions button.edit-btn {
+        color: #3b82f6;
+    }
+    #noteList .note-actions button:hover {
+        background-color: #fef2f2;
+    }
+    #noteList .note-actions button.edit-btn:hover {
+        background-color: #eff6ff;
+    }
+    #noteList .note-date {
+        font-style: italic;
+    }
+    @media (max-width: 768px) {
         #noteList .media-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-            margin-top: 8px;
-        }
-        #noteList .media-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
-            background-color: #f9fafb;
-            padding: 8px;
+            grid-template-columns: 1fr;
         }
         #noteList .media-item iframe {
-            border-radius: 8px;
-            width: 100%;
-            height: 150px;
+            height: 120px;
         }
-        #noteList .media-note {
-            font-size: 0.875rem;
-            color: #4b5563;
-            margin-top: 8px;
-            padding: 0 8px;
+        .nav-buttons-container .nav-button {
+            width: 30px;
+            height: 30px;
+            font-size: 20px;
         }
-        #noteList .note-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 8px;
-            font-size: 0.75rem;
-            color: #6b7280;
-        }
-        #noteList .note-actions {
-            display: flex;
-            gap: 8px;
-        }
-        #noteList .note-actions button {
-            background: none;
-            border: none;
-            color: #ef4444;
-            font-size: 0.875rem;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
-            transition: background-color 0.2s ease;
-        }
-        #noteList .note-actions button.edit-btn {
-            color: #3b82f6;
-        }
-        #noteList .note-actions button:hover {
-            background-color: #fef2f2;
-        }
-        #noteList .note-actions button.edit-btn:hover {
-            background-color: #eff6ff;
-        }
-        #noteList .note-date {
-            font-style: italic;
-        }
-        @media (max-width: 768px) {
-            #noteList .media-container {
-                grid-template-columns: 1fr;
-            }
-            #noteList .media-item iframe {
-                height: 120px;
-            }
-        }
-        .error-message {
-            color: #f87171;
-            background-color: #fef2f2;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            display: none;
-            z-index: 5;
-        }
+    }
+    .error-message {
+        color: #f87171;
+        background-color: #fef2f2;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        display: none;
+        z-index: 5;
+    }
     </style>
 </head>
 <body class="ttr-opened-sidebar ttr-pinned-sidebar">
@@ -432,7 +489,7 @@
                             <ul>
                                 <c:forEach items="${subLessonsMap[a.lessonID]}" var="subLesson">
                                     <li>
-                                        <a href="lessonviewcontroller?lessonID=${subLesson.lessonID}" class="ttr-material-button lesson-link" data-lesson-id="${subLesson.lessonID}">
+                                        <a href="lessonviewcontroller?lessonID=${subLesson.lessonID}&courseID=${subLesson.course.courseID}" class="ttr-material-button lesson-link" data-lesson-id="${subLesson.lessonID}">
                                             <span class="ttr-label">
                                                 <span class="index"><c:out value="${c}"/>.</span>
                                                 <!--Tăng giá trị biến c sau khi xong 1 subLesson-->
@@ -526,6 +583,29 @@
                                             <c:if test="${prevLessonID <= 0}">
                                                 <span class="nav-button disabled"><i class="fas fa-chevron-left"></i></span>
                                             </c:if>
+                                                <div class="quiz-form1">
+                                                    <c:forEach items="${requestScope.listAllQuiz}" var="d">
+                                                        <c:if test="${d.lesson.lessonID eq b.lessonID}">
+                                                            <h3>${b.name}</h3>
+                                                            <h5 style="font-weight: normal;">${d.name}&nbsp;&nbsp;|&nbsp;&nbsp;${d.numberQuestions}&nbsp;questions</h5>
+                                                            <br/>
+                                                            <div class="exam-description">
+                                                                <i>${d.description}</i>
+                                                            </div>
+                                                        </c:if>
+                                                    </c:forEach>
+                                                    <br/>
+                               <!------------Sửa link ở đây sang màn hình để làm Quiz-->
+                                                    <form action="/submit" method="post">
+                                                        <button type="submit">Start Test</button>
+                                                    </form>
+
+                                                </div>
+                                                
+                                                <div class="quiz-form2">
+                                                    
+
+                                                </div>
                                             <c:if test="${nextLessonID > 0 && isLessonCompleted}">
                                                 <a href="lessonviewcontroller?lessonID=${nextLessonID}" class="nav-button"><i class="fas fa-chevron-right"></i></a>
                                             </c:if>
