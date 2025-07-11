@@ -57,8 +57,9 @@ public class QuizDAO extends DBContext {
                 int duration = rs.getInt(7);
                 Double passRate = rs.getDouble(8);
                 String quizType = rs.getString(9);
+                String des = rs.getString(10);
                 //Lấy entity
-                quiz = new Quiz(quizID, lesson, name, course, level, numberQuestions, duration, passRate, quizType);
+                quiz = new Quiz(quizID, lesson, name, course, level, numberQuestions, duration, passRate, quizType, des);
             }
 
         } catch (SQLException e) {
@@ -66,7 +67,7 @@ public class QuizDAO extends DBContext {
         }
         return quiz;
     }
-    
+
     // Lấy 1 bài Quiz với LessonID cụ thể
     public Quiz getQuizByLessonID(int lessonID) {
         Quiz quiz = null;
@@ -87,8 +88,9 @@ public class QuizDAO extends DBContext {
                 int duration = rs.getInt(7);
                 Double passRate = rs.getDouble(8);
                 String quizType = rs.getString(9);
+                String des = rs.getString(10);
                 //Lấy entity
-                quiz = new Quiz(quizID, lesson, name, course, level, numberQuestions, duration, passRate, quizType);
+                quiz = new Quiz(quizID, lesson, name, course, level, numberQuestions, duration, passRate, quizType, des);
             }
 
         } catch (SQLException e) {
@@ -208,7 +210,8 @@ public class QuizDAO extends DBContext {
                             rs.getInt("numQuestions"),
                             rs.getInt("duration"),
                             rs.getDouble("passRate"),
-                            rs.getString("quizType")
+                            rs.getString("quizType"),
+                            rs.getString("description")
                     );
                     //Add list
                     listQuiz.add(quiz);
@@ -255,7 +258,7 @@ public class QuizDAO extends DBContext {
         }
         return 0;
     }
-    
+
     public static void main(String[] args) {
         QuizDAO quizDAO = QuizDAO.getInstance(); // <-- dùng Singleton
         System.out.println(quizDAO.getQuizByLessonID(15).getName());
