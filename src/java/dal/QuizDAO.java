@@ -258,6 +258,8 @@ public class QuizDAO extends DBContext {
         }
         return 0;
     }
+    
+    
 
     public static void main(String[] args) {
         QuizDAO quizDAO = QuizDAO.getInstance(); // <-- dùng Singleton

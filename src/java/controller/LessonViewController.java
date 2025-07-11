@@ -5,6 +5,7 @@
 package controller;
 
 import dal.LessonDAO;
+import dal.QuizDAO;
 import dal.UserLessonNotesDAO;
 import dal.UserLessonProgressDAO;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import model.Lesson;
+import model.Quiz;
 import model.UserLessonNotes;
 import model.UserLessonProgress;
 
@@ -37,9 +39,6 @@ public class LessonViewController extends HttpServlet {
         //Lấy courseID
         String courseID_raw = request.getParameter("courseID");
         int courseID = -1;
-        if (courseID_raw == null || courseID_raw.isBlank()) {
-            courseID = 4;
-        }
         
         try {
             courseID = Integer.parseInt(courseID_raw);
@@ -126,6 +125,9 @@ public class LessonViewController extends HttpServlet {
             request.getRequestDispatcher("lesson-view.jsp").forward(request, response);
             return;
         }
+        
+        List<Quiz> listAllQuiz = QuizDAO.getInstance().getAllQuiz();
+        request.setAttribute("listAllQuiz", listAllQuiz);
 
         request.getRequestDispatcher("lesson-view.jsp").forward(request, response);
     }

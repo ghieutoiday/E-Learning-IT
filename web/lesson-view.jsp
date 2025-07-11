@@ -518,6 +518,8 @@
                                     <!--Nếu type = Quiz thì hiển thị bài Quiz Lesson-->
                                     <c:if test="${b.type eq 'Quiz'}">
                                         <div class="nav-buttons-container">
+                                            
+                                            
                                             <c:if test="${prevLessonID > 0}">
                                                 <a href="lessonviewcontroller?lessonID=${prevLessonID}" class="nav-button"><i class="fas fa-chevron-left"></i></a>
                                             </c:if>
