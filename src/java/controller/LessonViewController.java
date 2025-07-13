@@ -7,6 +7,7 @@ package controller;
 import dal.CourseDAO;
 import dal.LessonDAO;
 import dal.QuizDAO;
+import dal.QuizLessonDTO_DAO;
 import dal.UserLessonNotesDAO;
 import dal.UserLessonProgressDAO;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import java.util.logging.Level;
 import model.Course;
 import model.Lesson;
 import model.Quiz;
+import model.QuizLessonDTO;
 import model.UserLessonNotes;
 import model.UserLessonProgress;
 
@@ -90,9 +92,14 @@ public class LessonViewController extends HttpServlet {
             } else if (lesson.getType().equalsIgnoreCase("Lesson")){
                 request.setAttribute("chooseLesson", lesson);
             }else if (lesson.getType().equalsIgnoreCase("Quiz")){
+                //Lấy thông tin bài Quiz để in ra QuizLesson Form 1
                 Quiz quizChoose = QuizDAO.getInstance().getQuizByLessonID(lessonID);
                 request.setAttribute("chooseLesson", lesson);
                 request.setAttribute("quizChoose", quizChoose);
+                
+                //Lấy thông tin bài Quiz để in ra QuizLesson Form 2
+                QuizLessonDTO quizLessonDTO = QuizLessonDTO_DAO.getInstance().getQuizLessonDTOByUserIdAndQuizId(userID, quizChoose.getQuizID());
+                request.setAttribute("quizLessonDTO", quizLessonDTO);
             }
             
 
@@ -139,9 +146,8 @@ public class LessonViewController extends HttpServlet {
             return;
         }
         
-        //Lấy thông tin Quiz
-        List<Quiz> listAllQuiz = QuizDAO.getInstance().getAllQuiz();
-        request.setAttribute("listAllQuiz", listAllQuiz);
+        //Lấy thông tin của bài Quiz user làm mới nhất
+
 
         request.getRequestDispatcher("lesson-view.jsp").forward(request, response);
     }
