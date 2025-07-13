@@ -4,16 +4,15 @@
  */
 package dal;
 
+import java.security.Timestamp;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import model.Course;
 import model.DimensionResult;
-import model.Lesson;
-import model.Quiz;
 import model.QuizLessonDTO;
 
 /**
@@ -106,7 +105,7 @@ public class QuizLessonDTO_DAO extends DBContext{
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {  //Kiểm tra xem còn dữ liệu trong rs hay không
-                Date startTime = rs.getDate("startTime");
+                LocalDateTime startTime = rs.getTimestamp("startTime").toLocalDateTime();
                 int actualQuizTime = rs.getInt("actualQuizTime");
                 int correctAnswers = rs.getInt("correctAnswers");
                 int unansweredQuestions = rs.getInt("unansweredQuestions");
@@ -125,6 +124,8 @@ public class QuizLessonDTO_DAO extends DBContext{
     }
     
     public static void main(String[] args) {
-        System.out.println(QuizLessonDTO_DAO.getInstance().getQuizLessonDTOByUserIdAndQuizId(5, 4).getQuizStatus());
+        System.out.println(QuizLessonDTO_DAO.getInstance().getQuizLessonDTOByUserIdAndQuizId(5, 4).getStartTime().getYear()
+                + "-" + QuizLessonDTO_DAO.getInstance().getQuizLessonDTOByUserIdAndQuizId(5, 4).getStartTime().getMonthValue()
+                + "-" + QuizLessonDTO_DAO.getInstance().getQuizLessonDTOByUserIdAndQuizId(5, 4).getStartTime().getDayOfMonth());
     }
 }

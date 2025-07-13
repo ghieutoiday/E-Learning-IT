@@ -27,404 +27,490 @@
     <link class="skin" rel="stylesheet" type="text/css" href="admin/assets/css/color/color-1.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <style>
-    .quiz-form1 {
-        margin: 0 1%;
-        padding: 20px;
-        border: 2px solid #f0f0f0; /* Thêm khung với viền màu xám nhạt */
-        background-color: #f0f0f0; /* Nền màu xám */
-        border-radius: 5px;
-    }
-
-    .quiz-form1 > :first-child {
-        font-size: 2em;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-
-    .quiz-form1 > :nth-child(2) {
-        font-size: 1.3em;
-        font-weight: bold;
-        margin-bottom: 15px;
-    }
-
-    .quiz-form1 .exam-description {
-        background-color: #f0f0f0;
-        padding: 15px;
-        width: 80%;
-        max-width: 600px;
-        margin: 0 auto 20px auto;
-        text-align: center;
-        min-height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .quiz-form1 button[type="submit"] {
-        background-color: #6d28d2;
-        border: none;
-        padding: 10px 20px;
-        font-size: 1em;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        color: white;
-    }
-
-    .quiz-form1 button[type="submit"]:hover {
-        background-color: #c0c0c0;
-    }
-
-    .ttr-sidebar-navi .ttr-label {
-        white-space: normal;
-        overflow-wrap: break-word;
-        width: 100%;
-        display: block;
-    }
-    .ttr-sidebar {
-        overflow: visible;
-        width: 30%;
-    }
-    .ttr-wrapper {
-        margin-left: 30% !important;
-    }
-    .ttr-sidebar-navi a {
-        line-height: unset;
-    }
-    body:not(.ttr-opened-sidebar) .ttr-sidebar {
-        transform: translateX(-100%);
-    }
-    body:not(.ttr-opened-sidebar) .ttr-wrapper {
-        margin-left: 0 !important;
-        width: 100% !important;
-    }
-    .ttr-wrapper .video-container {
-        position: relative;
-        padding-bottom: 56.25%;
-        height: 0;
-        overflow: hidden;
-        margin-bottom: 20px;
-        background-color: #000;
-    }
-    .ttr-wrapper .video-container #player,
-    .ttr-wrapper .video-container .fallback-iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border-radius: 5px;
-        z-index: 1;
-    }
-    .ttr-wrapper .video-container .nav-button {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background-color: rgba(0, 123, 255, 0.8);
-        color: white;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
-        text-decoration: none;
-        font-size: 28px;
-        z-index: 10;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    .ttr-wrapper .video-container:hover .nav-button {
-        opacity: 1;
-    }
-    .ttr-wrapper .video-container .nav-button:hover {
-        background-color: rgba(0, 86, 179, 0.8);
-    }
-    .ttr-wrapper .video-container .nav-button.disabled {
-        background-color: rgba(204, 204, 204, 0.8);
-        pointer-events: none;
-        opacity: 0.5;
-    }
-    .ttr-wrapper .video-container .prev-button {
-        left: 10px;
-    }
-    .ttr-wrapper .video-container .next-button {
-        right: 10px;
-    }
-    .nav-buttons-container {
-        display: flex;
-        align-items: center; /* Căn giữa theo chiều dọc */
-        justify-content: space-between; /* Đặt nút ở hai bên */
-        margin-bottom: 20px;
-        max-width: 100%;
-        min-height: 60px; /* Đảm bảo đủ chiều cao để căn giữa */
-    }
-    .nav-buttons-container .quiz-form1 {
-        flex: 1; /* Để .quiz-form1 chiếm không gian giữa */
-    }
-    .nav-buttons-container .nav-button {
-        background-color: rgba(0, 123, 255, 0.8);
-        color: white;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
-        text-decoration: none;
-        font-size: 28px;
-    }
-    .nav-buttons-container .nav-button:hover {
-        background-color: rgba(0, 86, 179, 0.8);
-    }
-    .nav-buttons-container .nav-button.disabled {
-        background-color: rgba(204, 204, 204, 0.8);
-        pointer-events: none;
-    }
-    .media-preview {
-        max-height: 200px;
-        width: 100%;
-        object-fit: contain;
-        border-radius: 8px;
-        transition: transform 0.2s ease;
-    }
-    .media-preview:hover {
-        transform: scale(1.02);
-    }
-    .note-section {
-        transition: all 0.3s ease;
-        background-color: #ffffff;
-        border-radius: 12px;
-        padding: 16px;
-        margin-bottom: 16px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        border: 1px solid #e5e7eb;
-    }
-    .note-section:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        background-color: #f9fafb;
-    }
-    #mediaNotes .media-preview, #mediaNotes iframe {
-        display: block !important;
-        max-height: 200px !important;
-        width: 100% !important;
-        margin: 8px 0;
-        border-radius: 8px;
-    }
-    #mediaNotes .form-group {
-        border: 1px solid #e2e8f0;
-        padding: 12px;
-        border-radius: 8px;
-        background-color: #f7fafc;
-        margin-bottom: 12px;
-    }
-    #errorMessage:not(.hidden) {
-        display: block;
-        padding: 12px;
-        border: 1px solid #f87171;
-        border-radius: 8px;
-        background-color: #fef2f2;
-        margin-bottom: 16px;
-    }
-    .ttr-sidebar-navi .duration-label {
-        font-size: 0.8rem;
-        color: #6b7280;
-        margin-top: 4px;
-        display: block;
-    }
-    @media (max-width: 1024px) {
-        .ttr-sidebar {
-            width: 10%;
+        .custom-exam-header {
+            font-size: 1.1em;
+            color: #fff;
+            text-align: left !important;
         }
-        .ttr-wrapper {
-            margin-left: 10% !important;
+        .score-card, .exam-taken-card, .review-test-card, .redotest-card, .time-card {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
         }
-    }
-    @media (max-width: 768px) {
-        .ttr-sidebar {
+        .score-card .card-body {
+            text-align: center;
+        }
+        .score-card .card-title {
+            color: #333;
+            margin-bottom: 0;
+        }
+        .score-card .card-text.score-percentage {
+            font-size: 2.5em;
+            color: #ff0000;
+            font-weight: bold;
+            margin-bottom: 0;
+        }
+        .score-card .card-text.correct {
+            color: #000;
+            margin-bottom: 0;
+        }
+        .score-card .card-text.failed {
+            color: #ff0000;
+            font-weight: bold;
+            margin-bottom: 0;
+        }
+        .exam-taken-card .card-body {
+            text-align: center;
+        }
+        .exam-taken-card .card-text {
+            color: #333;
+            margin-bottom: 0;
+        }
+        
+        .exam-taken-card .card-text2 {
+            color: #333;
+            font-size: 0.8em;
+            margin-bottom: 0;
+        }
+        .review-test-card .card-body, .redotest-card .card-body {
+            text-align: center;
+            padding: 0.25rem;
+        }
+        .review-test-card .card-text, .redotest-card .card-text {
+            color: green;
+            font-size: 0.9em;
+            margin-bottom: 0;
+        }
+        .time-card {
+            min-height: 80px;
+            border-top: 2px solid #FFC107;
+        }
+        .time-card .card-body {
+            text-align: center;
+            padding: 0.25rem;
+        }
+        .time-card .card-text {
+            color: #333;
+            font-size: 0.8em;
+            margin-bottom: 0;
+        }
+        .table {
+            background-color: #ffffff;
+        }
+        .results-table-container {
+            background-color: #ffffff;
+            padding: 10px;
+            margin: 0 auto;
             width: 100%;
-            position: fixed;
-            z-index: 1000;
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
         }
-        .ttr-opened-sidebar .ttr-sidebar {
-            transform: translateX(0);
+        
+        .quiz-form1 {
+            margin: 0 1%;
+            padding: 20px;
+            border: 2px solid #f0f0f0; /* Thêm khung với viền màu xám nhạt */
+            background-color: #f0f0f0; /* Nền màu xám */
+            border-radius: 5px;
+        }
+
+        .quiz-form1 > :first-child {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .quiz-form1 > :nth-child(2) {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .quiz-form1 .exam-description {
+            background-color: #f0f0f0;
+            padding: 15px;
+            width: 80%;
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            text-align: center;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quiz-form1 button[type="submit"] {
+            background-color: #6d28d2;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            color: white;
+        }
+
+        .quiz-form1 button[type="submit"]:hover {
+            background-color: #c0c0c0;
+        }
+
+        .ttr-sidebar-navi .ttr-label {
+            white-space: normal;
+            overflow-wrap: break-word;
+            width: 100%;
+            display: block;
+        }
+        .ttr-sidebar {
+            overflow: visible;
+            width: 30%;
         }
         .ttr-wrapper {
-            margin-left: 0;
+            margin-left: 30% !important;
+        }
+        .ttr-sidebar-navi a {
+            line-height: unset;
+        }
+        body:not(.ttr-opened-sidebar) .ttr-sidebar {
+            transform: translateX(-100%);
+        }
+        body:not(.ttr-opened-sidebar) .ttr-wrapper {
+            margin-left: 0 !important;
+            width: 100% !important;
+        }
+        .quiz-form2 {
+            width: 100%; /* Đảm bảo form mở rộng toàn bộ chiều rộng */
+            margin: 0; /* Loại bỏ margin cố định */
+            padding: 20px; /* Giữ padding để không mất giao diện */
+        }
+        body:not(.ttr-opened-sidebar) .quiz-form2 {
+            margin: 0 auto; /* Căn giữa khi sidebar đóng */
+            max-width: 100%; /* Đảm bảo không vượt quá chiều rộng màn hình */
+        }
+        .ttr-wrapper .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            margin-bottom: 20px;
+            background-color: #000;
+        }
+        .ttr-wrapper .video-container #player,
+        .ttr-wrapper .video-container .fallback-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            z-index: 1;
         }
         .ttr-wrapper .video-container .nav-button {
-            width: 30px;
-            height: 30px;
-            font-size: 20px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 123, 255, 0.8);
+            color: white;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 28px;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .ttr-wrapper .video-container:hover .nav-button {
+            opacity: 1;
+        }
+        .ttr-wrapper .video-container .nav-button:hover {
+            background-color: rgba(0, 86, 179, 0.8);
+        }
+        .ttr-wrapper .video-container .nav-button.disabled {
+            background-color: rgba(204, 204, 204, 0.8);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        .ttr-wrapper .video-container .prev-button {
+            left: 10px;
+        }
+        .ttr-wrapper .video-container .next-button {
+            right: 10px;
+        }
+        .nav-buttons-container {
+            display: flex;
+            align-items: center; /* Căn giữa theo chiều dọc */
+            justify-content: space-between; /* Đặt nút ở hai bên */
+            margin-bottom: 20px;
+            max-width: 100%;
+            min-height: 60px; /* Đảm bảo đủ chiều cao để căn giữa */
+        }
+        .nav-buttons-container .quiz-form1 {
+            flex: 1; /* Để .quiz-form1 chiếm không gian giữa */
         }
         .nav-buttons-container .nav-button {
-            width: 30px;
-            height: 30px;
-            font-size: 20px;
+            background-color: rgba(0, 123, 255, 0.8);
+            color: white;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 28px;
         }
-    }
-    .delete-media-btn {
-        background-color: #ef4444;
-        color: white;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 0.875rem;
-        transition: background-color 0.2s ease;
-    }
-    .delete-media-btn:hover {
-        background-color: #dc2626;
-    }
-    .edit-media-btn {
-        background-color: #3b82f6;
-        color: white;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 0.875rem;
-        transition: background-color 0.2s ease;
-    }
-    .edit-media-btn:hover {
-        background-color: #2563eb;
-    }
-    .media-preview.error {
-        border: 2px solid #f87171;
-    }
-    .media-preview.loading::before {
-        content: '';
-        display: block;
-        width: 40px;
-        height: 40px;
-        margin: 0 auto;
-        border: 4px solid #3498db;
-        border-top: 4px solid transparent;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    #noteList {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        max-height: 600px;
-        overflow-y: auto;
-        padding-right: 8px;
-        scrollbar-width: thin;
-        scrollbar-color: #cbd5e1 #f1f5f9;
-    }
-    #noteList::-webkit-scrollbar {
-        width: 8px;
-    }
-    #noteList::-webkit-scrollbar-track {
-        background: #f1f5f9;
-        border-radius: 4px;
-    }
-    #noteList::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 4px;
-    }
-    #noteList .note-section {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-    #noteList .note-content {
-        font-size: 1rem;
-        color: #1f2937;
-        line-height: 1.5;
-        word-break: break-word;
-    }
-    #noteList .media-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 12px;
-        margin-top: 8px;
-    }
-    #noteList .media-item {
-        position: relative;
-        overflow: hidden;
-        border-radius: 8px;
-        border: 1px solid #e5e7eb;
-        background-color: #f9fafb;
-        padding: 8px;
-    }
-    #noteList .media-item iframe {
-        border-radius: 8px;
-        width: 100%;
-        height: 150px;
-    }
-    #noteList .media-note {
-        font-size: 0.875rem;
-        color: #4b5563;
-        margin-top: 8px;
-        padding: 0 8px;
-    }
-    #noteList .note-meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 8px;
-        font-size: 0.75rem;
-        color: #6b7280;
-    }
-    #noteList .note-actions {
-        display: flex;
-        gap: 8px;
-    }
-    #noteList .note-actions button {
-        background: none;
-        border: none;
-        color: #ef4444;
-        font-size: 0.875rem;
-        cursor: pointer;
-        padding: 4px 8px;
-        border-radius: 4px;
-        transition: background-color 0.2s ease;
-    }
-    #noteList .note-actions button.edit-btn {
-        color: #3b82f6;
-    }
-    #noteList .note-actions button:hover {
-        background-color: #fef2f2;
-    }
-    #noteList .note-actions button.edit-btn:hover {
-        background-color: #eff6ff;
-    }
-    #noteList .note-date {
-        font-style: italic;
-    }
-    @media (max-width: 768px) {
+        .nav-buttons-container .nav-button:hover {
+            background-color: rgba(0, 86, 179, 0.8);
+        }
+        .nav-buttons-container .nav-button.disabled {
+            background-color: rgba(204, 204, 204, 0.8);
+            pointer-events: none;
+        }
+        .media-preview {
+            max-height: 200px;
+            width: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            transition: transform 0.2s ease;
+        }
+        .media-preview:hover {
+            transform: scale(1.02);
+        }
+        .note-section {
+            transition: all 0.3s ease;
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+        .note-section:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background-color: #f9fafb;
+        }
+        #mediaNotes .media-preview, #mediaNotes iframe {
+            display: block !important;
+            max-height: 200px !important;
+            width: 100% !important;
+            margin: 8px 0;
+            border-radius: 8px;
+        }
+        #mediaNotes .form-group {
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: #f7fafc;
+            margin-bottom: 12px;
+        }
+        #errorMessage:not(.hidden) {
+            display: block;
+            padding: 12px;
+            border: 1px solid #f87171;
+            border-radius: 8px;
+            background-color: #fef2f2;
+            margin-bottom: 16px;
+        }
+        .ttr-sidebar-navi .duration-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 4px;
+            display: block;
+        }
+        @media (max-width: 1024px) {
+            .ttr-sidebar {
+                width: 10%;
+            }
+            .ttr-wrapper {
+                margin-left: 10% !important;
+            }
+        }
+        @media (max-width: 768px) {
+            .ttr-sidebar {
+                width: 100%;
+                position: fixed;
+                z-index: 1000;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .ttr-opened-sidebar .ttr-sidebar {
+                transform: translateX(0);
+            }
+            .ttr-wrapper {
+                margin-left: 0;
+            }
+            .ttr-wrapper .video-container .nav-button {
+                width: 30px;
+                height: 30px;
+                font-size: 20px;
+            }
+            .nav-buttons-container .nav-button {
+                width: 30px;
+                height: 30px;
+                font-size: 20px;
+            }
+        }
+        .delete-media-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: background-color 0.2s ease;
+        }
+        .delete-media-btn:hover {
+            background-color: #dc2626;
+        }
+        .edit-media-btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: background-color 0.2s ease;
+        }
+        .edit-media-btn:hover {
+            background-color: #2563eb;
+        }
+        .media-preview.error {
+            border: 2px solid #f87171;
+        }
+        .media-preview.loading::before {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto;
+            border: 4px solid #3498db;
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #noteList {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 8px;
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 #f1f5f9;
+        }
+        #noteList::-webkit-scrollbar {
+            width: 8px;
+        }
+        #noteList::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        #noteList::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        #noteList .note-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        #noteList .note-content {
+            font-size: 1rem;
+            color: #1f2937;
+            line-height: 1.5;
+            word-break: break-word;
+        }
         #noteList .media-container {
-            grid-template-columns: 1fr;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
+        }
+        #noteList .media-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+            padding: 8px;
         }
         #noteList .media-item iframe {
-            height: 120px;
+            border-radius: 8px;
+            width: 100%;
+            height: 150px;
         }
-        .nav-buttons-container .nav-button {
-            width: 30px;
-            height: 30px;
-            font-size: 20px;
+        #noteList .media-note {
+            font-size: 0.875rem;
+            color: #4b5563;
+            margin-top: 8px;
+            padding: 0 8px;
         }
-    }
-    .error-message {
-        color: #f87171;
-        background-color: #fef2f2;
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 10px;
-        display: none;
-        z-index: 5;
-    }
+        #noteList .note-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        #noteList .note-actions {
+            display: flex;
+            gap: 8px;
+        }
+        #noteList .note-actions button {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 0.875rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+        #noteList .note-actions button.edit-btn {
+            color: #3b82f6;
+        }
+        #noteList .note-actions button:hover {
+            background-color: #fef2f2;
+        }
+        #noteList .note-actions button.edit-btn:hover {
+            background-color: #eff6ff;
+        }
+        #noteList .note-date {
+            font-style: italic;
+        }
+        @media (max-width: 768px) {
+            #noteList .media-container {
+                grid-template-columns: 1fr;
+            }
+            #noteList .media-item iframe {
+                height: 120px;
+            }
+            .nav-buttons-container .nav-button {
+                width: 30px;
+                height: 30px;
+                font-size: 20px;
+            }
+        }
+        .error-message {
+            color: #f87171;
+            background-color: #fef2f2;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: none;
+            z-index: 5;
+        }
     </style>
 </head>
 <body class="ttr-opened-sidebar ttr-pinned-sidebar">
+    <c:set var="course" value="${requestScope.choosenCourse}"/>
     <header class="ttr-header">
         <div class="ttr-header-wrapper">
             <div class="ttr-toggle-sidebar ttr-material-button">
@@ -439,8 +525,8 @@
             </div>
             <div class="ttr-header-menu">
                 <ul class="ttr-header-navigation">
-                    <li><a href="../index.jsp" class="ttr-material-button ttr-submenu-toggle">HOME</a></li>
-                    <li><a href="#" class="ttr-material-button ttr-submenu-toggle">Mastering Python & Java</a></li>
+                    <li><a href="index.jsp" class="ttr-material-button ttr-submenu-toggle">HOME</a></li>
+                    <li><a href="#" class="ttr-material-button ttr-submenu-toggle">${course.courseName}</a></li>
                 </ul>
             </div>
             <div class="ttr-header-right ttr-with-seperator">
@@ -454,7 +540,7 @@
     <div class="ttr-sidebar">
         <div class="ttr-sidebar-wrapper content-scroll">
             <div class="ttr-sidebar-logo">
-                <a href="#"><img alt="" src="admin/assets/images/course-content.png" width="150" height="37"></a>
+                <a href="index.jsp"><img alt="" src="admin/assets/images/course-content.png" width="150" height="37"></a>
                 <div class="ttr-sidebar-toggle-button"><i class="ti-arrow-left"></i></div>
             </div>
             <nav class="ttr-sidebar-navi">
@@ -464,7 +550,7 @@
                 <ul>
                     <c:forEach items="${requestScope.subjectTopicLesson}" var="a">
                         <li>
-                            <a href="#" class="ttr-material-button">
+                            <a class="ttr-material-button">
                                 <span class="ttr-label">
                                     <span class="index">
                                         <h6><c:out value="${d}"/>. ${a.name}</h6>
@@ -489,7 +575,7 @@
                             <ul>
                                 <c:forEach items="${subLessonsMap[a.lessonID]}" var="subLesson">
                                     <li>
-                                        <a href="lessonviewcontroller?lessonID=${subLesson.lessonID}&courseID=${subLesson.course.courseID}" class="ttr-material-button lesson-link" data-lesson-id="${subLesson.lessonID}">
+                                        <a href="lessonviewcontroller?lessonID=${subLesson.lessonID}&courseID=${course.courseID}" class="ttr-material-button lesson-link" data-lesson-id="${subLesson.lessonID}">
                                             <span class="ttr-label">
                                                 <span class="index"><c:out value="${c}"/>.</span>
                                                 <!--Tăng giá trị biến c sau khi xong 1 subLesson-->
@@ -552,15 +638,12 @@
                                                 <iframe class="fallback-iframe" src="${b.contentVideo}" frameborder="0" allowfullscreen></iframe>
                                                 <div id="video-error" class="error-message"></div>
                                                 <c:if test="${prevLessonID > 0}">
-                                                    <a href="lessonviewcontroller?lessonID=${prevLessonID}" class="nav-button prev-button"><i class="fas fa-chevron-left"></i></a>
-                                                </c:if>
-                                                <c:if test="${prevLessonID <= 0}">
-                                                    <span class="nav-button prev-button disabled"><i class="fas fa-chevron-left"></i></span>
+                                                    <a href="lessonviewcontroller?lessonID=${prevLessonID}&courseID=${course.courseID}" class="nav-button prev-button"><i class="fas fa-chevron-left"></i></a>
                                                 </c:if>
                                                 <c:if test="${nextLessonID > 0 && isLessonCompleted}">
-                                                    <a href="lessonviewcontroller?lessonID=${nextLessonID}" class="nav-button next-button"><i class="fas fa-chevron-right"></i></a>
+                                                    <a href="lessonviewcontroller?lessonID=${nextLessonID}&courseID=${course.courseID}" class="nav-button next-button"><i class="fas fa-chevron-right"></i></a>
                                                 </c:if>
-                                                <c:if test="${nextLessonID <= 0 || !isLessonCompleted}">
+                                                <c:if test="${nextLessonID > 0 && !isLessonCompleted}">
                                                     <span class="nav-button next-button disabled"><i class="fas fa-chevron-right"></i></span>
                                                 </c:if>
                                             </div>
@@ -576,41 +659,128 @@
                                     <c:if test="${b.type eq 'Quiz'}">
                                         <div class="nav-buttons-container">
                                             
-                                            
                                             <c:if test="${prevLessonID > 0}">
-                                                <a href="lessonviewcontroller?lessonID=${prevLessonID}" class="nav-button"><i class="fas fa-chevron-left"></i></a>
+                                                <a href="lessonviewcontroller?lessonID=${prevLessonID}&courseID=${course.courseID}" class="nav-button"><i class="fas fa-chevron-left"></i></a>
                                             </c:if>
-                                            <c:if test="${prevLessonID <= 0}">
-                                                <span class="nav-button disabled"><i class="fas fa-chevron-left"></i></span>
-                                            </c:if>
-                                                <div class="quiz-form1">
-                                                    <c:forEach items="${requestScope.listAllQuiz}" var="d">
-                                                        <c:if test="${d.lesson.lessonID eq b.lessonID}">
-                                                            <h3>${b.name}</h3>
-                                                            <h5 style="font-weight: normal;">${d.name}&nbsp;&nbsp;|&nbsp;&nbsp;${d.numberQuestions}&nbsp;questions</h5>
-                                                            <br/>
-                                                            <div class="exam-description">
-                                                                <i>${d.description}</i>
-                                                            </div>
-                                                        </c:if>
-                                                    </c:forEach>
-                                                    <br/>
-                               <!------------Sửa link ở đây sang màn hình để làm Quiz-->
-                                                    <form action="/submit" method="post">
-                                                        <button type="submit">Start Test</button>
-                                                    </form>
-
-                                                </div>
                                                 
-                                                <div class="quiz-form2">
-                                                    
-
+                            <!-----------------------------Form 1-->    
+                                            
+                            <!-----------------------------Form 2-->                                 
+                                    <div class="quiz-form2">
+        
+                                        <div class="bg-light p-3 rounded">
+                                        <div class="bg-secondary bg-opacity-25 p-2 mb-3 custom-exam-header">
+                                            Exam | 20-6-2025 | 11:07 | 10 Questions
+                                        </div>
+                                            <div class="row g-3">
+                                                <div class="col-12 col-md-3">
+                                                    <div class="row g-2">
+                                                        <div class="col-12">
+                                                            <div class="card score-card">
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title">SCORE</h5>
+                                                                    <br/>
+                                                                    <p class="card-text score-percentage">50%</p>
+                                                                    <p class="card-text correct">Correct: 5/10</p>
+                                                                    <p class="card-text failed">FAILED THE EXAM</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 mt-2">
+                                                            <div class="card exam-taken-card">
+                                                                <div class="card-body">
+                                                                    <p class="card-text">EXAM</p>
+                                                                    <p class="card-text2">TAKEN 20-6-2025</p>
+                                                                    <p class="card-text">11:07</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
+                                                <div class="col-12 col-md-9">
+                                                    <div class="results-table-container">
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr class="table-secondary">
+                                                                    <th>RESULTS BY THE GROUP</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>Initiation: 35%</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Planning: 59%</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Executing: 46%</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>M&C: 72%</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Closing: 75%</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row g-3 mt-3">
+                                                <div class="col-12 col-md-3">
+                                                    <div class="row g-2">
+                                                        <div class="col-12">
+                                                            <div class="card review-test-card">
+                                                                <div class="card-body">
+                                                                    <p class="card-text">REVIEW TEST</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 mt-2">
+                                                            <div class="card redotest-card">
+                                                                <div class="card-body">
+                                                                    <p class="card-text">REDOTEST</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-9">
+                                                    <div class="row g-2">
+                                                        <div class="col-4">
+                                                            <div class="card time-card">
+                                                                <div class="card-body">
+                                                                    <p class="card-text">AVERAGE TIME TO QUESTION</p>
+                                                                    <p class="card-text">98 sec</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <div class="card time-card">
+                                                                <div class="card-body">
+                                                                    <p class="card-text">TOTAL TIMES</p>
+                                                                    <p class="card-text">00:27:38</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <div class="card time-card">
+                                                                <div class="card-body">
+                                                                    <p class="card-text">UN-ANSWER QUESTION</p>
+                                                                    <p class="card-text">4 questions</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                             <c:if test="${nextLessonID > 0 && isLessonCompleted}">
-                                                <a href="lessonviewcontroller?lessonID=${nextLessonID}" class="nav-button"><i class="fas fa-chevron-right"></i></a>
+                                                <a href="lessonviewcontroller?lessonID=${nextLessonID}&courseID=${course.courseID}" class="nav-button next-button"><i class="fas fa-chevron-right"></i></a>
                                             </c:if>
-                                            <c:if test="${nextLessonID <= 0 || !isLessonCompleted}">
-                                                <span class="nav-button disabled"><i class="fas fa-chevron-right"></i></span>
+                                            <c:if test="${nextLessonID > 0 && !isLessonCompleted}">
+                                                <span class="nav-button next-button disabled"><i class="fas fa-chevron-right"></i></span>
                                             </c:if>
                                         </div>
                                     </c:if>
