@@ -15,16 +15,14 @@ public class DimensionResult {
     private String dimensionName;
     private int totalQuestions;
     private int correctCount;
-    private double percentageCorrect;
 
     public DimensionResult() {
     }
 
-    public DimensionResult(String dimensionName, int totalQuestions, int correctCount, double percentageCorrect) {
+    public DimensionResult(String dimensionName, int totalQuestions, int correctCount) {
         this.dimensionName = dimensionName;
         this.totalQuestions = totalQuestions;
         this.correctCount = correctCount;
-        this.percentageCorrect = percentageCorrect;
     }
 
     public String getDimensionName() {
@@ -49,14 +47,6 @@ public class DimensionResult {
 
     public void setCorrectCount(int correctCount) {
         this.correctCount = correctCount;
-    }
-
-    public double getPercentageCorrect() {
-        return percentageCorrect;
-    }
-
-    public void setPercentageCorrect(double percentageCorrect) {
-        this.percentageCorrect = percentageCorrect;
     }
 
     
