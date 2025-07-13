@@ -4,13 +4,11 @@
  */
 package dal;
 
-import java.security.Timestamp;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import model.DimensionResult;
 import model.QuizLessonDTO;
@@ -43,7 +41,8 @@ public class QuizLessonDTO_DAO extends DBContext{
 
         try {
             String sql = """
-                     SELECT 
+                     SELECT  
+                             sd.type AS dimensionType,
                              sd.name AS dimensionName,
                              COUNT(*) AS totalQuestions,
                              SUM(CASE WHEN uqa.isCorrect = 1 THEN 1 ELSE 0 END) AS correctCount
@@ -53,7 +52,7 @@ public class QuizLessonDTO_DAO extends DBContext{
                          JOIN SubjectDimension sd ON q.dimensionID = sd.dimensionID
                          WHERE uqa.userID = ?
                          AND uqa.quizID =  ?
-                         GROUP BY uqa.userID, uqa.quizID, sd.name, sd.dimensionID""";
+                         GROUP BY uqa.userID, uqa.quizID, sd.name, sd.type""";
             
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, userID);
@@ -61,11 +60,12 @@ public class QuizLessonDTO_DAO extends DBContext{
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {  //Kiểm tra xem còn dữ liệu trong rs hay không
-                String dimensionName = rs.getString(1);
-                int totalQuestions = rs.getInt(2);
-                int correctCount = rs.getInt(3);
+                String dimensionType = rs.getString(1);
+                String dimensionName = rs.getString(2);
+                int totalQuestions = rs.getInt(3);
+                int correctCount = rs.getInt(4);
                 //Lấy entity
-                DimensionResult dr = new DimensionResult(dimensionName, totalQuestions, correctCount);
+                DimensionResult dr = new DimensionResult(dimensionType, dimensionName, totalQuestions, correctCount);
                 
                 listAllDimensionResults.add(dr);
             }
@@ -126,6 +126,6 @@ public class QuizLessonDTO_DAO extends DBContext{
     public static void main(String[] args) {
         System.out.println(QuizLessonDTO_DAO.getInstance().getQuizLessonDTOByUserIdAndQuizId(5, 4).getStartTime().getYear()
                 + "-" + QuizLessonDTO_DAO.getInstance().getQuizLessonDTOByUserIdAndQuizId(5, 4).getStartTime().getMonthValue()
-                + "-" + QuizLessonDTO_DAO.getInstance().getQuizLessonDTOByUserIdAndQuizId(5, 4).getStartTime().getDayOfMonth());
+                + "-" + QuizLessonDTO_DAO.getInstance().getQuizLessonDTOByUserIdAndQuizId(5, 4).getStartTime().getHour());
     }
 }

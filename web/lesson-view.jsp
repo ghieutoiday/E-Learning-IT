@@ -664,14 +664,35 @@
                                             </c:if>
                                                 
                             <!-----------------------------Form 1-->    
-                                            
+<!--                                    <div class="quiz-form1">
+                                                <c:set var="d" value="${requestScope.quizChoose}"/>
+                                                        <h3>${b.name}</h3>
+                                                        <h5 style="font-weight: normal;">${d.name}&nbsp;&nbsp;|&nbsp;&nbsp;${d.numberQuestions}&nbsp;questions</h5>
+                                                        <br/>
+                                                        <div class="exam-description">
+                                                            <i>${d.description}</i>
+                                                        </div>
+                                                <br/>
+                           ----------Sửa link ở đây sang màn hình để làm Quiz
+                                                <form action="/submit" method="post">
+                                                    <button type="submit">Start Test</button>
+                                                </form>
+
+                                    </div>        -->
                             <!-----------------------------Form 2-->                                 
                                     <div class="quiz-form2">
-        
+                                        <c:set var="e" value="${requestScope.quizLessonDTO}"/>
                                         <div class="bg-light p-3 rounded">
-                                        <div class="bg-secondary bg-opacity-25 p-2 mb-3 custom-exam-header">
-                                            Exam | 20-6-2025 | 11:07 | 10 Questions
-                                        </div>
+                                            <div class="bg-secondary bg-opacity-25 p-2 mb-3 custom-exam-header">
+                                                <c:if test="${not empty e and not empty e.startTime}">
+                                                    Exam | 
+                                                    ${e.startTime.getDayOfMonth() < 10 ? '0' : ''}${e.startTime.getDayOfMonth()}/${e.startTime.getMonthValue() < 10 ? '0' : ''}${e.startTime.getMonthValue()}/${e.startTime.getYear()} | 
+                                                    ${e.startTime.getHour() < 10 ? '0' : ''}${e.startTime.getHour()}: 
+                                                    ${e.startTime.getMinute() < 10 ? '0' : ''}${e.startTime.getMinute()} | 
+                                                    ${e.numberQuestions} Questions
+                                                </c:if>
+                                            </div>
+
                                             <div class="row g-3">
                                                 <div class="col-12 col-md-3">
                                                     <div class="row g-2">
@@ -680,9 +701,26 @@
                                                                 <div class="card-body">
                                                                     <h5 class="card-title">SCORE</h5>
                                                                     <br/>
-                                                                    <p class="card-text score-percentage">50%</p>
-                                                                    <p class="card-text correct">Correct: 5/10</p>
-                                                                    <p class="card-text failed">FAILED THE EXAM</p>
+                                                                    <c:if test="${e.quizStatus eq 'Pass'}">
+                                                                        <p style="color: green" class="card-text score-percentage">
+                                                                            <fmt:formatNumber value="${(e.correctAnswers * 100) div e.numberQuestions}" type="number" maxFractionDigits="0" />%
+                                                                        </p>
+                                                                    </c:if>
+                                                                    <c:if test="${e.quizStatus eq 'Fail'}">
+                                                                        <p style="color: red" class="card-text score-percentage">
+                                                                            <fmt:formatNumber value="${(e.correctAnswers * 100) div e.numberQuestions}" type="number" maxFractionDigits="0" />%
+                                                                        </p>
+                                                                    </c:if>
+                                                                    
+                                                                    
+                                                                    <p class="card-text correct">Correct: ${e.correctAnswers}/${e.numberQuestions}</p>
+                                                                    
+                                                                    <c:if test="${e.quizStatus eq 'Pass'}">
+                                                                        <p style="color: green" class="card-text failed">${e.quizStatus}</p>
+                                                                    </c:if>
+                                                                    <c:if test="${e.quizStatus eq 'Fail'}">
+                                                                        <p style="color: red" class="card-text failed">${e.quizStatus}</p>
+                                                                    </c:if>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -690,8 +728,14 @@
                                                             <div class="card exam-taken-card">
                                                                 <div class="card-body">
                                                                     <p class="card-text">EXAM</p>
-                                                                    <p class="card-text2">TAKEN 20-6-2025</p>
-                                                                    <p class="card-text">11:07</p>
+                                                                    <p class="card-text2">
+                                                                        TAKEN
+                                                                        ${e.startTime.getDayOfMonth() < 10 ? '0' : ''}${e.startTime.getDayOfMonth()}/${e.startTime.getMonthValue() < 10 ? '0' : ''}${e.startTime.getMonthValue()}/${e.startTime.getYear()}
+                                                                    </p>
+                                                                    <p class="card-text">
+                                                                        ${e.startTime.getHour() < 10 ? '0' : ''}${e.startTime.getHour()} : 
+                                                                        ${e.startTime.getMinute() < 10 ? '0' : ''}${e.startTime.getMinute()}
+                                                                    </p>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -699,28 +743,23 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <div class="results-table-container">
+                                                        <c:set var="f" value="${e.dimensionResults}"/>
                                                         <table class="table table-bordered">
                                                             <thead>
                                                                 <tr class="table-secondary">
-                                                                    <th>RESULTS BY THE GROUP</th>
+                                                                    <th>${f[0].dimensionType}</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <tr>
-                                                                    <td>Initiation: 35%</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Planning: 59%</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Executing: 46%</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>M&C: 72%</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Closing: 75%</td>
-                                                                </tr>
+                                                                <c:forEach var="g" items="${f}">
+                                                                    <tr>
+                                                                        <td>
+                                                                            ${g.dimensionName} : 
+                                                                            <fmt:formatNumber value="${(g.correctCount * 100) div g.totalQuestions}" type="number" maxFractionDigits="0" />%
+                                                                        </td>
+                                                                    </tr>
+                                                                </c:forEach>
+                                                                
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -739,7 +778,7 @@
                                                         <div class="col-12 mt-2">
                                                             <div class="card redotest-card">
                                                                 <div class="card-body">
-                                                                    <p class="card-text">REDOTEST</p>
+                                                                    <p class="card-text">REDO TEST</p>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -751,7 +790,10 @@
                                                             <div class="card time-card">
                                                                 <div class="card-body">
                                                                     <p class="card-text">AVERAGE TIME TO QUESTION</p>
-                                                                    <p class="card-text">98 sec</p>
+                                                                    <p class="card-text">
+                                                                        <fmt:formatNumber value="${e.actualQuizTime  div e.numberQuestions}" type="number" maxFractionDigits="0" /> sec
+                                                                    </p>
+                                                                    
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -759,7 +801,9 @@
                                                             <div class="card time-card">
                                                                 <div class="card-body">
                                                                     <p class="card-text">TOTAL TIMES</p>
-                                                                    <p class="card-text">00:27:38</p>
+                                                                    <p class="card-text">
+                                                                        ${e.actualQuizTime} sec
+                                                                    </p>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -767,7 +811,9 @@
                                                             <div class="card time-card">
                                                                 <div class="card-body">
                                                                     <p class="card-text">UN-ANSWER QUESTION</p>
-                                                                    <p class="card-text">4 questions</p>
+                                                                    <p class="card-text">
+                                                                        ${e.unAnswers} question
+                                                                    </p>
                                                                 </div>
                                                             </div>
                                                         </div>

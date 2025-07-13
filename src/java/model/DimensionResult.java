@@ -12,6 +12,7 @@ package model;
 //Class này tạo ra để dùng trong QuizLessonDTO (hiển thị ra List kết quả theo Dimension)
 public class DimensionResult {
     
+    private String dimensionType;
     private String dimensionName;
     private int totalQuestions;
     private int correctCount;
@@ -19,10 +20,19 @@ public class DimensionResult {
     public DimensionResult() {
     }
 
-    public DimensionResult(String dimensionName, int totalQuestions, int correctCount) {
+    public DimensionResult(String dimensionType, String dimensionName, int totalQuestions, int correctCount) {
+        this.dimensionType = dimensionType;
         this.dimensionName = dimensionName;
         this.totalQuestions = totalQuestions;
         this.correctCount = correctCount;
+    }
+
+    public String getDimensionType() {
+        return dimensionType;
+    }
+
+    public void setDimensionType(String dimensionType) {
+        this.dimensionType = dimensionType;
     }
 
     public String getDimensionName() {
