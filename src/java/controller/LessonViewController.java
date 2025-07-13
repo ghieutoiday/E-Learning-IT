@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dal.CourseDAO;
 import dal.LessonDAO;
 import dal.QuizDAO;
 import dal.UserLessonNotesDAO;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import model.Course;
 import model.Lesson;
 import model.Quiz;
 import model.UserLessonNotes;
@@ -43,6 +45,10 @@ public class LessonViewController extends HttpServlet {
         
         try {
             courseID = Integer.parseInt(courseID_raw);
+            //Lấy course đưa sang JSP để mỗi lần chuyển bài học
+            //nó vẫn còn courseID ở đó
+            Course course = new CourseDAO().getCoureByCourseID(courseID);
+            request.setAttribute("choosenCourse", course);
         } catch (NumberFormatException e) {
             System.out.println(e.getMessage());
         }
@@ -81,8 +87,14 @@ public class LessonViewController extends HttpServlet {
                 request.setAttribute("errorMessage", "Lesson not found");
                 request.getRequestDispatcher("lesson-view.jsp").forward(request, response);
                 return;
+            } else if (lesson.getType().equalsIgnoreCase("Lesson")){
+                request.setAttribute("chooseLesson", lesson);
+            }else if (lesson.getType().equalsIgnoreCase("Quiz")){
+                Quiz quizChoose = QuizDAO.getInstance().getQuizByLessonID(lessonID);
+                request.setAttribute("chooseLesson", lesson);
+                request.setAttribute("quizChoose", quizChoose);
             }
-            request.setAttribute("chooseLesson", lesson);
+            
 
             UserLessonProgress progress = UserLessonProgressDAO.getInstance().getUserLessonProgressByUserAndLesson(userID, lessonID);
             boolean isLessonCompleted = (progress != null && "Completed".equals(progress.getStatus()));
@@ -127,6 +139,7 @@ public class LessonViewController extends HttpServlet {
             return;
         }
         
+        //Lấy thông tin Quiz
         List<Quiz> listAllQuiz = QuizDAO.getInstance().getAllQuiz();
         request.setAttribute("listAllQuiz", listAllQuiz);
 
