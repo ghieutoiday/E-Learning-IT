@@ -4,6 +4,7 @@
  */
 package model;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,6 +15,7 @@ import java.util.List;
 //Class này tạo ra để hiển thị kết quả cho màn Quiz Lesson - Form 2
 public class QuizLessonDTO {
 
+    private Date startTime;
     private int actualQuizTime, correctAnswers, unAnswers, numberQuestions;
     private List<DimensionResult> dimensionResults;
     private String quizStatus;
@@ -21,13 +23,22 @@ public class QuizLessonDTO {
     public QuizLessonDTO() {
     }
 
-    public QuizLessonDTO(int actualQuizTime, int correctAnswers, int unAnswers, int numberQuestions, List<DimensionResult> dimensionResults, String quizStatus) {
+    public QuizLessonDTO(Date startTime, int actualQuizTime, int correctAnswers, int unAnswers, int numberQuestions, List<DimensionResult> dimensionResults, String quizStatus) {
+        this.startTime = startTime;
         this.actualQuizTime = actualQuizTime;
         this.correctAnswers = correctAnswers;
         this.unAnswers = unAnswers;
         this.numberQuestions = numberQuestions;
         this.dimensionResults = dimensionResults;
         this.quizStatus = quizStatus;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
     public int getActualQuizTime() {
@@ -77,6 +88,6 @@ public class QuizLessonDTO {
     public void setQuizStatus(String quizStatus) {
         this.quizStatus = quizStatus;
     }
-    
+
     
 }
