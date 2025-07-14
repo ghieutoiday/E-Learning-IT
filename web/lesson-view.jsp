@@ -771,14 +771,18 @@
                                                         <div class="col-12">
                                                             <div class="card review-test-card">
                                                                 <div class="card-body">
-                                                                    <p class="card-text">REVIEW TEST</p>
+                                                                    <a href="">
+                                                                        <p class="card-text">REVIEW TEST</p>
+                                                                    </a>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-12 mt-2">
                                                             <div class="card redotest-card">
                                                                 <div class="card-body">
-                                                                    <p class="card-text">REDO TEST</p>
+                                                                    <a href="">
+                                                                        <p class="card-text">REDO TEST</p>
+                                                                    </a>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -841,7 +845,7 @@
                                                         <div id="errorMessage" class="text-red-500 mb-4">${requestScope.errorMessage}</div>
                                                     </c:if>
                                                     <!--Form ghi chú-->
-                                                    <form id="noteForm" action="${pageContext.request.contextPath}/lessonnotecontroller" method="post" enctype="multipart/form-data">
+                                                    <form id="noteForm" action="${pageContext.request.contextPath}/lessonnotecontroller?courseID=${course.courseID}" method="post" enctype="multipart/form-data">
                                                         <input type="hidden" name="lessonId" value="${b.lessonID}">
                                                         <input type="hidden" name="userID" value="${sessionScope.userID}">
                                                         <input type="hidden" name="noteId" value="${editNote.noteID}">
@@ -895,6 +899,7 @@
                                                                     <span class="note-date">${note.createDate}</span>
                                                                     <div class="note-actions">
                                                                         <form action="${pageContext.request.contextPath}/lessonnotecontroller" method="get" style="display: inline;">
+                                                                            <input type="hidden" name="courseID" value="${course.courseID}">
                                                                             <input type="hidden" name="action" value="edit">
                                                                             <input type="hidden" name="noteId" value="${note.noteID}">
                                                                             <input type="hidden" name="lessonId" value="${b.lessonID}">
@@ -902,6 +907,7 @@
                                                                             <button type="submit" class="edit-btn">Edit</button>
                                                                         </form>
                                                                         <form action="${pageContext.request.contextPath}/lessonnotecontroller" method="post" style="display: inline;">
+                                                                            <input type="hidden" name="courseID" value="${course.courseID}">
                                                                             <input type="hidden" name="action" value="delete">
                                                                             <input type="hidden" name="noteId" value="${note.noteID}">
                                                                             <input type="hidden" name="lessonId" value="${b.lessonID}">
