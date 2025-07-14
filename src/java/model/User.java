@@ -43,7 +43,7 @@ public class User {
         this.avatar = avatar;
         this.status = status;
     }
-
+    
     public int getUserID() {
         return userID;
     }

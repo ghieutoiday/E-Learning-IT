@@ -23,14 +23,11 @@ public class Course {
     private Date createDate;
     private double listPrice;
     private double salePrice;
+    private int registrationCount;
 
     public Course() {
     }
 
-    public Course(int courseID) {
-        this.courseID = courseID;
-    }
-    
     public Course(int courseID, String courseName, CourseCategory courseCategory, String description, User owner, String status, int numberOfLesson, int feature, Date createDate) {
         this.courseID = courseID;
         this.courseName = courseName;
@@ -79,7 +76,7 @@ public class Course {
         this.createDate = createDate;
     }
 
-    public Course(int courseID, String courseName, CourseCategory courseCategory, String briefInfo, String thumbnail, String description, User owner, String status, int numberOfLesson, int feature, Date createDate, double aDouble, double aDouble1) {
+    public Course(int courseID, String courseName, CourseCategory courseCategory, String briefInfo, String thumbnail, String description, User owner, String status, int numberOfLesson, int feature, Date createDate, double listPrice, double salePrice) {
         this.courseID = courseID;
         this.courseName = courseName;
         this.courseCategory = courseCategory;
@@ -91,14 +88,10 @@ public class Course {
         this.numberOfLesson = numberOfLesson;
         this.feature = feature;
         this.createDate = createDate;
-        this.listPrice = listPrice;   // <<< THÊM DÒNG NÀY
+        this.listPrice = listPrice;
         this.salePrice = salePrice;
     }
-    
-    
-    
 
-    
 
     public String getBriefInfo() {
         return briefInfo;
@@ -205,7 +198,13 @@ public class Course {
         this.salePrice = salePrice;
     }
     
-    
+    public int getRegistrationCount() {
+        return registrationCount;
+    }
+
+    public void setRegistrationCount(int registrationCount) {
+        this.registrationCount = registrationCount;
+    }
     
     public String toPromptString() {
         StringBuilder sb = new StringBuilder();
@@ -220,7 +219,8 @@ public class Course {
         sb.append("Ngày tạo: ").append(createDate != null ? createDate.toString() : "N/A").append("\n");
         sb.append("Giá niêm yết: ").append(listPrice).append(" VNĐ\n"); 
         sb.append("Giá khuyến mãi: ").append(salePrice).append(" VNĐ\n"); 
-        sb.append("Tính năng nổi bật (Feature Code): ").append(feature).append("\n"); 
+        sb.append("Số lượt đăng ký: ").append(registrationCount).append(" người\n");
+        sb.append("Tính năng nổi bật (Feature Code): ").append(feature).append("\n");
 
 
         return sb.toString();
