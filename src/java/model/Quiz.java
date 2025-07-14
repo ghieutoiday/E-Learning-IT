@@ -15,12 +15,12 @@ public class Quiz {
     private Course course;
     private int level, numberQuestions, duration;
     private double passRate;
-    private String quizType;
+    private String quizType, description;
 
     public Quiz() {
     }
 
-    public Quiz(int quizID, Lesson lesson, String name, Course course, int level, int numberQuestions, int duration, double passRate, String quizType) {
+    public Quiz(int quizID, Lesson lesson, String name, Course course, int level, int numberQuestions, int duration, double passRate, String quizType, String description) {
         this.quizID = quizID;
         this.lesson = lesson;
         this.name = name;
@@ -30,6 +30,7 @@ public class Quiz {
         this.duration = duration;
         this.passRate = passRate;
         this.quizType = quizType;
+        this.description = description;
     }
 
     public int getQuizID() {
@@ -103,6 +104,12 @@ public class Quiz {
     public void setQuizType(String quizType) {
         this.quizType = quizType;
     }
-    
-    
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

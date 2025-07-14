@@ -27,6 +27,130 @@
     <link class="skin" rel="stylesheet" type="text/css" href="admin/assets/css/color/color-1.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <style>
+        .custom-exam-header {
+            font-size: 1.1em;
+            color: #fff;
+            text-align: left !important;
+        }
+        .score-card, .exam-taken-card, .review-test-card, .redotest-card, .time-card {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+        }
+        .score-card .card-body {
+            text-align: center;
+        }
+        .score-card .card-title {
+            color: #333;
+            margin-bottom: 0;
+        }
+        .score-card .card-text.score-percentage {
+            font-size: 2.5em;
+            color: #ff0000;
+            font-weight: bold;
+            margin-bottom: 0;
+        }
+        .score-card .card-text.correct {
+            color: #000;
+            margin-bottom: 0;
+        }
+        .score-card .card-text.failed {
+            color: #ff0000;
+            font-weight: bold;
+            margin-bottom: 0;
+        }
+        .exam-taken-card .card-body {
+            text-align: center;
+        }
+        .exam-taken-card .card-text {
+            color: #333;
+            margin-bottom: 0;
+        }
+        
+        .exam-taken-card .card-text2 {
+            color: #333;
+            font-size: 0.8em;
+            margin-bottom: 0;
+        }
+        .review-test-card .card-body, .redotest-card .card-body {
+            text-align: center;
+            padding: 0.25rem;
+        }
+        .review-test-card .card-text, .redotest-card .card-text {
+            color: green;
+            font-size: 0.9em;
+            margin-bottom: 0;
+        }
+        .time-card {
+            min-height: 80px;
+            border-top: 2px solid #FFC107;
+        }
+        .time-card .card-body {
+            text-align: center;
+            padding: 0.25rem;
+        }
+        .time-card .card-text {
+            color: #333;
+            font-size: 0.8em;
+            margin-bottom: 0;
+        }
+        .table {
+            background-color: #ffffff;
+        }
+        .results-table-container {
+            background-color: #ffffff;
+            padding: 10px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .quiz-form1 {
+            margin: 0 1%;
+            padding: 20px;
+            border: 2px solid #f0f0f0; /* Thêm khung với viền màu xám nhạt */
+            background-color: #f0f0f0; /* Nền màu xám */
+            border-radius: 5px;
+        }
+
+        .quiz-form1 > :first-child {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .quiz-form1 > :nth-child(2) {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .quiz-form1 .exam-description {
+            background-color: #f0f0f0;
+            padding: 15px;
+            width: 80%;
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            text-align: center;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quiz-form1 button[type="submit"] {
+            background-color: #6d28d2;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            color: white;
+        }
+
+        .quiz-form1 button[type="submit"]:hover {
+            background-color: #c0c0c0;
+        }
+
         .ttr-sidebar-navi .ttr-label {
             white-space: normal;
             overflow-wrap: break-word;
@@ -49,6 +173,15 @@
         body:not(.ttr-opened-sidebar) .ttr-wrapper {
             margin-left: 0 !important;
             width: 100% !important;
+        }
+        .quiz-form2 {
+            width: 100%; /* Đảm bảo form mở rộng toàn bộ chiều rộng */
+            margin: 0; /* Loại bỏ margin cố định */
+            padding: 20px; /* Giữ padding để không mất giao diện */
+        }
+        body:not(.ttr-opened-sidebar) .quiz-form2 {
+            margin: 0 auto; /* Căn giữa khi sidebar đóng */
+            max-width: 100%; /* Đảm bảo không vượt quá chiều rộng màn hình */
         }
         .ttr-wrapper .video-container {
             position: relative;
@@ -105,10 +238,14 @@
         }
         .nav-buttons-container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            align-items: center; /* Căn giữa theo chiều dọc */
+            justify-content: space-between; /* Đặt nút ở hai bên */
             margin-bottom: 20px;
             max-width: 100%;
+            min-height: 60px; /* Đảm bảo đủ chiều cao để căn giữa */
+        }
+        .nav-buttons-container .quiz-form1 {
+            flex: 1; /* Để .quiz-form1 chiếm không gian giữa */
         }
         .nav-buttons-container .nav-button {
             background-color: rgba(0, 123, 255, 0.8);
@@ -355,6 +492,11 @@
             #noteList .media-item iframe {
                 height: 120px;
             }
+            .nav-buttons-container .nav-button {
+                width: 30px;
+                height: 30px;
+                font-size: 20px;
+            }
         }
         .error-message {
             color: #f87171;
@@ -368,6 +510,7 @@
     </style>
 </head>
 <body class="ttr-opened-sidebar ttr-pinned-sidebar">
+    <c:set var="course" value="${requestScope.choosenCourse}"/>
     <header class="ttr-header">
         <div class="ttr-header-wrapper">
             <div class="ttr-toggle-sidebar ttr-material-button">
@@ -382,8 +525,8 @@
             </div>
             <div class="ttr-header-menu">
                 <ul class="ttr-header-navigation">
-                    <li><a href="../index.jsp" class="ttr-material-button ttr-submenu-toggle">HOME</a></li>
-                    <li><a href="#" class="ttr-material-button ttr-submenu-toggle">Mastering Python & Java</a></li>
+                    <li><a href="index.jsp" class="ttr-material-button ttr-submenu-toggle">HOME</a></li>
+                    <li><a href="#" class="ttr-material-button ttr-submenu-toggle">${course.courseName}</a></li>
                 </ul>
             </div>
             <div class="ttr-header-right ttr-with-seperator">
@@ -397,7 +540,7 @@
     <div class="ttr-sidebar">
         <div class="ttr-sidebar-wrapper content-scroll">
             <div class="ttr-sidebar-logo">
-                <a href="#"><img alt="" src="admin/assets/images/course-content.png" width="150" height="37"></a>
+                <a href="index.jsp"><img alt="" src="admin/assets/images/course-content.png" width="150" height="37"></a>
                 <div class="ttr-sidebar-toggle-button"><i class="ti-arrow-left"></i></div>
             </div>
             <nav class="ttr-sidebar-navi">
@@ -407,7 +550,7 @@
                 <ul>
                     <c:forEach items="${requestScope.subjectTopicLesson}" var="a">
                         <li>
-                            <a href="#" class="ttr-material-button">
+                            <a class="ttr-material-button">
                                 <span class="ttr-label">
                                     <span class="index">
                                         <h6><c:out value="${d}"/>. ${a.name}</h6>
@@ -432,7 +575,7 @@
                             <ul>
                                 <c:forEach items="${subLessonsMap[a.lessonID]}" var="subLesson">
                                     <li>
-                                        <a href="lessonviewcontroller?lessonID=${subLesson.lessonID}" class="ttr-material-button lesson-link" data-lesson-id="${subLesson.lessonID}">
+                                        <a href="lessonviewcontroller?lessonID=${subLesson.lessonID}&courseID=${course.courseID}" class="ttr-material-button lesson-link" data-lesson-id="${subLesson.lessonID}">
                                             <span class="ttr-label">
                                                 <span class="index"><c:out value="${c}"/>.</span>
                                                 <!--Tăng giá trị biến c sau khi xong 1 subLesson-->
@@ -495,15 +638,12 @@
                                                 <iframe class="fallback-iframe" src="${b.contentVideo}" frameborder="0" allowfullscreen></iframe>
                                                 <div id="video-error" class="error-message"></div>
                                                 <c:if test="${prevLessonID > 0}">
-                                                    <a href="lessonviewcontroller?lessonID=${prevLessonID}" class="nav-button prev-button"><i class="fas fa-chevron-left"></i></a>
-                                                </c:if>
-                                                <c:if test="${prevLessonID <= 0}">
-                                                    <span class="nav-button prev-button disabled"><i class="fas fa-chevron-left"></i></span>
+                                                    <a href="lessonviewcontroller?lessonID=${prevLessonID}&courseID=${course.courseID}" class="nav-button prev-button"><i class="fas fa-chevron-left"></i></a>
                                                 </c:if>
                                                 <c:if test="${nextLessonID > 0 && isLessonCompleted}">
-                                                    <a href="lessonviewcontroller?lessonID=${nextLessonID}" class="nav-button next-button"><i class="fas fa-chevron-right"></i></a>
+                                                    <a href="lessonviewcontroller?lessonID=${nextLessonID}&courseID=${course.courseID}" class="nav-button next-button"><i class="fas fa-chevron-right"></i></a>
                                                 </c:if>
-                                                <c:if test="${nextLessonID <= 0 || !isLessonCompleted}">
+                                                <c:if test="${nextLessonID > 0 && !isLessonCompleted}">
                                                     <span class="nav-button next-button disabled"><i class="fas fa-chevron-right"></i></span>
                                                 </c:if>
                                             </div>
@@ -518,17 +658,179 @@
                                     <!--Nếu type = Quiz thì hiển thị bài Quiz Lesson-->
                                     <c:if test="${b.type eq 'Quiz'}">
                                         <div class="nav-buttons-container">
+                                            
                                             <c:if test="${prevLessonID > 0}">
-                                                <a href="lessonviewcontroller?lessonID=${prevLessonID}" class="nav-button"><i class="fas fa-chevron-left"></i></a>
+                                                <a href="lessonviewcontroller?lessonID=${prevLessonID}&courseID=${course.courseID}" class="nav-button"><i class="fas fa-chevron-left"></i></a>
                                             </c:if>
-                                            <c:if test="${prevLessonID <= 0}">
-                                                <span class="nav-button disabled"><i class="fas fa-chevron-left"></i></span>
-                                            </c:if>
+                                                
+                            <!-----------------------------Form 1-->    
+<!--                                    <div class="quiz-form1">
+                                                <c:set var="d" value="${requestScope.quizChoose}"/>
+                                                        <h3>${b.name}</h3>
+                                                        <h5 style="font-weight: normal;">${d.name}&nbsp;&nbsp;|&nbsp;&nbsp;${d.numberQuestions}&nbsp;questions</h5>
+                                                        <br/>
+                                                        <div class="exam-description">
+                                                            <i>${d.description}</i>
+                                                        </div>
+                                                <br/>
+                           ----------Sửa link ở đây sang màn hình để làm Quiz
+                                                <form action="/submit" method="post">
+                                                    <button type="submit">Start Test</button>
+                                                </form>
+
+                                    </div>        -->
+                            <!-----------------------------Form 2-->                                 
+                                    <div class="quiz-form2">
+                                        <c:set var="e" value="${requestScope.quizLessonDTO}"/>
+                                        <div class="bg-light p-3 rounded">
+                                            <div class="bg-secondary bg-opacity-25 p-2 mb-3 custom-exam-header">
+                                                <c:if test="${not empty e and not empty e.startTime}">
+                                                    Exam | 
+                                                    ${e.startTime.getDayOfMonth() < 10 ? '0' : ''}${e.startTime.getDayOfMonth()}/${e.startTime.getMonthValue() < 10 ? '0' : ''}${e.startTime.getMonthValue()}/${e.startTime.getYear()} | 
+                                                    ${e.startTime.getHour() < 10 ? '0' : ''}${e.startTime.getHour()}: 
+                                                    ${e.startTime.getMinute() < 10 ? '0' : ''}${e.startTime.getMinute()} | 
+                                                    ${e.numberQuestions} Questions
+                                                </c:if>
+                                            </div>
+
+                                            <div class="row g-3">
+                                                <div class="col-12 col-md-3">
+                                                    <div class="row g-2">
+                                                        <div class="col-12">
+                                                            <div class="card score-card">
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title">SCORE</h5>
+                                                                    <br/>
+                                                                    <c:if test="${e.quizStatus eq 'Pass'}">
+                                                                        <p style="color: green" class="card-text score-percentage">
+                                                                            <fmt:formatNumber value="${(e.correctAnswers * 100) div e.numberQuestions}" type="number" maxFractionDigits="0" />%
+                                                                        </p>
+                                                                    </c:if>
+                                                                    <c:if test="${e.quizStatus eq 'Fail'}">
+                                                                        <p style="color: red" class="card-text score-percentage">
+                                                                            <fmt:formatNumber value="${(e.correctAnswers * 100) div e.numberQuestions}" type="number" maxFractionDigits="0" />%
+                                                                        </p>
+                                                                    </c:if>
+                                                                    
+                                                                    
+                                                                    <p class="card-text correct">Correct: ${e.correctAnswers}/${e.numberQuestions}</p>
+                                                                    
+                                                                    <c:if test="${e.quizStatus eq 'Pass'}">
+                                                                        <p style="color: green" class="card-text failed">${e.quizStatus}</p>
+                                                                    </c:if>
+                                                                    <c:if test="${e.quizStatus eq 'Fail'}">
+                                                                        <p style="color: red" class="card-text failed">${e.quizStatus}</p>
+                                                                    </c:if>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 mt-2">
+                                                            <div class="card exam-taken-card">
+                                                                <div class="card-body">
+                                                                    <p class="card-text">EXAM</p>
+                                                                    <p class="card-text2">
+                                                                        TAKEN
+                                                                        ${e.startTime.getDayOfMonth() < 10 ? '0' : ''}${e.startTime.getDayOfMonth()}/${e.startTime.getMonthValue() < 10 ? '0' : ''}${e.startTime.getMonthValue()}/${e.startTime.getYear()}
+                                                                    </p>
+                                                                    <p class="card-text">
+                                                                        ${e.startTime.getHour() < 10 ? '0' : ''}${e.startTime.getHour()} : 
+                                                                        ${e.startTime.getMinute() < 10 ? '0' : ''}${e.startTime.getMinute()}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-9">
+                                                    <div class="results-table-container">
+                                                        <c:set var="f" value="${e.dimensionResults}"/>
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr class="table-secondary">
+                                                                    <th>${f[0].dimensionType}</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <c:forEach var="g" items="${f}">
+                                                                    <tr>
+                                                                        <td>
+                                                                            ${g.dimensionName} : 
+                                                                            <fmt:formatNumber value="${(g.correctCount * 100) div g.totalQuestions}" type="number" maxFractionDigits="0" />%
+                                                                        </td>
+                                                                    </tr>
+                                                                </c:forEach>
+                                                                
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row g-3 mt-3">
+                                                <div class="col-12 col-md-3">
+                                                    <div class="row g-2">
+                                                        <div class="col-12">
+                                                            <div class="card review-test-card">
+                                                                <div class="card-body">
+                                                                    <a href="">
+                                                                        <p class="card-text">REVIEW TEST</p>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 mt-2">
+                                                            <div class="card redotest-card">
+                                                                <div class="card-body">
+                                                                    <a href="">
+                                                                        <p class="card-text">REDO TEST</p>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-9">
+                                                    <div class="row g-2">
+                                                        <div class="col-4">
+                                                            <div class="card time-card">
+                                                                <div class="card-body">
+                                                                    <p class="card-text">AVERAGE TIME TO QUESTION</p>
+                                                                    <p class="card-text">
+                                                                        <fmt:formatNumber value="${e.actualQuizTime  div e.numberQuestions}" type="number" maxFractionDigits="0" /> sec
+                                                                    </p>
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <div class="card time-card">
+                                                                <div class="card-body">
+                                                                    <p class="card-text">TOTAL TIMES</p>
+                                                                    <p class="card-text">
+                                                                        ${e.actualQuizTime} sec
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <div class="card time-card">
+                                                                <div class="card-body">
+                                                                    <p class="card-text">UN-ANSWER QUESTION</p>
+                                                                    <p class="card-text">
+                                                                        ${e.unAnswers} question
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                             <c:if test="${nextLessonID > 0 && isLessonCompleted}">
-                                                <a href="lessonviewcontroller?lessonID=${nextLessonID}" class="nav-button"><i class="fas fa-chevron-right"></i></a>
+                                                <a href="lessonviewcontroller?lessonID=${nextLessonID}&courseID=${course.courseID}" class="nav-button next-button"><i class="fas fa-chevron-right"></i></a>
                                             </c:if>
-                                            <c:if test="${nextLessonID <= 0 || !isLessonCompleted}">
-                                                <span class="nav-button disabled"><i class="fas fa-chevron-right"></i></span>
+                                            <c:if test="${nextLessonID > 0 && !isLessonCompleted}">
+                                                <span class="nav-button next-button disabled"><i class="fas fa-chevron-right"></i></span>
                                             </c:if>
                                         </div>
                                     </c:if>
@@ -543,7 +845,7 @@
                                                         <div id="errorMessage" class="text-red-500 mb-4">${requestScope.errorMessage}</div>
                                                     </c:if>
                                                     <!--Form ghi chú-->
-                                                    <form id="noteForm" action="${pageContext.request.contextPath}/lessonnotecontroller" method="post" enctype="multipart/form-data">
+                                                    <form id="noteForm" action="${pageContext.request.contextPath}/lessonnotecontroller?courseID=${course.courseID}" method="post" enctype="multipart/form-data">
                                                         <input type="hidden" name="lessonId" value="${b.lessonID}">
                                                         <input type="hidden" name="userID" value="${sessionScope.userID}">
                                                         <input type="hidden" name="noteId" value="${editNote.noteID}">
@@ -597,6 +899,7 @@
                                                                     <span class="note-date">${note.createDate}</span>
                                                                     <div class="note-actions">
                                                                         <form action="${pageContext.request.contextPath}/lessonnotecontroller" method="get" style="display: inline;">
+                                                                            <input type="hidden" name="courseID" value="${course.courseID}">
                                                                             <input type="hidden" name="action" value="edit">
                                                                             <input type="hidden" name="noteId" value="${note.noteID}">
                                                                             <input type="hidden" name="lessonId" value="${b.lessonID}">
@@ -604,6 +907,7 @@
                                                                             <button type="submit" class="edit-btn">Edit</button>
                                                                         </form>
                                                                         <form action="${pageContext.request.contextPath}/lessonnotecontroller" method="post" style="display: inline;">
+                                                                            <input type="hidden" name="courseID" value="${course.courseID}">
                                                                             <input type="hidden" name="action" value="delete">
                                                                             <input type="hidden" name="noteId" value="${note.noteID}">
                                                                             <input type="hidden" name="lessonId" value="${b.lessonID}">

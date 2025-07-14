@@ -395,7 +395,7 @@
                                                                     <td><fmt:formatDate value="${reg.validTo}" pattern="dd-MM-yyyy"/></td>
                                                                     <td class="action-btns">
                                                                         <c:if test="${reg.status == 'Paid'}">
-                                                                            <a href="#" class="btn btn-info btn-sm">View</a>
+                                                                            <a href="lessonviewcontroller?courseID=${reg.course.courseID}" class="btn btn-info btn-sm">View</a>
                                                                         </c:if>
                                                                         <c:if test="${reg.status == 'Submitted'}">
                                                                             <a href="#" class="btn btn-warning btn-sm">Edit</a>
