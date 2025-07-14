@@ -6,17 +6,120 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>${action == 'add' ? 'Add New Lesson' : 'Manage Lessons'}</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <div class="page-banner ovbl-dark"
+                     style="background-image:url(assets/images/banner/banner3.jpg);">
+                    <div class="container">
+                        <div class="page-banner-entry">
+                            <h1 class="text-white">Subject Lesson</h1>
+                        </div>
+                    </div>
+                </div>
+   
         <style>
-            .container {
-                margin-top: 20px;
-            }
-            .table th {
-                vertical-align: middle;
-            }
-            .actions a {
-                margin-right: 5px;
-            }
-        </style>
+    /* Khoảng cách giữa nội dung và top */
+    .container {
+        margin-top: 40px;
+    }
+
+    /* Tiêu đề bảng */
+    .table th {
+        vertical-align: middle;
+        background-color: #222222;
+        color: #ffffff;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    /* Nội dung bảng */
+    .table td {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    /* Tên bài học canh trái cho dễ đọc */
+    .table td:first-child + td {
+        text-align: left;
+    }
+
+    /* Cột hành động */
+    .actions a {
+        margin-right: 5px;
+    }
+
+    /* Nút Details */
+    .btn-info {
+        background-color: #17c1e8;
+        border-color: #17c1e8;
+        color: white;
+    }
+
+    .btn-info:hover {
+        background-color: #0da9cd;
+        border-color: #0da9cd;
+    }
+
+    /* Nút Deactivate */
+    .btn-danger {
+        background-color: #f44336;
+        border-color: #f44336;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #d32f2f;
+        border-color: #d32f2f;
+    }
+
+    /* Filter inputs (dropdowns + search) */
+    .form-control,
+    .form-select {
+        max-width: 220px;
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    /* Nút Search và Add Lesson */
+    .btn-primary {
+        background-color: #1e88e5;
+        border-color: #1e88e5;
+        font-weight: 600;
+        padding: 8px 16px;
+    }
+
+    .btn-primary:hover {
+        background-color: #1565c0;
+        border-color: #1565c0;
+    }
+
+    /* Status label */
+    .badge-success {
+        background-color: #4caf50;
+        font-size: 0.9rem;
+        padding: 6px 12px;
+        border-radius: 12px;
+    }
+
+    /* Phân trang */
+    .pagination {
+        justify-content: center;
+    }
+
+    .page-item.active .page-link {
+        background-color: #1e88e5;
+        border-color: #1e88e5;
+    }
+
+    .page-link {
+        color: #1e88e5;
+    }
+
+    /* Responsive table fix nếu cần */
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+</style>
+
     </head>
     <body>
         <div class="container mt-4">
