@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dal.CourseDAO;
+import dal.CourseCategoryDAO;
 import dal.LessonDAO;
 import model.Course;
+import model.CourseCategory;
 import model.Lesson;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -29,6 +31,7 @@ public class GeminiService {
     private final String geminiApiKey;
     private final ObjectMapper objectMapper;
     private final CourseDAO courseDAO;
+    private final CourseCategoryDAO courseCategoryDao;
     private final LessonDAO lessonDAO;
     private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=";
 
@@ -36,6 +39,7 @@ public class GeminiService {
         this.geminiApiKey = geminiApiKey;
         this.objectMapper = new ObjectMapper();
         this.courseDAO = new CourseDAO();
+        this.courseCategoryDao = new CourseCategoryDAO();
         this.lessonDAO = LessonDAO.getInstance();
     }
 
@@ -43,7 +47,6 @@ public class GeminiService {
         StringBuilder courseContext = new StringBuilder();
         List<Course> foundCourses = null;
 
-        // tìm khóa học theo ID
         Integer extractedCourseId = extractCourseIdFromMessage(userMessage);
         if (extractedCourseId != null) {
             Course specificCourseById = courseDAO.getCoureByCourseIDAndPrice(extractedCourseId);
@@ -52,15 +55,13 @@ public class GeminiService {
             }
         }
 
-        // tìm khóa học theo categoryName
         if (foundCourses == null || foundCourses.isEmpty()) {
             String extractedCategoryName = extractCategoryNameFromMessage(userMessage);
             if (extractedCategoryName != null && !extractedCategoryName.isEmpty()) {
-                foundCourses = courseDAO.searchCourseByNameOrCategory(extractedCategoryName);
+                foundCourses = courseDAO.searchCoursesByCategoryName(extractedCategoryName);
             }
         }
 
-        // tìm khóa học theo courseName
         if (foundCourses == null || foundCourses.isEmpty()) {
             String extractedCourseName = extractCourseNameFromMessage(userMessage);
             if (extractedCourseName != null && !extractedCourseName.isEmpty()) {
@@ -68,7 +69,6 @@ public class GeminiService {
             }
         }
 
-        // context từ các khóa học tìm được
         if (foundCourses != null && !foundCourses.isEmpty()) {
             courseContext.append("Thông tin chi tiết về các khóa học được tìm thấy:\n");
             for (Course course : foundCourses) {
@@ -79,15 +79,14 @@ public class GeminiService {
             courseContext.append("Không tìm thấy thông tin chi tiết cho khóa học hoặc thể loại này trong cơ sở dữ liệu. Vui lòng cung cấp mã khóa học chính xác, tên khóa học đầy đủ hoặc tên thể loại.");
         }
 
-        //Tạo prompt gửi đến Gemini
         String prompt = String.format(
-                "Bạn là một trợ lý ảo chuyên nghiệp tư vấn về các khóa học và gói giá. "
-                        + "Dưới đây là thông tin chi tiết về khóa học (hoặc danh sách các khóa học) được yêu cầu:\n\n"
-                        + "=== Dữ liệu Khóa học ===\n%s\n\n"
-                        + "Người dùng hỏi: \"%s\"\n\n"
-                        + "Vui lòng trả lời câu hỏi của người dùng dựa trên thông tin Dữ liệu Khóa học đã cung cấp. "
-                        + "Nếu thông tin khóa học không có sẵn hoặc không đủ để trả lời câu hỏi, hãy thông báo rằng bạn không tìm thấy thông tin phù hợp hoặc đề nghị người dùng cung cấp thêm chi tiết. "
-                        + "Tránh suy đoán hoặc tạo ra thông tin không có trong dữ liệu.",
+                "Bạn là một trợ lý ảo chuyên nghiệp tư vấn về các khóa học và gói giá. " +
+                        "Dưới đây là thông tin chi tiết về khóa học (hoặc danh sách các khóa học) được yêu cầu:\n\n" +
+                        "=== Dữ liệu Khóa học ===\n%s\n\n" +
+                        "Người dùng hỏi: \"%s\"\n\n" +
+                        "Vui lòng trả lời câu hỏi của người dùng dựa trên thông tin Dữ liệu Khóa học đã cung cấp. " +
+                        "Nếu thông tin khóa học không có sẵn hoặc không đủ để trả lời câu hỏi, hãy thông báo rằng bạn không tìm thấy thông tin phù hợp hoặc đề nghị người dùng cung cấp thêm chi tiết. " +
+                        "Tránh suy đoán hoặc tạo ra thông tin không có trong dữ liệu.",
                 courseContext.toString(), userMessage
         );
 
@@ -167,7 +166,14 @@ public class GeminiService {
     }
 
     private String extractCourseNameFromMessage(String message) {
-        return message;
+        String[] keywords = message.toLowerCase().split("\\s+");
+        StringBuilder courseName = new StringBuilder();
+        for (String keyword : keywords) {
+            if (!keyword.matches("id|category|price|giá|loại|khoá|học|course|danh|mục.*")) {
+                courseName.append(keyword).append(" ");
+            }
+        }
+        return courseName.toString().trim();
     }
 
     private Integer extractCourseIdFromMessage(String message) {
@@ -179,6 +185,13 @@ public class GeminiService {
     }
 
     private String extractCategoryNameFromMessage(String message) {
-        return message;
+        String[] keywords = message.toLowerCase().split("\\s+");
+        StringBuilder categoryName = new StringBuilder();
+        for (String keyword : keywords) {
+            if (!keyword.matches("id|course|price|giá|khoá|học|danh|mục.*")) {
+                categoryName.append(keyword).append(" ");
+            }
+        }
+        return categoryName.toString().trim();
     }
-}
+} 
