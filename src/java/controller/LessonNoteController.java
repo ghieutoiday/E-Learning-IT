@@ -36,6 +36,7 @@ public class LessonNoteController extends HttpServlet {
         if ("edit".equals(action)) {
             String noteId = request.getParameter("noteId");
             String lessonID = request.getParameter("lessonId"); // Sử dụng lessonID
+            String courseID = request.getParameter("courseID");
             Integer userId = 5; // Lấy từ session
 
             if (noteId == null || lessonID == null || userId == null) {
@@ -49,7 +50,7 @@ public class LessonNoteController extends HttpServlet {
                 UserLessonNotes editNote = noteDAO.getUserLessonNoteByULNID(Integer.parseInt(noteId));
                 if (editNote == null || editNote.getUser().getUserID() != userId || editNote.getLesson().getLessonID() != Integer.parseInt(lessonID)) {
                     request.setAttribute("errorMessage", "Không tìm thấy ghi chú hoặc bạn không có quyền truy cập.");
-                    response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID);
+                    response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID + "&courseID=" + courseID);
                     return;
                 }
 
@@ -90,7 +91,7 @@ public class LessonNoteController extends HttpServlet {
                 request.getRequestDispatcher("/lessonviewcontroller?lessonID=" + lessonID).forward(request, response);
             } catch (NumberFormatException e) {
                 request.setAttribute("errorMessage", "ID không hợp lệ.");
-                response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID);
+                response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID + "&courseID=" + courseID);
             }
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Hành động không được hỗ trợ.");
@@ -103,11 +104,12 @@ public class LessonNoteController extends HttpServlet {
         String action = request.getParameter("action");
         String lessonID = request.getParameter("lessonId"); // Lưu ý: doPost dùng lessonId, cần đồng nhất
         String noteId = request.getParameter("noteId");
+        String courseID = request.getParameter("courseID");
         Integer userId = 5;
 
         if (userId == null) {
             request.setAttribute("errorMessage", "Người dùng chưa đăng nhập.");
-            response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID);
+            response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID + "&courseID=" + courseID);
             return;
         }
 
@@ -115,10 +117,10 @@ public class LessonNoteController extends HttpServlet {
             try {
                 UserLessonNotesDAO noteDAO = UserLessonNotesDAO.getInstance();
                 noteDAO.deleteNote(Integer.parseInt(noteId), userId);
-                response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID);
+                response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID + "&courseID=" + courseID);
             } catch (SQLException | NumberFormatException e) {
                 request.setAttribute("errorMessage", "Lỗi xóa ghi chú: " + e.getMessage());
-                response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID);
+                response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID + "&courseID=" + courseID);
             }
             return;
         }
@@ -174,13 +176,13 @@ public class LessonNoteController extends HttpServlet {
                 noteDAO.addNoteWithMedia(note, imageParts, videoLinks, imageNotes, videoNotes, uploadPath);
             }
 
-            response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID);
+            response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID + "&courseID=" + courseID);
         } catch (SQLException e) {
             request.setAttribute("errorMessage", "Lỗi cơ sở dữ liệu: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID);
+            response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID + "&courseID=" + courseID);
         } catch (NumberFormatException e) {
             request.setAttribute("errorMessage", "ID không hợp lệ: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID);
+            response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID + "&courseID=" + courseID);
         }
     }
 }
