@@ -54,7 +54,7 @@ public class LessonViewController extends HttpServlet {
         } catch (NumberFormatException e) {
             System.out.println(e.getMessage());
         }
-
+        
         //Lấy 2 tham số này để hiển thị trên tranh tiến độ
         int completedLessons = LessonDAO.getInstance().getTotalNumberOfCompletedLessonInCourse(userID, courseID);
         int totalLessons = LessonDAO.getInstance().getTotalNumberOfLessonInCourse(courseID);
