@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-/**
- *
- * @author ASUS
- */
 public class Lesson {
     private int lessonID;
     private Course course;
@@ -22,8 +14,8 @@ public class Lesson {
     }
     
     public Lesson(int lessonID) {
-    this.lessonID = lessonID;
-}
+        this.lessonID = lessonID;
+    }
 
     public Lesson(int lessonID, Course course, Lesson topic, String name, String type, int orderNum, String status, String contentVideo, String contentHtml, int duration) {
         this.lessonID = lessonID;
@@ -118,10 +110,20 @@ public class Lesson {
         this.duration = duration;
     }
 
+    // Format lesson data for Gemini prompt
+    public String toPromptString() {
+        return String.format(
+            "Lesson ID: %d\nCourse ID: %s\nTopic ID: %s\nName: %s\nContent: %s\n",
+            lessonID,
+            course != null ? course.getCourseID() : "N/A",
+            topic != null ? topic.getLessonID() : "N/A",
+            name != null ? name : "No name",
+            contentHtml != null ? contentHtml : "No content available"
+        );
+    }
+
     @Override
     public String toString() {
         return "Lesson{" + "lessonID=" + lessonID + ", course=" + course + ", topic=" + topic + ", name=" + name + ", type=" + type + ", orderNum=" + orderNum + ", status=" + status + ", contentVideo=" + contentVideo + ", contentHtml=" + contentHtml + ", duration=" + duration + '}';
     }
-
-    
 }

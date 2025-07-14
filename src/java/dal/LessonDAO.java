@@ -1,7 +1,3 @@
-/*
- * Click https://netbeans/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click https://netbeans/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dal;
 
 import java.sql.PreparedStatement;
@@ -11,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Course;
 import model.Lesson;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -18,6 +16,7 @@ import model.Lesson;
  */
 public class LessonDAO extends DBContext {
 
+    private static final Logger LOGGER = Logger.getLogger(LessonDAO.class.getName());
     private static LessonDAO instance;
 
     public static LessonDAO getInstance() {
@@ -29,7 +28,54 @@ public class LessonDAO extends DBContext {
 
     CourseDAO courseDAO = new CourseDAO();
 
-    // Lấy 1 bài Lesson với ID cụ thể
+    // Fetch lessons by courseID for Gemini AI (simplified fields)
+    public List<Lesson> getLessonsByCourseIdForAI(int courseId) {
+        List<Lesson> lessons = new ArrayList<>();
+        String sql = "SELECT TOP (1000) [lessonID], [courseID], [topicID], [name], [contentHtml] " +
+                    "FROM [CourseManagementDB].[dbo].[Lesson] WHERE courseID = ? AND status = 'Active'";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, courseId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Lesson lesson = new Lesson();
+                lesson.setLessonID(rs.getInt("lessonID"));
+                lesson.setCourse(new Course(rs.getInt("courseID"))); // Minimal Course object
+                lesson.setTopic(rs.getInt("topicID") != 0 ? new Lesson(rs.getInt("topicID")) : null); // Minimal Lesson for topic
+                lesson.setName(rs.getString("name"));
+                lesson.setContentHtml(rs.getString("contentHtml"));
+                lessons.add(lesson);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error fetching lessons for courseID: " + courseId, e);
+        }
+        return lessons;
+    }
+
+    // Fetch a specific lesson by courseID and lessonID for Gemini AI (simplified fields)
+    public Lesson getLessonByIdForAI(int courseId, int lessonId) {
+        String sql = "SELECT [lessonID], [courseID], [topicID], [name], [contentHtml] " +
+                    "FROM [CourseManagementDB].[dbo].[Lesson] WHERE courseID = ? AND lessonID = ? AND status = 'Active'";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, courseId);
+            ps.setInt(2, lessonId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Lesson lesson = new Lesson();
+                lesson.setLessonID(rs.getInt("lessonID"));
+                lesson.setCourse(new Course(rs.getInt("courseID"))); // Minimal Course object
+                lesson.setTopic(rs.getInt("topicID") != 0 ? new Lesson(rs.getInt("topicID")) : null); // Minimal Lesson for topic
+                lesson.setName(rs.getString("name"));
+                lesson.setContentHtml(rs.getString("contentHtml"));
+                return lesson;
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error fetching lesson for courseID: " + courseId + ", lessonID: " + lessonId, e);
+        }
+        return null;
+    }
+
+    // Existing methods (unchanged)
     public Lesson getLessonByLessonID(int lessonId) {
         Lesson lesson = null;
         try {
@@ -38,7 +84,7 @@ public class LessonDAO extends DBContext {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {  //Kiểm tra xem còn dữ liệu trong rs hay không
+            while (rs.next()) {
                 Course course = courseDAO.getCoureByCourseID(rs.getInt(2));
                 Lesson topic = this.getLessonByLessonID(rs.getInt(3));
                 String name = rs.getString(4);
@@ -48,7 +94,6 @@ public class LessonDAO extends DBContext {
                 String contentVideo = rs.getString(8);
                 String contentHtml = rs.getString(9);
                 int duration = rs.getInt(10);
-                //Lấy entity
                 lesson = new Lesson(lessonId, course, topic, name, type, orderNum, status, contentVideo, contentHtml, duration);
             }
 
@@ -58,7 +103,6 @@ public class LessonDAO extends DBContext {
         return lesson;
     }
 
-    // Lấy số Lesson trong 1 khóa học mà có trạng thái là Active
     public int getTotalNumberOfLessonInCourse(int courseID) {
         int total = -1;
         try {
@@ -72,7 +116,7 @@ public class LessonDAO extends DBContext {
             ps.setInt(1, courseID);
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {  //Kiểm tra xem còn dữ liệu trong rs hay không
+            while (rs.next()) {
                 total = rs.getInt(1);
             }
 
@@ -82,8 +126,6 @@ public class LessonDAO extends DBContext {
         return total;
     }
 
-    // Lấy số Lesson trong 1 khóa học mà có trạng thái là Active
-    // và người dùng đã hoàn thành
     public int getTotalNumberOfCompletedLessonInCourse(int userID, int courseID) {
         int total = -1;
         try {
@@ -104,7 +146,7 @@ public class LessonDAO extends DBContext {
             ps.setInt(2, courseID);
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {  //Kiểm tra xem còn dữ liệu trong rs hay không
+            while (rs.next()) {
                 total = rs.getInt(1);
             }
 
@@ -114,7 +156,6 @@ public class LessonDAO extends DBContext {
         return total;
     }
 
-    // Lấy danh sách Lesson có type = subject topic (module)
     public List<Lesson> getAllSubjectTopicLesson(int courseID) {
         List<Lesson> listLesson = new ArrayList<>();
         String sql = "select * from Lesson where courseID = ? AND type = 'Subject Topic' AND status = 'Active'";
@@ -122,7 +163,7 @@ public class LessonDAO extends DBContext {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, courseID);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {  //Kiểm tra xem còn dữ liệu trong rs hay không
+            while (rs.next()) {
                 Lesson lesson = getLessonByLessonID(rs.getInt(1));
                 listLesson.add(lesson);
             }
@@ -132,8 +173,6 @@ public class LessonDAO extends DBContext {
         return listLesson;
     }
 
-    // Lấy danh sách Lesson có của 1 Lesson type = subject topic (module)
-    // ko cần courseID nữa vì topicID nó ko lặp lại
     public List<Lesson> getAllLessonBySubjectTopicLesson(int topicID) {
         List<Lesson> listLesson = new ArrayList<>();
         String sql = "select * from Lesson where topicID = ? AND status = 'Active'";
@@ -141,7 +180,7 @@ public class LessonDAO extends DBContext {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, topicID);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {  //Kiểm tra xem còn dữ liệu trong rs hay không
+            while (rs.next()) {
                 Lesson lesson = getLessonByLessonID(rs.getInt(1));
                 listLesson.add(lesson);
             }
@@ -151,7 +190,6 @@ public class LessonDAO extends DBContext {
         return listLesson;
     }
 
-    // Lấy danh sách tất cả sub lesson trong courseID theo thứ tự tăng
     public List<Lesson> getAllSubLessonsByCourseIDOrdered(int courseID) {
         List<Lesson> listLesson = new ArrayList<>();
         String sql = "SELECT * FROM Lesson WHERE courseID = ? AND type NOT LIKE 'Subject Topic' AND status = 'Active' ORDER BY lessonID";
