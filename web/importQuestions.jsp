@@ -97,18 +97,20 @@
     <div class="container">
         <h2>Nhập Câu Hỏi Từ File</h2>
         <form action="questioncontroller" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="courseIdParam" value="1" />
-            <input type="hidden" name="lessonIdParam" value="4" />
+            <%-- Các giá trị courseId và lessonId vẫn được truyền qua hidden input --%>
+            <input type="hidden" name="courseIdParam" value="${param.courseId != null ? param.courseId : 1}" />
+            <input type="hidden" name="lessonIdParam" value="${param.lessonId != null ? param.lessonId : 4}" />
 
             <div class="form-group">
                 <label for="file">Chọn file TXT hoặc CSV để import:</label>
                 <input type="file" id="file" name="file" accept=".txt,.csv" required/>
             </div>
-            <button type="submit" name="action" value="import">Import Questions</button>
+            <div class="button-group">
+                <button type="submit" name="action" value="import">Import Questions</button>
+                <%-- Thay đổi thẻ a để trỏ trực tiếp đến file mẫu và sử dụng thuộc tính 'download' --%>
+                <a href="${pageContext.request.contextPath}/templates/sample_template_no_course_lesson.txt" download="sample_template_no_course_lesson.txt" class="download-link">Tải mẫu TXT</a>
+            </div>
         </form>
-        <div class="button-group">
-            <a href="questioncontroller?action=download" class="download-link">Tải mẫu TXT</a>
-        </div>
 
         <c:if test="${not empty successCount}">
             <div class="message success">
