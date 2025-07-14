@@ -1,5 +1,6 @@
 package controller;
 
+import dal.AdminNoteDAO;
 import dal.LessonDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
+import model.AdminLessonNote;
 import model.Course;
 import model.Lesson;
 
@@ -23,6 +25,7 @@ public class LessonDetailControllers extends HttpServlet {
         try {
         int courseId = Integer.parseInt(courseIdStr);
         LessonDAO lessonDAO = LessonDAO.getInstance();
+        AdminNoteDAO noteDAO = AdminNoteDAO.getInstance();
 
         List<Lesson> topics = lessonDAO.getAllSubjectTopicLesson(courseId);
         request.setAttribute("topics", topics);
@@ -37,6 +40,8 @@ public class LessonDetailControllers extends HttpServlet {
                 response.sendRedirect("errorPage.jsp?msg=Invalid-lesson-for-course");
                 return; 
             }
+            List<AdminLessonNote> notes = noteDAO.getNotesByLessonId(lessonId);
+            request.setAttribute("notes", notes);
         } else {
             Course currentCourse = new Course();
             currentCourse.setCourseID(courseId);
@@ -100,7 +105,7 @@ public class LessonDetailControllers extends HttpServlet {
             }
 
 
-            response.sendRedirect("lesson-list?courseId=" + courseId);
+            response.sendRedirect("subjectLesson?courseId=" + courseId);
 
         } catch (Exception e) {
             request.setAttribute("errorMessage", "An error occurred: " + e.getMessage());
