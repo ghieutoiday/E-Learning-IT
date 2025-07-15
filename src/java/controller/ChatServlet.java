@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 @WebServlet("/chat")
 public class ChatServlet extends HttpServlet {
+
     private static final Logger LOGGER = Logger.getLogger(ChatServlet.class.getName());
 
     private GeminiService geminiService;
@@ -27,7 +28,9 @@ public class ChatServlet extends HttpServlet {
     public void init() {
         String geminiApiKey = System.getenv("GEMINI_API_KEY");
         if (geminiApiKey == null || geminiApiKey.isEmpty()) {
-            geminiApiKey = "AIzaSyBDJZqEe_uSDDIF02AG27QOR3Q-VR_cAMc"; // Thay bằng API key thực tế hoặc để trong biến môi trường
+
+            geminiApiKey = "AIzaSyCTCU-gJ-6GJFDV1DdH2_kbDiAtzE8YWp0"; // Chỉ dùng cho dev/test
+
             LOGGER.warning("Không tìm thấy biến môi trường GEMINI_API_KEY. Đang dùng API key hardcoded.");
         }
         geminiService = new GeminiService(geminiApiKey);
@@ -41,7 +44,9 @@ public class ChatServlet extends HttpServlet {
         // Đọc dữ liệu JSON từ request body
         try (BufferedReader reader = request.getReader()) {
             String line;
-            while ((line = reader.readLine()) != null) sb.append(line);
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
         }
 
         // Parse JSON và lấy trường "message" và "pageforward"
@@ -53,6 +58,7 @@ public class ChatServlet extends HttpServlet {
         try {
             // Gọi GeminiService với pageforward
             geminiResponse = geminiService.getGeminiResponseWithCourseInfo(userMessage, pageforward);
+            //geminiResponse = geminiService.getGeminiResponseWithCourseInfo(userMessage);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi gọi GeminiService", e);
             geminiResponse = "Xin lỗi, tôi không thể xử lý yêu cầu của bạn lúc này.";

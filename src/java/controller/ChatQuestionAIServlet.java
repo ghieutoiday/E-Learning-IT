@@ -24,7 +24,7 @@ public class ChatQuestionAIServlet extends HttpServlet {
     public void init() {
         String apiKey = System.getenv("GEMINI_API_KEY");
         if (apiKey == null || apiKey.isEmpty()) {
-            apiKey = "AIzaSyDi6U8D790IJKDYUi3sKhBsxDIDJsvRmJ4"; // Key test
+            apiKey = "AIzaSyCTCU-gJ-6GJFDV1DdH2_kbDiAtzE8YWp0"; // Key test
             System.out.println("[WARN] Không tìm thấy GEMINI_API_KEY. Đang dùng key mặc định.");
         }
         geminiService = new GeminiService(apiKey);
