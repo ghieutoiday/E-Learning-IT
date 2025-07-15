@@ -37,7 +37,7 @@ public class GeminiService {
         this.courseDAO = new CourseDAO();
         this.courseCategoryDao = new CourseCategoryDAO();
     }
-
+    //xử lý tin nhắn người dùng và trả về phản hồi từ Gemini API    
     public String getGeminiResponseWithCourseInfo(String userMessage, String pageforward) {
         StringBuilder courseContext = new StringBuilder();
         List<Course> foundCourses = null;
@@ -292,7 +292,7 @@ public class GeminiService {
             return "Không thể kết nối với dịch vụ AI.";
         }
     }
-
+    // Trích xuất tên khóa học từ tin nhắn
     private String extractCourseNameFromMessage(String message) {
         String[] keywords = message.toLowerCase().split("\\s+");
         StringBuilder courseName = new StringBuilder();
@@ -303,7 +303,7 @@ public class GeminiService {
         }
         return courseName.toString().trim();
     }
-
+    // Trích xuất ID khóa học từ tin nhắn (ví dụ: "ID 123")
     private Integer extractCourseIdFromMessage(String message) {
         Matcher matcher = Pattern.compile("id\\s*[:=\\s]*(\\d+)").matcher(message.toLowerCase());
         if (matcher.find()) {

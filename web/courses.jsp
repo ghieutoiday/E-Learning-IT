@@ -849,10 +849,11 @@
 
                     // Add message to chat
                     function addMessage(text, sender) {
+                        //Hiển thị tin nhắn của người dùng trong khu vực tin nhắn
                         const messageDiv = document.createElement('div');
-                        messageDiv.classList.add('message', sender);
-                        messageDiv.innerText = text;
-                        chatMessages.appendChild(messageDiv);
+                        messageDiv.classList.add('message', sender);// Thêm class 'message' và class sender ('user' hoặc 'bot')
+                        messageDiv.innerText = text;// Đặt nội dung tin nhắn
+                        chatMessages.appendChild(messageDiv);// Thêm tin nhắn vào khu vực hiển thị
                         scrollToBottom();
                     }
 
@@ -869,6 +870,7 @@
                         ];
 
                         promptSuggestionsContainer.innerHTML = '';
+                        // Tạo nút cho từng gợi ý
                         suggestions.forEach(text => {
                             const button = document.createElement('button');
                             button.textContent = text;
@@ -886,16 +888,16 @@
                     function hidePromptSuggestions() {
                         promptSuggestionsContainer.style.display = 'none';
                     }
-
+                    // Hàm gửi tin nhắn đến server và xử lý phản hồi
                     async function sendMessage() {
-                        const message = userInput.value.trim();
+                        const message = userInput.value.trim();// Lấy tin nhắn, loại bỏ khoảng trắng thừa
                         if (message === '')
                             return;
 
-                        addMessage(message, 'user');
-                        userInput.value = '';
+                        addMessage(message, 'user');// Hiển thị tin nhắn người dùng
+                        userInput.value = '';// Xóa ô nhập liệu
                         hidePromptSuggestions();
-
+                        // Gửi yêu cầu POST đến servlet /chat
                         try {
                             const response = await fetch('<%= request.getContextPath() %>/chat', {
                                 method: 'POST',
@@ -909,8 +911,8 @@
                                 throw new Error(`HTTP error! status: ${response.status}`);
                             }
 
-                            const data = await response.json();
-                            addMessage(data.response, 'bot');
+                            const data = await response.json();// Chuyển phản hồi thành JSON
+                            addMessage(data.response, 'bot');// Hiển thị phản hồi từ bot
 
                             displayPromptSuggestions();
 
