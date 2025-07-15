@@ -57,8 +57,40 @@ public class QuizDAO extends DBContext {
                 int duration = rs.getInt(7);
                 Double passRate = rs.getDouble(8);
                 String quizType = rs.getString(9);
+                String des = rs.getString(10);
                 //Lấy entity
-                quiz = new Quiz(quizID, lesson, name, course, level, numberQuestions, duration, passRate, quizType);
+                quiz = new Quiz(quizID, lesson, name, course, level, numberQuestions, duration, passRate, quizType, des);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return quiz;
+    }
+
+    // Lấy 1 bài Quiz với LessonID cụ thể
+    public Quiz getQuizByLessonID(int lessonID) {
+        Quiz quiz = null;
+        try {
+            String sql = "Select * from Quiz where lessonID = ?";
+
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, lessonID);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {  //Kiểm tra xem còn dữ liệu trong rs hay không
+                int quizID = rs.getInt(1);
+                Lesson lesson = lessonDAO.getLessonByLessonID(lessonID);
+                String name = rs.getString(3);
+                Course course = courseDAO.getCoureByCourseID(rs.getInt(4));
+                int level = rs.getInt(5);
+                int numberQuestions = rs.getInt(6);
+                int duration = rs.getInt(7);
+                Double passRate = rs.getDouble(8);
+                String quizType = rs.getString(9);
+                String des = rs.getString(10);
+                //Lấy entity
+                quiz = new Quiz(quizID, lesson, name, course, level, numberQuestions, duration, passRate, quizType, des);
             }
 
         } catch (SQLException e) {
@@ -178,7 +210,8 @@ public class QuizDAO extends DBContext {
                             rs.getInt("numQuestions"),
                             rs.getInt("duration"),
                             rs.getDouble("passRate"),
-                            rs.getString("quizType")
+                            rs.getString("quizType"),
+                            rs.getString("description")
                     );
                     //Add list
                     listQuiz.add(quiz);
@@ -226,9 +259,11 @@ public class QuizDAO extends DBContext {
         return 0;
     }
     
+    
+
     public static void main(String[] args) {
         QuizDAO quizDAO = QuizDAO.getInstance(); // <-- dùng Singleton
-        System.out.println(quizDAO.getFilteredQuizzes("A", -1, "-1", 1, 5).size());
+        System.out.println(quizDAO.getQuizByLessonID(15).getName());
     }
 
 }

@@ -4,7 +4,10 @@
  */
 package controller;
 
+import dal.CourseDAO;
 import dal.LessonDAO;
+import dal.QuizDAO;
+import dal.QuizLessonDTO_DAO;
 import dal.UserLessonNotesDAO;
 import dal.UserLessonProgressDAO;
 import java.io.IOException;
@@ -18,7 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import model.Course;
 import model.Lesson;
+import model.Quiz;
+import model.QuizLessonDTO;
 import model.UserLessonNotes;
 import model.UserLessonProgress;
 
@@ -37,16 +43,18 @@ public class LessonViewController extends HttpServlet {
         //Lấy courseID
         String courseID_raw = request.getParameter("courseID");
         int courseID = -1;
-        if (courseID_raw == null || courseID_raw.isBlank()) {
-            courseID = 4;
-        }
+        
         
         try {
             courseID = Integer.parseInt(courseID_raw);
+            //Lấy course đưa sang JSP để mỗi lần chuyển bài học
+            //nó vẫn còn courseID ở đó
+            Course course = new CourseDAO().getCoureByCourseID(courseID);
+            request.setAttribute("choosenCourse", course);
         } catch (NumberFormatException e) {
             System.out.println(e.getMessage());
         }
-
+        
         //Lấy 2 tham số này để hiển thị trên tranh tiến độ
         int completedLessons = LessonDAO.getInstance().getTotalNumberOfCompletedLessonInCourse(userID, courseID);
         int totalLessons = LessonDAO.getInstance().getTotalNumberOfLessonInCourse(courseID);
@@ -81,8 +89,19 @@ public class LessonViewController extends HttpServlet {
                 request.setAttribute("errorMessage", "Lesson not found");
                 request.getRequestDispatcher("lesson-view.jsp").forward(request, response);
                 return;
+            } else if (lesson.getType().equalsIgnoreCase("Lesson")){
+                request.setAttribute("chooseLesson", lesson);
+            }else if (lesson.getType().equalsIgnoreCase("Quiz")){
+                //Lấy thông tin bài Quiz để in ra QuizLesson Form 1
+                Quiz quizChoose = QuizDAO.getInstance().getQuizByLessonID(lessonID);
+                request.setAttribute("chooseLesson", lesson);
+                request.setAttribute("quizChoose", quizChoose);
+                
+                //Lấy thông tin bài Quiz để in ra QuizLesson Form 2
+                QuizLessonDTO quizLessonDTO = QuizLessonDTO_DAO.getInstance().getQuizLessonDTOByUserIdAndQuizId(userID, quizChoose.getQuizID());
+                request.setAttribute("quizLessonDTO", quizLessonDTO);
             }
-            request.setAttribute("chooseLesson", lesson);
+            
 
             UserLessonProgress progress = UserLessonProgressDAO.getInstance().getUserLessonProgressByUserAndLesson(userID, lessonID);
             boolean isLessonCompleted = (progress != null && "Completed".equals(progress.getStatus()));
@@ -126,6 +145,9 @@ public class LessonViewController extends HttpServlet {
             request.getRequestDispatcher("lesson-view.jsp").forward(request, response);
             return;
         }
+        
+        //Lấy thông tin của bài Quiz user làm mới nhất
+
 
         request.getRequestDispatcher("lesson-view.jsp").forward(request, response);
     }

@@ -99,5 +99,5 @@ public class Question {
         this.status = status;
     }
 
-    
 }
+

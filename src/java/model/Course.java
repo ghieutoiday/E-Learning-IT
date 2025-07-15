@@ -23,6 +23,7 @@ public class Course {
     private Date createDate;
     private double listPrice;
     private double salePrice;
+    private int registrationCount;
 
     public Course() {
     }
@@ -30,7 +31,7 @@ public class Course {
     public Course(int courseID) {
         this.courseID = courseID;
     }
-    
+
     public Course(int courseID, String courseName, CourseCategory courseCategory, String description, User owner, String status, int numberOfLesson, int feature, Date createDate) {
         this.courseID = courseID;
         this.courseName = courseName;
@@ -79,7 +80,7 @@ public class Course {
         this.createDate = createDate;
     }
 
-    public Course(int courseID, String courseName, CourseCategory courseCategory, String briefInfo, String thumbnail, String description, User owner, String status, int numberOfLesson, int feature, Date createDate, double aDouble, double aDouble1) {
+    public Course(int courseID, String courseName, CourseCategory courseCategory, String briefInfo, String thumbnail, String description, User owner, String status, int numberOfLesson, int feature, Date createDate, double listPrice, double salePrice) {
         this.courseID = courseID;
         this.courseName = courseName;
         this.courseCategory = courseCategory;
@@ -91,14 +92,9 @@ public class Course {
         this.numberOfLesson = numberOfLesson;
         this.feature = feature;
         this.createDate = createDate;
-        this.listPrice = listPrice;   // <<< THÊM DÒNG NÀY
+        this.listPrice = listPrice;
         this.salePrice = salePrice;
     }
-    
-    
-    
-
-    
 
     public String getBriefInfo() {
         return briefInfo;
@@ -107,7 +103,6 @@ public class Course {
     public void setBriefInfo(String briefInfo) {
         this.briefInfo = briefInfo;
     }
-    
 
     public int getFeature() {
         return feature;
@@ -204,24 +199,30 @@ public class Course {
     public void setSalePrice(double salePrice) {
         this.salePrice = salePrice;
     }
-    
-    
-    
+
+    public int getRegistrationCount() {
+        return registrationCount;
+    }
+
+    public void setRegistrationCount(int registrationCount) {
+        this.registrationCount = registrationCount;
+    }
+
     public String toPromptString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Tên khóa học: ").append(courseName != null ? courseName : "N/A").append("\n");
         sb.append("Mã khóa học: ").append(courseID).append("\n");
-        sb.append("Thể loại: ").append(courseCategory != null ? courseCategory.getCourseCategoryName(): "N/A").append("\n");
+        sb.append("Thể loại: ").append(courseCategory != null ? courseCategory.getCourseCategoryName() : "N/A").append("\n");
         sb.append("Thông tin tóm tắt: ").append(briefInfo != null && !briefInfo.isEmpty() ? briefInfo : "Chưa có thông tin tóm tắt.").append("\n");
         sb.append("Mô tả chi tiết: ").append(description != null && !description.isEmpty() ? description : "Chưa có mô tả chi tiết.").append("\n");
         sb.append("Người tạo: ").append(owner != null ? owner.getFullName() : "N/A").append("\n");
         sb.append("Trạng thái: ").append(status != null ? status : "N/A").append("\n");
         sb.append("Số lượng bài học: ").append(numberOfLesson).append(" bài\n");
         sb.append("Ngày tạo: ").append(createDate != null ? createDate.toString() : "N/A").append("\n");
-        sb.append("Giá niêm yết: ").append(listPrice).append(" VNĐ\n"); 
-        sb.append("Giá khuyến mãi: ").append(salePrice).append(" VNĐ\n"); 
-        sb.append("Tính năng nổi bật (Feature Code): ").append(feature).append("\n"); 
-
+        sb.append("Giá niêm yết: ").append(listPrice).append(" VNĐ\n");
+        sb.append("Giá khuyến mãi: ").append(salePrice).append(" VNĐ\n");
+        sb.append("Số lượt đăng ký: ").append(registrationCount).append(" người\n");
+        sb.append("Tính năng nổi bật (Feature Code): ").append(feature).append("\n");
 
         return sb.toString();
     }
