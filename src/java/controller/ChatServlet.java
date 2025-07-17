@@ -28,9 +28,7 @@ public class ChatServlet extends HttpServlet {
     public void init() {
         String geminiApiKey = System.getenv("GEMINI_API_KEY");
         if (geminiApiKey == null || geminiApiKey.isEmpty()) {
-
             geminiApiKey = "AIzaSyCTCU-gJ-6GJFDV1DdH2_kbDiAtzE8YWp0"; // Chỉ dùng cho dev/test
-
             LOGGER.warning("Không tìm thấy biến môi trường GEMINI_API_KEY. Đang dùng API key hardcoded.");
         }
         geminiService = new GeminiService(geminiApiKey);

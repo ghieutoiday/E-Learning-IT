@@ -63,11 +63,13 @@
             }
 
             .menu-bar {
-                background-color: black;
+                background-color: #35333C;
+                height: 130px;
             }
 
             .top-bar {
-                background-color: black;
+                background-color: #35333C;
+                height: 50px;
             }
 
             .swiper-container {
@@ -240,6 +242,21 @@
                     margin-left: 0;
                 }
             }
+            .footer-top{
+                background-color: #35333C;
+                margin-top: auto;
+                padding: 0 0 0px;
+            }
+            .pt-exebar{
+                margin-bottom: -30px;
+            }
+
+
+
+
+
+
+
         </style>
 
     </head>
@@ -507,12 +524,12 @@
 
 
 
-                        <div class="section-area section-sp2 popular-courses-bx">
+                        <div class="section-area section-sp2 popular-courses-bx" style="margin-right: 130px;">
                             <div class="container">
                                 <div class="row">
                                     <div class="col-md-12 heading-bx left">
                                         <h2 class="title-head">Hot Posts</h2>
-                                        <p>Explore top trending articles on online IT learning — from coding basics to the latest tech trends.</p>
+                                        <p style="font-size: 16px;">Explore top trending articles on online IT learning — from coding basics to the latest tech trends.</p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -545,12 +562,12 @@
                             </div>
                         </div>
 
-                        <div class="section-area section-sp2 popular-courses-bx">
-                            <div class="container">
+                        <div class="section-area section-sp2 popular-courses-bx" style="margin-right: 130px;">
+                            <div class="container" style="margin-top: -100px;">
                                 <div class="row">
                                     <div class="col-md-12 heading-bx left">
                                         <h2 class="title-head">Featured Subjects</h2>
-                                        <p>Learn smarter with our featured course, covering essential tech topics and hands-on programming. </p>
+                                        <p style="font-size: 16px;">Learn smarter with our featured course, covering essential tech topics and hands-on programming. </p>
                                     </div>
                                 </div>
 
@@ -613,7 +630,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-4 col-md-12 col-sm-12 footer-col-4">
-                            <div class="widget">
+                            <div class="widget" style="margin-top:50px;">
                                 <h5 class="footer-title">Sign Up For A Newsletter</h5>
                                 <p class="text-capitalize m-b20">Weekly Breaking news analysis and cutting edge
                                     advices on job searching.</p>
@@ -637,7 +654,7 @@
                         <div class="col-12 col-lg-5 col-md-7 col-sm-12">
                             <div class="row">
                                 <div class="col-4 col-lg-4 col-md-4 col-sm-4">
-                                    <div class="widget footer_widget">
+                                    <div class="widget footer_widget" style="margin-top: 50px;">
                                         <h5 class="footer-title">Company</h5>
                                         <ul>
                                             <li><a href="index.jsp">Home</a></li>
@@ -648,7 +665,7 @@
                                     </div>
                                 </div>
                                 <div class="col-4 col-lg-4 col-md-4 col-sm-4">
-                                    <div class="widget footer_widget">
+                                    <div class="widget footer_widget" style="margin-top: 50px;">
                                         <h5 class="footer-title">Get In Touch</h5>
                                         <ul>
                                             <li><a
@@ -661,7 +678,7 @@
                                     </div>
                                 </div>
                                 <div class="col-4 col-lg-4 col-md-4 col-sm-4">
-                                    <div class="widget footer_widget">
+                                    <div class="widget footer_widget" style="margin-top: 50px;">
                                         <h5 class="footer-title">Courses</h5>
                                         <ul>
                                             <li><a href="courses.jsp">Courses</a></li>
@@ -674,7 +691,7 @@
                             </div>
                         </div>
                         <div class="col-12 col-lg-3 col-md-5 col-sm-12 footer-col-4">
-                            <div class="widget widget_gallery gallery-grid-4">
+                            <div class="widget widget_gallery gallery-grid-4" style="margin-top: 50px;">
                                 <h5 class="footer-title">Our Gallery</h5>
                                 <ul class="magnific-image">
                                     <li><a href="assets/images/gallery/pic1.jpg" class="magnific-anchor"><img
