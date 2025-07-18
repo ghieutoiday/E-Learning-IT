@@ -7,6 +7,9 @@ public class AnswerOption {
     private String content;
     private boolean isCorrect;
 
+    public AnswerOption() {
+    }
+    
     public AnswerOption(int questionID, String content, boolean isCorrect) {
         this.questionID = questionID;
         this.content = content;
@@ -37,6 +40,15 @@ public class AnswerOption {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public boolean isIsCorrect() {
+        return isCorrect;
+    }
+
+    public void setIsCorrect(boolean isCorrect) {
+        this.isCorrect = isCorrect;
+    }
+    
 
     public boolean isCorrect() {
         return isCorrect;

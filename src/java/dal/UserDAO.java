@@ -170,9 +170,10 @@ public class UserDAO extends DBContext {
             ps.setString(2, "Active");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                //Role roleID = roleDao.getRole(rs.getInt(id));
+                int roleId = rs.getInt("roleID");
+                Role role = roleDao.getRole(roleId);
                 user = new User(rs.getInt("userID"), rs.getString("fullName"), rs.getString("email"), rs.getString("password"),
-                        rs.getString("gender"), rs.getString("mobile"), null, rs.getString("avatar"), rs.getString("status"));
+                        rs.getString("gender"), rs.getString("mobile"), role, rs.getString("avatar"), rs.getString("status"));
 
             }
         } catch (SQLException ex) {

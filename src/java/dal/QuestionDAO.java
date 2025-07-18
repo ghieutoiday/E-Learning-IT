@@ -9,8 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Course;
+import model.SubjectDimension;
 
 public class QuestionDAO extends DBContext {
+    
+    private static QuestionDAO instance;
+
+    public static QuestionDAO getInstance() {
+
+        if (instance == null) {
+            instance = new QuestionDAO();
+        }
+
+        return instance;
+    }
 
     private AnswerOptionDAO answerOptionDAO;
 
@@ -103,6 +116,59 @@ public class QuestionDAO extends DBContext {
             Logger.getLogger(QuestionDAO.class.getName()).log(Level.SEVERE, "Lỗi khi xác thực khóa ngoại", ex);
         }
         return false;
+    }
+    
+    public Question getQuestionByQuestionID(int questionID) {
+        Question question = null;
+        try {
+            String sql = "Select * from Question where questionID = ?";
+
+            PreparedStatement ps = connection.prepareStatement(sql);
+             ps.setInt(1, questionID);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {  //Kiểm tra xem còn dữ liệu trong rs hay không
+                
+            int courseID = rs.getInt("courseID");
+            int dimensionID = rs.getInt("dimensionID");
+            int typeQuestionID = rs.getInt("typeQuestionID");
+            String content = rs.getString("content");
+            String media = rs.getString("media");
+            String explanation = rs.getString("explanation");
+            int level = rs.getInt("level");
+            String status = rs.getString("status");
+ 
+                //Lấy entity
+                question = new Question(questionID, courseID, dimensionID, typeQuestionID, content, media, explanation, level, status);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return question;
+    }
+    
+    // hàm update question
+    public void updateQuestion(Question question) {
+        String sql = "UPDATE Question SET "
+                + "[courseID] = ?, "
+                + "[dimensionID] = ?, "
+                + "[content] = ?, "
+                + "[explanation] = ?, "
+                + "[status] = ? "
+                + "WHERE [questionID] = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, question.getCourseID());
+            st.setInt(2, question.getDimensionID());
+            st.setString(3, question.getContent());
+            st.setString(4, question.getExplanation());
+            st.setString(5, question.getStatus());
+            st.setInt(6, question.getQuestionID());
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error in updateQuestion: " + e.getMessage());
+        }
     }
 
     public static void main(String[] args) {
