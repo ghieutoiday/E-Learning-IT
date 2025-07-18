@@ -1,5 +1,19 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+    // Lấy user từ session
+    Object userObj = session.getAttribute("user");
+    if (userObj != null) {
+        model.User user = (model.User) userObj;
+        int roleId = user.getRole().getRoleID();
+        if (roleId != 4 && roleId != 5) {
+            response.sendRedirect("/E-Learning-IT/home"); // hoặc "/home" nếu đã cấu hình route
+        }
+    } else {
+        response.sendRedirect("/E-Learning-IT/home"); // nếu chưa đăng nhập
+    }
+%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
