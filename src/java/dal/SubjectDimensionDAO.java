@@ -204,6 +204,31 @@ public class SubjectDimensionDAO extends DBContext {
         }
         return list;
     }
+    
+    public List<SubjectDimension> getAllDistinctDimensionByName() {
+        List<SubjectDimension> list = new ArrayList<>();
+
+        try {
+            //  lọc ra các bản ghi SubjectDimension với tên name duy nhất (không trùng nhau).
+            // Mỗi name chỉ lấy 1 bản ghi đại diện (bản ghi có dimensionID nhỏ nhất).
+            String sql = "SELECT * FROM SubjectDimension WHERE [dimensionID] IN ( "
+                    + "SELECT MIN(dimensionID) FROM SubjectDimension GROUP BY name )";
+
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("dimensionID");
+                SubjectDimension subjectDimension = getSubjectDimensionByID(id);
+                list.add(subjectDimension);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        return list;
+    }
 
     public static void main(String[] args) {
         SubjectDimensionDAO sdDao = new SubjectDimensionDAO();

@@ -68,24 +68,23 @@ public class LoginRegisterController extends HttpServlet {
 
             String email = request.getParameter("email");
             String password = request.getParameter("password");
-            String errorMessage = null; 
-
+            String errorMessage = null;
 
             if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
                 errorMessage = "Email và mật khẩu không được để trống.";
             } else {
                 User user = userDAO.getUserByEmailByLogin(email);
                 if (user != null) {
-                     String storedPassword = user.getPassword(); 
+                    String storedPassword = user.getPassword();
 
                     boolean passwordMatches = false;
 
                     // Kiểm tra xem mật khẩu trong DB có phải dạng BCrypt không
-                    if (storedPassword != null && 
-                        (storedPassword.startsWith("$2a$") || 
-                         storedPassword.startsWith("$2b$") || 
-                         storedPassword.startsWith("$2y$"))) {
-                        
+                    if (storedPassword != null
+                            && (storedPassword.startsWith("$2a$")
+                            || storedPassword.startsWith("$2b$")
+                            || storedPassword.startsWith("$2y$"))) {
+
                         passwordMatches = BCrypt.checkpw(password, storedPassword);
 
                     } else {
@@ -94,9 +93,43 @@ public class LoginRegisterController extends HttpServlet {
                     }
                     if (passwordMatches) {
                         // Đăng nhập THÀNH CÔNG
-                        session.setAttribute("loggedInUser", user); 
-                        response.sendRedirect(request.getContextPath() + "/home");
-                        return; 
+                        session.setAttribute("loggedInUser", user);
+
+                        session.setAttribute("user", user); // Đảm bảo đối tượng user được đặt vào session
+
+                        if (user.getRole() != null) { // Thêm kiểm tra null ở đây
+                            switch (user.getRole().getRoleID()) {
+                                case 1:
+                                    response.sendRedirect("home?userID=" + user.getUserID());
+                                    break;
+                                case 2:
+                                    response.sendRedirect("postcontroller?userID=" + user.getUserID());
+                                    break;
+                                case 3:
+                                    response.sendRedirect("registrationsalercontroller");
+                                    break;
+                                case 4:
+                                    response.sendRedirect("home");
+                                    break;
+                                case 5:
+                                    response.sendRedirect("postcontroller");
+                                    break;
+                                default:
+                                    response.sendRedirect("home");
+                                    break;
+                            }
+                        } else {
+                            // Trường hợp user.getRole() là null
+                            // Bạn có thể xử lý ở đây, ví dụ:
+                            errorMessage = "Thông tin vai trò người dùng không hợp lệ. Vui lòng liên hệ quản trị viên.";
+                            request.setAttribute("loginError", errorMessage);
+                            request.setAttribute("prevEmail", email != null ? email : "");
+                            request.setAttribute("openLoginModalOnLoad", true);
+                            request.getRequestDispatcher("/home").forward(request, response);
+                            return; // Dừng xử lý
+                        }
+                        System.out.println(user.getUserID());
+                        return;
                     } else {
                         // Mật khẩu không đúng
                         errorMessage = "Mật khẩu không đúng. Vui lòng thử lại.";
@@ -107,8 +140,8 @@ public class LoginRegisterController extends HttpServlet {
             }
 
             request.setAttribute("loginError", errorMessage);
-            request.setAttribute("prevEmail", email != null ? email : ""); 
-            request.setAttribute("openLoginModalOnLoad", true); 
+            request.setAttribute("prevEmail", email != null ? email : "");
+            request.setAttribute("openLoginModalOnLoad", true);
             request.getRequestDispatcher("/home").forward(request, response);
 
         } else if ("signup".equalsIgnoreCase(action)) {
@@ -134,13 +167,13 @@ public class LoginRegisterController extends HttpServlet {
                 newUser.setGender(gender);
                 newUser.setEmail(email);
                 newUser.setMobile(mobile);
-                newUser.setPassword(hashedPassword); 
-                
-                int newUserId  = userDAO.addNewUserRegister(newUser);
+                newUser.setPassword(hashedPassword);
 
-                if (newUserId  > 0) {
-                    newUser.setUserID(newUserId); 
-                    
+                int newUserId = userDAO.addNewUserRegister(newUser);
+
+                if (newUserId > 0) {
+                    newUser.setUserID(newUserId);
+
                     //Tạo token xác minh
                     String verificationTokenString = UUID.randomUUID().toString();
                     LocalDateTime tokenExpiryTime = LocalDateTime.now().plusMinutes(10);
@@ -151,16 +184,16 @@ public class LoginRegisterController extends HttpServlet {
                     verificationTokenObj.setExpiryTime(tokenExpiryTime);
                     verificationTokenObj.setIsUsed(false);
                     verificationTokenObj.setUserID(newUser); // Gán đối tượng User vào token
-                    
+
                     try {
                         //Lưu token vào DB
-                        tokenDAO.saveToken(verificationTokenObj); 
-                        
+                        tokenDAO.saveToken(verificationTokenObj);
+
                         //Tạo link xác minh
                         String verificationLink = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
                                 + request.getContextPath() + "/verifycontroller?token=" + verificationTokenString;
 
-                        String emailSubject = "Verify Your Account - E-Learning System"; 
+                        String emailSubject = "Verify Your Account - E-Learning System";
                         System.out.println("DEBUG: Verification Link generated: " + verificationLink);
                         String emailBodyHtml = "<html><body style=\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\">"
                                 + "<div style=\"max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;\">"
@@ -188,8 +221,8 @@ public class LoginRegisterController extends HttpServlet {
                             signupErrorMessage = "Đăng ký thành công nhưng không gửi được email xác minh. Vui lòng thử lại sau hoặc liên hệ hỗ trợ.";
                         }
                     } catch (Exception e) {
-                         e.printStackTrace();
-                         signupErrorMessage = "Có lỗi xảy ra khi lưu token xác minh. Vui lòng thử lại.";
+                        e.printStackTrace();
+                        signupErrorMessage = "Có lỗi xảy ra khi lưu token xác minh. Vui lòng thử lại.";
                     }
                 } else {
                     signupErrorMessage = "Có lỗi xảy ra trong quá trình đăng ký. Vui lòng thử lại.";

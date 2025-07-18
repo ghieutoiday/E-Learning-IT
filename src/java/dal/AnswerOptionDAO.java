@@ -4,12 +4,17 @@
  */
 package dal;
 //Hieu
+
 import model.AnswerOption;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Question;
 
 /**
  *
@@ -17,14 +22,48 @@ import java.util.logging.Logger;
  */
 public class AnswerOptionDAO extends DBContext {
 
+    private static AnswerOptionDAO instance;
+
+    public static AnswerOptionDAO getInstance() {
+        if (instance == null) {
+            instance = new AnswerOptionDAO();
+        }
+        return instance;
+    }
+
+
     public AnswerOptionDAO() {
         super();
+    }
+
+     // Phương thức lấy các câu trả lời theo ID câu hỏi
+    public List<AnswerOption> getAnswersByQuestionId(int questionID) {
+        List<AnswerOption> answers = new ArrayList<>();
+        String sql = "SELECT answerOptionID, questionID, content, isCorrect FROM AnswerOption WHERE questionID = ?";
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, questionID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                AnswerOption answer = new AnswerOption();
+                answer.setAnswerOptionID(rs.getInt("answerOptionID"));
+                answer.setQuestionID(rs.getInt("questionID"));
+                answer.setContent(rs.getString("content"));
+                answer.setIsCorrect(rs.getBoolean("isCorrect")); // Sử dụng setCorrect()
+                answers.add(answer);
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi lấy câu trả lời theo Question ID (AnswerOptionDAO): " + e.getMessage());
+            e.printStackTrace();
+        }
+        return answers;
     }
 
     //Hàm lưu đáp án
     public void saveAnswerOption(AnswerOption option, Connection conn) throws SQLException {
         String sql = "INSERT INTO AnswerOption (questionID, content, isCorrect) VALUES (?, ?, ?)";
-        
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, option.getQuestionID());
@@ -37,14 +76,85 @@ public class AnswerOptionDAO extends DBContext {
         }
     }
 
-    public static void main(String[] args) {
-        AnswerOptionDAO dao = new AnswerOptionDAO();
-        AnswerOption option = new AnswerOption(1, "Sample answer", true);
-        try {
-            // Test cần Connection, đây chỉ là demo
-            System.out.println("Test saveAnswerOption requires a Connection object.");
-        } catch (Exception ex) {
-            Logger.getLogger(AnswerOptionDAO.class.getName()).log(Level.SEVERE, null, ex);
+    // Phương thức thêm một câu trả lời mới
+    public int addAnswer(AnswerOption answer) {
+        String sql = "INSERT INTO AnswerOption (questionID, content, isCorrect) VALUES (?, ?, ?)";
+        String[] generatedColumns = {"answerOptionID"};
+
+        try (Connection conn = DBContext.getInstance().getConnection(); // Lấy Connection từ Singleton
+             PreparedStatement ps = conn.prepareStatement(sql, generatedColumns)) {
+            ps.setInt(1, answer.getQuestionID());
+            ps.setString(2, answer.getContent());
+            ps.setBoolean(3, answer.isCorrect());
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi thêm câu trả lời (addAnswer): " + e.getMessage());
+            e.printStackTrace();
         }
+        return -1;
     }
+
+    // Phương thức cập nhật một câu trả lời hiện có (updateAnswer)
+    // Không nhận Connection từ bên ngoài
+    public boolean updateAnswer(AnswerOption answer) { // Bỏ tham số Connection conn
+        String sql = "UPDATE AnswerOption SET content = ?, isCorrect = ? WHERE answerOptionID = ? AND questionID = ?";
+
+        try (Connection conn = DBContext.getInstance().getConnection(); // Lấy Connection từ Singleton
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, answer.getContent());
+            ps.setBoolean(2, answer.isCorrect());
+            ps.setInt(3, answer.getAnswerOptionID());
+            ps.setInt(4, answer.getQuestionID());
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi cập nhật câu trả lời (updateAnswer): " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Phương thức xóa một câu trả lời (deleteAnswer)
+    // Không nhận Connection từ bên ngoài
+    public boolean deleteAnswer(int answerOptionID) { // Bỏ tham số Connection conn
+        String sql = "DELETE FROM AnswerOption WHERE answerOptionID = ?";
+        try (Connection conn = DBContext.getInstance().getConnection(); // Lấy Connection từ Singleton
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, answerOptionID);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi xóa câu trả lời (deleteAnswer): " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Phương thức xóa tất cả câu trả lời của một Question (deleteAnswersByQuestionId)
+    // Không nhận Connection từ bên ngoài
+    public boolean deleteAnswersByQuestionId(int questionID) { // Bỏ tham số Connection conn
+        String sql = "DELETE FROM AnswerOption WHERE questionID = ?";
+        try (Connection conn = DBContext.getInstance().getConnection(); // Lấy Connection từ Singleton
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, questionID);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected >= 0;
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi xóa câu trả lời theo Question ID (deleteAnswersByQuestionId): " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    
 }

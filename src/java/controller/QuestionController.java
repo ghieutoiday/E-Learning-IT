@@ -1,6 +1,10 @@
 package controller;
 
+import com.sun.jdi.connect.spi.Connection;
+import dal.AnswerOptionDAO;
+import dal.CourseDAO;
 import dal.QuestionDAO;
+import dal.SubjectDimensionDAO;
 import model.Question;
 import model.AnswerOption;
 import jakarta.servlet.ServletException;
@@ -9,12 +13,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Course;
+import model.SubjectDimension;
 
 @WebServlet("/questioncontroller")
 @MultipartConfig(maxFileSize = 1024 * 1024 * 10) // Kích thước file tối đa 10MB
@@ -22,11 +29,39 @@ public class QuestionController extends HttpServlet {
 
     private static final Logger LOGGER = Logger.getLogger(QuestionController.class.getName());
 
+    private CourseDAO courseDAO;
+    private SubjectDimensionDAO subjectDimensionDAO;
+    private AnswerOptionDAO answerOptionDAO;
+    private QuestionDAO questionDAO;
+
+    @Override
+    public void init() throws ServletException {
+        courseDAO = new CourseDAO();
+        subjectDimensionDAO = new SubjectDimensionDAO();
+        answerOptionDAO = new AnswerOptionDAO();
+        questionDAO = new QuestionDAO();
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Chỉ forward đến JSP, không còn logic download ở đây
-        request.getRequestDispatcher("/importQuestions.jsp").forward(request, response);
+        String action = request.getParameter("action");
+        if ("edit".equalsIgnoreCase(action)) {
+            // String questionIDParam = request.getParameter("questionID");
+            //int questionID = Integer.parseInt(questionIDParam);
+            int questionID = 5;
+            Question question = questionDAO.getQuestionByQuestionID(questionID);
+            request.setAttribute("question", question);
+            request.setAttribute("courseList", courseDAO.getAllDistinctCourseByName());
+            request.setAttribute("dimensionList", subjectDimensionDAO.getAllDistinctDimensionByName());
+            request.setAttribute("answers", answerOptionDAO.getAnswersByQuestionId(questionID));
+            request.getRequestDispatcher("Question-Detail.jsp").forward(request, response);
+
+        } else if ("import".equalsIgnoreCase(action) || action == null) {
+            // Đây là logic forward đến trang import nếu action là "import" hoặc không có action
+            request.getRequestDispatcher("/importQuestions.jsp").forward(request, response);
+        }
     }
 
     @Override
@@ -128,7 +163,7 @@ public class QuestionController extends HttpServlet {
                                 errors.add("Không có đáp án nào được cung cấp cho câu hỏi: '" + content + "' (Dòng: '" + lineContent + "')");
                                 continue;
                             }
-                            
+
                             if (answerOptions.stream().noneMatch(AnswerOption::isCorrect)) {
                                 errors.add("Không có đáp án đúng nào được cung cấp cho câu hỏi: '" + content + "' (Dòng: '" + lineContent + "')");
                                 continue;
@@ -168,6 +203,67 @@ public class QuestionController extends HttpServlet {
                 LOGGER.log(Level.SEVERE, "Lỗi khi chuyển hướng đến JSP", ex);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi khi chuyển hướng.");
             }
+        } else if ("edit".equalsIgnoreCase(action)) {
+            HttpSession session = request.getSession();
+            
+            String questionIDStr = request.getParameter("questionID");
+            String courseIDStr = request.getParameter("courseID");
+            String dimensionIDStr = request.getParameter("dimensionID");
+            String status = request.getParameter("status");
+            String content = request.getParameter("content");
+            String explanation = request.getParameter("explanation");
+
+            int questionID = Integer.parseInt(questionIDStr);
+
+            Question question = new Question();
+            question.setQuestionID(questionID);
+            question.setCourseID(Integer.parseInt(courseIDStr));
+            question.setDimensionID(Integer.parseInt(dimensionIDStr));
+            question.setStatus(status);
+            question.setContent(content);
+            question.setExplanation(explanation != null && !explanation.trim().isEmpty() ? explanation.trim() : null);
+
+            questionDAO.updateQuestion(question);
+            answerOptionDAO.deleteAnswersByQuestionId(questionID);
+
+            String[] answerContents = request.getParameterValues("answerOptionContent");
+            String correctAnswerIndexStr = request.getParameter("correctAnswerIndex");
+
+            boolean hasCorrectAnswer = false;
+
+            if (answerContents != null) {
+                for (int i = 0; i < answerContents.length; i++) {
+                    String answerContent = answerContents[i];
+                    boolean isCorrect = String.valueOf(i).equals(correctAnswerIndexStr);
+
+                    if (answerContent != null && !answerContent.trim().isEmpty()) {
+                        AnswerOption answer = new AnswerOption();
+                        answer.setQuestionID(question.getQuestionID());
+                        answer.setContent(answerContent.trim());
+                        answer.setCorrect(isCorrect);
+
+                        int newAnswerID = answerOptionDAO.addAnswer(answer);
+                    }
+
+                    if (isCorrect) {
+                        hasCorrectAnswer = true;
+                    }
+                }
+            }
+
+            if (!hasCorrectAnswer && answerContents != null && answerContents.length > 0) {
+                request.setAttribute("errorMessage", "Phải có ít nhất một đáp án đúng được chọn.");
+                request.setAttribute("question", questionDAO.getQuestionByQuestionID(questionID));
+                request.setAttribute("courseList", courseDAO.getAllDistinctCourseByName());
+                request.setAttribute("dimensionList", subjectDimensionDAO.getAllDistinctDimensionByName());
+                request.setAttribute("answers", answerOptionDAO.getAnswersByQuestionId(questionID));
+                request.getRequestDispatcher("Question-Detail.jsp").forward(request, response);
+                return;
+            }
+            
+            session.setAttribute("successMessage", "Question updated successfully!");
+            response.sendRedirect("questioncontroller?action=edit&questionID=" + questionIDStr);
         }
+
     }
 }
