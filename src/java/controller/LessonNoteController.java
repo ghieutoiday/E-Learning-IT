@@ -27,7 +27,7 @@ import model.UserLessonNotes;
         maxRequestSize = 1024 * 1024 * 50)   // 50MB
 public class LessonNoteController extends HttpServlet {
 
-    private static final String UPLOAD_DIR = "D:\\Session_5\\SWP_Project\\E-Learning-IT\\web\\assets\\images\\note";
+    private static final String UPLOAD_DIR = "E:\\FA25\\SWP\\E-Learning-IT\\web\\assets\\images\\note";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

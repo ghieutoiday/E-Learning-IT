@@ -109,7 +109,7 @@ public class LoginRegisterController extends HttpServlet {
                                     response.sendRedirect("registrationsalercontroller");
                                     break;
                                 case 4:
-                                    response.sendRedirect("home");
+                                    response.sendRedirect("coursecontroller");
                                     break;
                                 case 5:
                                     response.sendRedirect("postcontroller");

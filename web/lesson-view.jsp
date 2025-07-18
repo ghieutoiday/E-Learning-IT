@@ -664,7 +664,7 @@
                                             </c:if>
                                                 
                             <!-----------------------------Form 1-->    
-<!--                                    <div class="quiz-form1">
+                                    <div class="quiz-form1">
                                                 <c:set var="d" value="${requestScope.quizChoose}"/>
                                                         <h3>${b.name}</h3>
                                                         <h5 style="font-weight: normal;">${d.name}&nbsp;&nbsp;|&nbsp;&nbsp;${d.numberQuestions}&nbsp;questions</h5>
@@ -673,160 +673,13 @@
                                                             <i>${d.description}</i>
                                                         </div>
                                                 <br/>
-                           ----------Sửa link ở đây sang màn hình để làm Quiz
                                                 <form action="/submit" method="post">
                                                     <button type="submit">Start Test</button>
                                                 </form>
 
-                                    </div>        -->
+                                    </div>        
                             <!-----------------------------Form 2-->                                 
-                                    <div class="quiz-form2">
-                                        <c:set var="e" value="${requestScope.quizLessonDTO}"/>
-                                        <div class="bg-light p-3 rounded">
-                                            <div class="bg-secondary bg-opacity-25 p-2 mb-3 custom-exam-header">
-                                                <c:if test="${not empty e and not empty e.startTime}">
-                                                    Exam | 
-                                                    ${e.startTime.getDayOfMonth() < 10 ? '0' : ''}${e.startTime.getDayOfMonth()}/${e.startTime.getMonthValue() < 10 ? '0' : ''}${e.startTime.getMonthValue()}/${e.startTime.getYear()} | 
-                                                    ${e.startTime.getHour() < 10 ? '0' : ''}${e.startTime.getHour()}: 
-                                                    ${e.startTime.getMinute() < 10 ? '0' : ''}${e.startTime.getMinute()} | 
-                                                    ${e.numberQuestions} Questions
-                                                </c:if>
-                                            </div>
-
-                                            <div class="row g-3">
-                                                <div class="col-12 col-md-3">
-                                                    <div class="row g-2">
-                                                        <div class="col-12">
-                                                            <div class="card score-card">
-                                                                <div class="card-body">
-                                                                    <h5 class="card-title">SCORE</h5>
-                                                                    <br/>
-                                                                    <c:if test="${e.quizStatus eq 'Pass'}">
-                                                                        <p style="color: green" class="card-text score-percentage">
-                                                                            <fmt:formatNumber value="${(e.correctAnswers * 100) div e.numberQuestions}" type="number" maxFractionDigits="0" />%
-                                                                        </p>
-                                                                    </c:if>
-                                                                    <c:if test="${e.quizStatus eq 'Fail'}">
-                                                                        <p style="color: red" class="card-text score-percentage">
-                                                                            <fmt:formatNumber value="${(e.correctAnswers * 100) div e.numberQuestions}" type="number" maxFractionDigits="0" />%
-                                                                        </p>
-                                                                    </c:if>
-                                                                    
-                                                                    
-                                                                    <p class="card-text correct">Correct: ${e.correctAnswers}/${e.numberQuestions}</p>
-                                                                    
-                                                                    <c:if test="${e.quizStatus eq 'Pass'}">
-                                                                        <p style="color: green" class="card-text failed">${e.quizStatus}</p>
-                                                                    </c:if>
-                                                                    <c:if test="${e.quizStatus eq 'Fail'}">
-                                                                        <p style="color: red" class="card-text failed">${e.quizStatus}</p>
-                                                                    </c:if>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-12 mt-2">
-                                                            <div class="card exam-taken-card">
-                                                                <div class="card-body">
-                                                                    <p class="card-text">EXAM</p>
-                                                                    <p class="card-text2">
-                                                                        TAKEN
-                                                                        ${e.startTime.getDayOfMonth() < 10 ? '0' : ''}${e.startTime.getDayOfMonth()}/${e.startTime.getMonthValue() < 10 ? '0' : ''}${e.startTime.getMonthValue()}/${e.startTime.getYear()}
-                                                                    </p>
-                                                                    <p class="card-text">
-                                                                        ${e.startTime.getHour() < 10 ? '0' : ''}${e.startTime.getHour()} : 
-                                                                        ${e.startTime.getMinute() < 10 ? '0' : ''}${e.startTime.getMinute()}
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-9">
-                                                    <div class="results-table-container">
-                                                        <c:set var="f" value="${e.dimensionResults}"/>
-                                                        <table class="table table-bordered">
-                                                            <thead>
-                                                                <tr class="table-secondary">
-                                                                    <th>${f[0].dimensionType}</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <c:forEach var="g" items="${f}">
-                                                                    <tr>
-                                                                        <td>
-                                                                            ${g.dimensionName} : 
-                                                                            <fmt:formatNumber value="${(g.correctCount * 100) div g.totalQuestions}" type="number" maxFractionDigits="0" />%
-                                                                        </td>
-                                                                    </tr>
-                                                                </c:forEach>
-                                                                
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row g-3 mt-3">
-                                                <div class="col-12 col-md-3">
-                                                    <div class="row g-2">
-                                                        <div class="col-12">
-                                                            <div class="card review-test-card">
-                                                                <div class="card-body">
-                                                                    <a href="">
-                                                                        <p class="card-text">REVIEW TEST</p>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-12 mt-2">
-                                                            <div class="card redotest-card">
-                                                                <div class="card-body">
-                                                                    <a href="">
-                                                                        <p class="card-text">REDO TEST</p>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-9">
-                                                    <div class="row g-2">
-                                                        <div class="col-4">
-                                                            <div class="card time-card">
-                                                                <div class="card-body">
-                                                                    <p class="card-text">AVERAGE TIME TO QUESTION</p>
-                                                                    <p class="card-text">
-                                                                        <fmt:formatNumber value="${e.actualQuizTime  div e.numberQuestions}" type="number" maxFractionDigits="0" /> sec
-                                                                    </p>
-                                                                    
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-4">
-                                                            <div class="card time-card">
-                                                                <div class="card-body">
-                                                                    <p class="card-text">TOTAL TIMES</p>
-                                                                    <p class="card-text">
-                                                                        ${e.actualQuizTime} sec
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-4">
-                                                            <div class="card time-card">
-                                                                <div class="card-body">
-                                                                    <p class="card-text">UN-ANSWER QUESTION</p>
-                                                                    <p class="card-text">
-                                                                        ${e.unAnswers} question
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                            <c:if test="${nextLessonID > 0 && isLessonCompleted}">
+                                        <c:if test="${nextLessonID > 0 && isLessonCompleted}">
                                                 <a href="lessonviewcontroller?lessonID=${nextLessonID}&courseID=${course.courseID}" class="nav-button next-button"><i class="fas fa-chevron-right"></i></a>
                                             </c:if>
                                             <c:if test="${nextLessonID > 0 && !isLessonCompleted}">

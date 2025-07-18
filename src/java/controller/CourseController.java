@@ -46,11 +46,19 @@ public class CourseController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if(user.getRole().getRoleID() != 5 || user.getRole().getRoleID() != 4){
+            response.sendRedirect("home");
+            return;
+        }
+        
 
         CourseDAO courseDao = new CourseDAO();
         CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
         SubjectDimensionDAO subjectDimensionDAO = new SubjectDimensionDAO();
-        HttpSession session = request.getSession();
+        
 
         String action = request.getParameter("action");
         String service = request.getParameter("service");
