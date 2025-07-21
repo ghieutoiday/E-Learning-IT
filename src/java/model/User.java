@@ -9,11 +9,12 @@ package model;
  * @author ASUS
  */
 public class User {
-    private int userID;
+    private int userID,roleID;
     private String fullName, email, password, gender, mobile;
     private String address;
     private Role role;
     private String avatar, status;
+
 
     public User() {
     }
@@ -43,11 +44,29 @@ public class User {
         this.avatar = avatar;
         this.status = status;
     }
-    
+    public User(int userID,int roleID, String fullName, String email, String password, String gender, String mobile,String address, Role role, String avatar, String status) {
+        this.userID = userID;
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.gender = gender;
+        this.mobile = mobile;
+        this.address = address;
+        this.role = role;
+        this.avatar = avatar;
+        this.status = status;
+        this.roleID=roleID;
+    }
+
     public int getUserID() {
         return userID;
     }
-
+    public int getRoleID() {
+        return roleID;
+    }
+    public void setRoleID(int roleID) {
+        this.roleID = roleID;
+    }
     public void setUserID(int userID) {
         this.userID = userID;
     }
@@ -97,7 +116,7 @@ public class User {
     }
 
     public void setRole(Role role) {
-        this.role = role;
+this.role = role;
     }
 
     public String getAvatar() {

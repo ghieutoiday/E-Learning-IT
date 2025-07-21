@@ -35,30 +35,41 @@ import utils.CloudinaryUtil;
         maxRequestSize = 1024 * 1024 * 50 // 50MB
 )
 public class CourseController extends HttpServlet {
-    
+
     private Cloudinary cloudinary;
 
     public CourseController() {
         this.cloudinary = CloudinaryUtil.getCloudinary();
-        
+
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         HttpSession session = request.getSession();
+        UserDAO userDao = new UserDAO();
         User user = (User) session.getAttribute("user");
-        if(user.getRole().getRoleID() != 5 || user.getRole().getRoleID() != 4){
+//        int id = userDao.getRoleByID(user.getRole().getRoleID());
+        if (user.getRoleID() == 5 && user.getRoleID() == 4) {
             response.sendRedirect("home");
             return;
         }
-        
+//        HttpSession session = request.getSession(false);
+//        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+//        if (user == null) {
+//            System.out.println("Chưa đăng nhập");
+//        } else {
+//            System.out.println("Đã đăng nhập: userID=" + user.getUserID() + ", email=" + user.getEmail() + ", role=" + (user.getRoleID() ));
+//        }
+//        if (user == null || user.getRoleID() == 4 || user.getRoleID() == 5 ) {
+//            response.sendRedirect(request.getContextPath() + "/login.jsp");
+//            return;
+//        }
 
         CourseDAO courseDao = new CourseDAO();
         CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
         SubjectDimensionDAO subjectDimensionDAO = new SubjectDimensionDAO();
-        
 
         String action = request.getParameter("action");
         String service = request.getParameter("service");
@@ -68,8 +79,6 @@ public class CourseController extends HttpServlet {
         if (action == null) {
             action = "view";
         }
-        
-        
 
         switch (action) {
             case "view":
@@ -111,7 +120,7 @@ public class CourseController extends HttpServlet {
                     handleViewCourseDetail(request, response, session, courseDao, courseCategoryDao, courseIdParam);
                 }
                 break;
-                case "create":
+            case "create":
                 // Chuyển sang form tạo mới khóa học
                 List<CourseCategory> courseCategoryList = courseCategoryDao.getAllCategory();
                 List<User> userListIds = new UserDAO().getUsersByIDs(25, 26);
@@ -126,6 +135,77 @@ public class CourseController extends HttpServlet {
         }
     }
 
+//    private void handleSubjectList(HttpServletRequest request, HttpServletResponse response,
+//            HttpSession session, CourseDAO courseDao,
+//            CourseCategoryDAO courseCategoryDao, String pageSubjectList)
+//            throws ServletException, IOException {
+//
+//        int indexPageSubjectList = (pageSubjectList == null) ? 1 : Integer.parseInt(pageSubjectList);
+//
+//        String categoryParam = request.getParameter("category");
+//        String statusParam = request.getParameter("status");
+//
+//        if (categoryParam != null) {
+//            session.setAttribute("currentCategory", categoryParam);
+//        }
+//        if (statusParam != null) {
+//            session.setAttribute("currentStatus", statusParam);
+//        }
+//
+//        String currentCategory = (String) session.getAttribute("currentCategory");
+//        if (currentCategory == null) {
+//            currentCategory = "allCategory";
+//        }
+//
+//        String currentStatus = (String) session.getAttribute("currentStatus");
+//        if (currentStatus == null) {
+//            currentStatus = "allStatus";
+//        }
+//
+//        List<Course> courseList;
+//        int totalCourse;
+//
+//        if (currentCategory.equals("allCategory") && currentStatus.equals("allStatus")) {
+//            totalCourse = courseDao.getAllCourse().size();
+//            courseList = courseDao.pagingCourse(indexPageSubjectList);
+//        } else if (currentCategory.equals("allCategory") && !currentStatus.equals("allStatus")) {
+//            totalCourse = courseDao.getAllCoureByStatus(currentStatus).size();
+//            courseList = courseDao.pagingCourseByStatus(indexPageSubjectList, currentStatus);
+//        } else if (!currentCategory.equals("allCategory") && currentStatus.equals("allStatus")) {
+//            CourseCategory courseCategory = courseCategoryDao.getCategoryByName(currentCategory);
+//            if (courseCategory == null) {
+//                totalCourse = 0;
+//                courseList = new java.util.ArrayList<>();
+//            } else {
+//                int id = courseCategory.getCourseCategory();
+//                totalCourse = courseDao.getAllCoureByCategory(id).size();
+//                courseList = courseDao.pagingCourseByCategory(indexPageSubjectList, id);
+//            }
+//        } else {
+//            CourseCategory courseCategory = courseCategoryDao.getCategoryByName(currentCategory);
+//            if (courseCategory == null) {
+//                totalCourse = 0;
+//                courseList = new java.util.ArrayList<>();
+//            } else {
+//                int id = courseCategory.getCourseCategory();
+//                totalCourse = courseDao.getAllCoureByCategoryAndStatus(id, currentStatus).size();
+//                courseList = courseDao.pagingCourseByCategoryAndStatus(indexPageSubjectList, id, currentStatus);
+//            }
+//        }
+//
+//        int endPage = totalCourse / 5;
+//        if (totalCourse % 5 != 0) {
+//            endPage++;
+//        }
+//
+//        session.setAttribute("endPage", endPage);
+//        session.setAttribute("courseList", courseList);
+//
+//        List<CourseCategory> courseCategoryList = courseCategoryDao.getAllCategory();
+//        session.setAttribute("courseCategoryList", courseCategoryList);
+//
+//        request.getRequestDispatcher("subject-list.jsp").forward(request, response);
+//    }
     private void handleSubjectList(HttpServletRequest request, HttpServletResponse response,
             HttpSession session, CourseDAO courseDao,
             CourseCategoryDAO courseCategoryDao, String pageSubjectList)
@@ -156,32 +236,81 @@ public class CourseController extends HttpServlet {
         List<Course> courseList;
         int totalCourse;
 
-        if (currentCategory.equals("allCategory") && currentStatus.equals("allStatus")) {
-            totalCourse = courseDao.getAllCourse().size();
-            courseList = courseDao.pagingCourse(indexPageSubjectList);
-        } else if (currentCategory.equals("allCategory") && !currentStatus.equals("allStatus")) {
-            totalCourse = courseDao.getAllCoureByStatus(currentStatus).size();
-            courseList = courseDao.pagingCourseByStatus(indexPageSubjectList, currentStatus);
-        } else if (!currentCategory.equals("allCategory") && currentStatus.equals("allStatus")) {
-            CourseCategory courseCategory = courseCategoryDao.getCategoryByName(currentCategory);
-            if (courseCategory == null) {
+        // Get the current user from the session
+        User user = (User) session.getAttribute("user");
+
+        // Check if user is logged in and has a role
+        if (user != null && user.getRole() != null) {
+            int userRoleID = user.getRole().getRoleID();
+            
+
+            if (userRoleID == 5) { // Admin role (display all courses)
+                if (currentCategory.equals("allCategory") && currentStatus.equals("allStatus")) {
+                    totalCourse = courseDao.getAllCourse().size();
+                    courseList = courseDao.pagingCourse(indexPageSubjectList);
+                } else if (currentCategory.equals("allCategory") && !currentStatus.equals("allStatus")) {
+                    totalCourse = courseDao.getAllCoureByStatus(currentStatus).size();
+                    courseList = courseDao.pagingCourseByStatus(indexPageSubjectList, currentStatus);
+                } else if (!currentCategory.equals("allCategory") && currentStatus.equals("allStatus")) {
+                    CourseCategory courseCategory = courseCategoryDao.getCategoryByName(currentCategory);
+                    if (courseCategory == null) {
+                        totalCourse = 0;
+                        courseList = new java.util.ArrayList<>();
+                    } else {
+                        int id = courseCategory.getCourseCategory();
+                        totalCourse = courseDao.getAllCoureByCategory(id).size();
+                        courseList = courseDao.pagingCourseByCategory(indexPageSubjectList, id);
+                    }
+                } else {
+                    CourseCategory courseCategory = courseCategoryDao.getCategoryByName(currentCategory);
+                    if (courseCategory == null) {
+                        totalCourse = 0;
+                        courseList = new java.util.ArrayList<>();
+                    } else {
+                        int id = courseCategory.getCourseCategory();
+                        totalCourse = courseDao.getAllCoureByCategoryAndStatus(id, currentStatus).size();
+                        courseList = courseDao.pagingCourseByCategoryAndStatus(indexPageSubjectList, id, currentStatus);
+                    }
+                }
+            } else if (userRoleID == 4) { // Specific user role (display courses owned by this user)
+                int ownerID = user.getUserID(); // Assuming User object has a getUserID() method
+                if (currentCategory.equals("allCategory") && currentStatus.equals("allStatus")) {
+                    totalCourse = courseDao.getCourseByOwnerId(ownerID).size(); // Use your existing method
+                    courseList = courseDao.pagingCourseByOwnerId(indexPageSubjectList, ownerID); // You'll need to create this method
+                } else if (currentCategory.equals("allCategory") && !currentStatus.equals("allStatus")) {
+                    totalCourse = courseDao.getAllCourseByOwnerIdAndStatus(ownerID, currentStatus).size(); // You'll need to create this method
+                    courseList = courseDao.pagingCourseByOwnerIdAndStatus(indexPageSubjectList, ownerID, currentStatus); // You'll need to create this method
+                } else if (!currentCategory.equals("allCategory") && currentStatus.equals("allStatus")) {
+                    CourseCategory courseCategory = courseCategoryDao.getCategoryByName(currentCategory);
+                    if (courseCategory == null) {
+                        totalCourse = 0;
+                        courseList = new java.util.ArrayList<>();
+                    } else {
+                        int categoryId = courseCategory.getCourseCategory();
+                        totalCourse = courseDao.getAllCourseByOwnerIdAndCategory(ownerID, categoryId).size(); // You'll need to create this method
+                        courseList = courseDao.pagingCourseByOwnerIdAndCategory(indexPageSubjectList, ownerID, categoryId); // You'll need to create this method
+                    }
+                } else {
+                    CourseCategory courseCategory = courseCategoryDao.getCategoryByName(currentCategory);
+                    if (courseCategory == null) {
+                        totalCourse = 0;
+                        courseList = new java.util.ArrayList<>();
+                    } else {
+                        int categoryId = courseCategory.getCourseCategory();
+                        totalCourse = courseDao.getAllCourseByOwnerIdCategoryAndStatus(ownerID, categoryId, currentStatus).size(); // You'll need to create this method
+                        courseList = courseDao.pagingCourseByOwnerIdCategoryAndStatus(indexPageSubjectList, ownerID, categoryId, currentStatus); // You'll need to create this method
+                    }
+                }
+            } else { // Handle other roles or no specific role-based filtering needed
+                // For now, let's assume if not admin or owner, no courses are shown or a default view
                 totalCourse = 0;
                 courseList = new java.util.ArrayList<>();
-            } else {
-                int id = courseCategory.getCourseCategory();
-                totalCourse = courseDao.getAllCoureByCategory(id).size();
-                courseList = courseDao.pagingCourseByCategory(indexPageSubjectList, id);
+                // Or you could redirect to an unauthorized page, or show a restricted view
             }
-        } else {
-            CourseCategory courseCategory = courseCategoryDao.getCategoryByName(currentCategory);
-            if (courseCategory == null) {
-                totalCourse = 0;
-                courseList = new java.util.ArrayList<>();
-            } else {
-                int id = courseCategory.getCourseCategory();
-                totalCourse = courseDao.getAllCoureByCategoryAndStatus(id, currentStatus).size();
-                courseList = courseDao.pagingCourseByCategoryAndStatus(indexPageSubjectList, id, currentStatus);
-            }
+        } else { // No user in session or user has no role, perhaps show nothing or redirect
+            totalCourse = 0;
+            courseList = new java.util.ArrayList<>();
+            // Consider redirecting to login page or an error page here
         }
 
         int endPage = totalCourse / 5;
@@ -257,7 +386,7 @@ public class CourseController extends HttpServlet {
 
         String status = request.getParameter("status");
         String description = request.getParameter("description");
-        
+
         String thumbnailUrl = request.getParameter("thumbnailUrl");
 
         Course courseUpdate = new Course(idCourse, subjectName, courseCategory,
@@ -322,11 +451,10 @@ public class CourseController extends HttpServlet {
         String search = request.getParameter("search");
         CourseDAO courseDao = new CourseDAO();
         CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
-        
+
         String action = request.getParameter("action");
-        
+
         if ("create".equals(action)) {
-            
 
             try {
                 // Lấy dữ liệu từ form gửi lên
@@ -336,7 +464,7 @@ public class CourseController extends HttpServlet {
                 String status = request.getParameter("status");
                 String ownerId = request.getParameter("owner");
                 String featureCourse = request.getParameter("feature");
-                int feature = (featureCourse != null) ? 1 : 0;  
+                int feature = (featureCourse != null) ? 1 : 0;
 
                 Course course = new Course();
                 course.setCourseName(courseName);
@@ -364,12 +492,11 @@ public class CourseController extends HttpServlet {
                             try {
                                 // Tạo thông số upload cho Cloudinary
                                 Map<String, Object> uploadParams = ObjectUtils.asMap(
-                                        "folder", "courses/" + courseID,     // Thư mục lưu ảnh theo ID khóa học
-                                        "resource_type", "auto",        // Cho phép tự xác định loại file
-                                        "unique_filename", true         // Đảm bảo tên file duy nhất
+                                        "folder", "courses/" + courseID, // Thư mục lưu ảnh theo ID khóa học
+                                        "resource_type", "auto", // Cho phép tự xác định loại file
+                                        "unique_filename", true // Đảm bảo tên file duy nhất
                                 );
-                                
-                                
+
                                 byte[] fileBytes = part.getInputStream().readAllBytes();
                                 try {
                                     // Upload file lên Cloudinary
@@ -379,10 +506,9 @@ public class CourseController extends HttpServlet {
                                     String publicId = (String) uploadResult.get("public_id");
                                     String imageUrl = (String) uploadResult.get("secure_url");
 
-
                                     // chèn ảnh vô database
                                     int imageId = courseDao.insertLink(fileName, imageUrl, courseID);
-                                    
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                     throw e;
@@ -455,7 +581,7 @@ public class CourseController extends HttpServlet {
             HttpSession session, CourseDAO courseDao,
             CourseCategoryDAO courseCategoryDao, String courseIdParam)
             throws ServletException, IOException {
-        
+
         if (courseIdParam == null || courseIdParam.isEmpty()) {
             return;
         }
@@ -544,8 +670,8 @@ public class CourseController extends HttpServlet {
         session.setAttribute("listSubjectDimension", listSubjectDimension);
 
         int endPageDimension = totalDimension / rowDisplay;
-        if( endPageDimension % 2 != 0){
-                endPageDimension = endPageDimension + 1;
+        if (endPageDimension % 2 != 0) {
+            endPageDimension = endPageDimension + 1;
         }
         session.setAttribute("totalDimension", totalDimension);
         if (endPageDimension == 0 && totalDimension > 0) {

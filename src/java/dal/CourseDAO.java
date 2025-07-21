@@ -74,6 +74,56 @@ public class CourseDAO extends DBContext {
         return course;
     }
 
+    public List<Course> getCourseByOwnerId(int ownerID) {
+        List<Course> courseList = new ArrayList<>();
+        String sql = "SELECT TOP (1000) c.courseID, "
+                + "       c.courseName, "
+                + "       c.courseCategoryID, "
+                + "       c.briefInfo, "
+                + "       c.description, "
+                + "       c.ownerID, "
+                + "       c.status, "
+                + "       c.numberOfLesson, "
+                + "       c.feature, "
+                + "       c.createDate, "
+                + "       c.updateDate, "
+                + "       i.thumbnail "
+                + "FROM Course c "
+                + "LEFT JOIN Image i ON c.courseID = i.courseID "
+                + "WHERE c.ownerID = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, ownerID);
+            ResultSet rs = ps.executeQuery();
+
+            CourseCategoryDAO courseCategoryDAO = new CourseCategoryDAO();
+            UserDAO userDao = new UserDAO();
+
+            while (rs.next()) {
+                CourseCategory category = courseCategoryDAO.getCategoryById(rs.getInt("courseCategoryID"));
+                User owner = userDao.getUserByID(rs.getInt("ownerID"));
+                String thumbnail = rs.getString("thumbnail");
+
+                Course course = new Course(
+                        rs.getInt("courseID"),
+                        rs.getString("courseName"),
+                        category,
+                        thumbnail,
+                        rs.getString("description"),
+                        owner,
+                        rs.getString("status"),
+                        rs.getInt("numberOfLesson"),
+                        rs.getInt("feature"),
+                        rs.getDate("createDate")
+                );
+                courseList.add(course);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return courseList;
+    }
+
     // Hàm get course theo getCoureByCourseIDAndPrice
     public Course getCoureByCourseIDAndPrice(int courseID) {
         Course course = null;
@@ -186,13 +236,13 @@ public class CourseDAO extends DBContext {
                 + "ORDER BY c.createDate DESC";
 
         LOGGER.info("Executing getAllCourse() with SQL: " + sql);
-        
+
         try {
             CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
             UserDAO userDao = new UserDAO();
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-            
+
             int count = 0;
             while (rs.next()) {
                 count++;
@@ -216,7 +266,7 @@ public class CourseDAO extends DBContext {
                 );
                 list.add(course);
             }
-            
+
             LOGGER.info("getAllCourse() found " + count + " courses");
             rs.close();
             ps.close();
@@ -1137,17 +1187,17 @@ public class CourseDAO extends DBContext {
                 + ") pp "
                 + "WHERE c.feature = 1 AND c.status = 'Active' "
                 + "ORDER BY c.createDate DESC";
-        
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, limit);
             try (ResultSet rs = ps.executeQuery()) {
                 CourseCategoryDAO courseCategoryDAO = new CourseCategoryDAO();
                 UserDAO userDao = new UserDAO();
-                
+
                 while (rs.next()) {
                     CourseCategory courseCategory = courseCategoryDAO.getCategoryById(rs.getInt("courseCategoryID"));
                     User user = userDao.getUserByID(rs.getInt("ownerID"));
-                    
+
                     Course course = new Course(
                             rs.getInt("courseID"),
                             rs.getString("courseName"),
@@ -1171,7 +1221,7 @@ public class CourseDAO extends DBContext {
         }
         return list;
     }
-    
+
     // Lấy khóa học có nhiều lượt đăng ký nhất
     public List<Course> getCoursesWithMostRegistrations(int limit) {
         List<Course> list = new ArrayList<>();
@@ -1202,21 +1252,21 @@ public class CourseDAO extends DBContext {
                 + "         c.ownerID, c.status, c.numberOfLesson, c.feature, c.createDate, "
                 + "         i.thumbnail, pp.listPrice, pp.salePrice "
                 + "ORDER BY registrationCount DESC, c.createDate DESC";
-        
+
         LOGGER.info("Executing getCoursesWithMostRegistrations(" + limit + ") with SQL: " + sql);
-        
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, limit);
             try (ResultSet rs = ps.executeQuery()) {
                 CourseCategoryDAO courseCategoryDAO = new CourseCategoryDAO();
                 UserDAO userDao = new UserDAO();
-                
+
                 int count = 0;
                 while (rs.next()) {
                     count++;
                     CourseCategory courseCategory = courseCategoryDAO.getCategoryById(rs.getInt("courseCategoryID"));
                     User user = userDao.getUserByID(rs.getInt("ownerID"));
-                    
+
                     Course course = new Course(
                             rs.getInt("courseID"),
                             rs.getString("courseName"),
@@ -1236,7 +1286,7 @@ public class CourseDAO extends DBContext {
                     course.setRegistrationCount(rs.getInt("registrationCount"));
                     list.add(course);
                 }
-                
+
                 LOGGER.info("getCoursesWithMostRegistrations() found " + count + " courses");
             }
         } catch (SQLException ex) {
@@ -1244,7 +1294,7 @@ public class CourseDAO extends DBContext {
         }
         return list;
     }
-    
+
     // Lấy khóa học miễn phí (salePrice = 0)
     public List<Course> getFreeCourses() {
         List<Course> list = new ArrayList<>();
@@ -1270,16 +1320,16 @@ public class CourseDAO extends DBContext {
                 + ") pp "
                 + "WHERE pp.salePrice = 0 AND c.status = 'Active' "
                 + "ORDER BY c.createDate DESC";
-        
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             try (ResultSet rs = ps.executeQuery()) {
                 CourseCategoryDAO courseCategoryDAO = new CourseCategoryDAO();
                 UserDAO userDao = new UserDAO();
-                
+
                 while (rs.next()) {
                     CourseCategory courseCategory = courseCategoryDAO.getCategoryById(rs.getInt("courseCategoryID"));
                     User user = userDao.getUserByID(rs.getInt("ownerID"));
-                    
+
                     Course course = new Course(
                             rs.getInt("courseID"),
                             rs.getString("courseName"),
@@ -1303,7 +1353,7 @@ public class CourseDAO extends DBContext {
         }
         return list;
     }
-    
+
     // Lấy khóa học trả phí (salePrice > 0)
     public List<Course> getPaidCourses() {
         List<Course> list = new ArrayList<>();
@@ -1329,16 +1379,16 @@ public class CourseDAO extends DBContext {
                 + ") pp "
                 + "WHERE pp.salePrice > 0 AND c.status = 'Active' "
                 + "ORDER BY pp.salePrice ASC";
-        
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             try (ResultSet rs = ps.executeQuery()) {
                 CourseCategoryDAO courseCategoryDAO = new CourseCategoryDAO();
                 UserDAO userDao = new UserDAO();
-                
+
                 while (rs.next()) {
                     CourseCategory courseCategory = courseCategoryDAO.getCategoryById(rs.getInt("courseCategoryID"));
                     User user = userDao.getUserByID(rs.getInt("ownerID"));
-                    
+
                     Course course = new Course(
                             rs.getInt("courseID"),
                             rs.getString("courseName"),
@@ -1362,7 +1412,7 @@ public class CourseDAO extends DBContext {
         }
         return list;
     }
-    
+
     // Lấy khóa học mới nhất
     public List<Course> getLatestCourses(int limit) {
         List<Course> list = new ArrayList<>();
@@ -1388,17 +1438,17 @@ public class CourseDAO extends DBContext {
                 + ") pp "
                 + "WHERE c.status = 'Active' "
                 + "ORDER BY c.createDate DESC";
-        
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, limit);
             try (ResultSet rs = ps.executeQuery()) {
                 CourseCategoryDAO courseCategoryDAO = new CourseCategoryDAO();
                 UserDAO userDao = new UserDAO();
-                
+
                 while (rs.next()) {
                     CourseCategory courseCategory = courseCategoryDAO.getCategoryById(rs.getInt("courseCategoryID"));
                     User user = userDao.getUserByID(rs.getInt("ownerID"));
-                    
+
                     Course course = new Course(
                             rs.getInt("courseID"),
                             rs.getString("courseName"),
@@ -1422,7 +1472,7 @@ public class CourseDAO extends DBContext {
         }
         return list;
     }
-    
+
     // Lấy khóa học cho người mới bắt đầu (có thể dựa vào tên khóa học hoặc category)
     public List<Course> getBeginnerCourses() {
         List<Course> list = new ArrayList<>();
@@ -1455,16 +1505,16 @@ public class CourseDAO extends DBContext {
                 + "    LOWER(c.courseName) LIKE '%giới thiệu%'"
                 + ") "
                 + "ORDER BY c.createDate DESC";
-        
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             try (ResultSet rs = ps.executeQuery()) {
                 CourseCategoryDAO courseCategoryDAO = new CourseCategoryDAO();
                 UserDAO userDao = new UserDAO();
-                
+
                 while (rs.next()) {
                     CourseCategory courseCategory = courseCategoryDAO.getCategoryById(rs.getInt("courseCategoryID"));
                     User user = userDao.getUserByID(rs.getInt("ownerID"));
-                    
+
                     Course course = new Course(
                             rs.getInt("courseID"),
                             rs.getString("courseName"),
@@ -1488,7 +1538,7 @@ public class CourseDAO extends DBContext {
         }
         return list;
     }
-    
+
     // Tìm kiếm khóa học theo ngôn ngữ lập trình
     public List<Course> searchCoursesByProgrammingLanguage(String language) {
         List<Course> list = new ArrayList<>();
@@ -1518,21 +1568,21 @@ public class CourseDAO extends DBContext {
                 + "    LOWER(c.briefInfo) LIKE ?"
                 + ") "
                 + "ORDER BY c.createDate DESC";
-        
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             String searchTerm = "%" + language.toLowerCase() + "%";
             ps.setString(1, searchTerm);
             ps.setString(2, searchTerm);
             ps.setString(3, searchTerm);
-            
+
             try (ResultSet rs = ps.executeQuery()) {
                 CourseCategoryDAO courseCategoryDAO = new CourseCategoryDAO();
                 UserDAO userDao = new UserDAO();
-                
+
                 while (rs.next()) {
                     CourseCategory courseCategory = courseCategoryDAO.getCategoryById(rs.getInt("courseCategoryID"));
                     User user = userDao.getUserByID(rs.getInt("ownerID"));
-                    
+
                     Course course = new Course(
                             rs.getInt("courseID"),
                             rs.getString("courseName"),
@@ -1556,7 +1606,7 @@ public class CourseDAO extends DBContext {
         }
         return list;
     }
-    
+
     // Tìm kiếm khóa học theo khoảng giá
     public List<Course> getCoursesByPriceRange(double maxPrice) {
         List<Course> list = new ArrayList<>();
@@ -1582,17 +1632,17 @@ public class CourseDAO extends DBContext {
                 + ") pp "
                 + "WHERE c.status = 'Active' AND pp.salePrice <= ? "
                 + "ORDER BY pp.salePrice ASC";
-        
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setDouble(1, maxPrice);
             try (ResultSet rs = ps.executeQuery()) {
                 CourseCategoryDAO courseCategoryDAO = new CourseCategoryDAO();
                 UserDAO userDao = new UserDAO();
-                
+
                 while (rs.next()) {
                     CourseCategory courseCategory = courseCategoryDAO.getCategoryById(rs.getInt("courseCategoryID"));
                     User user = userDao.getUserByID(rs.getInt("ownerID"));
-                    
+
                     Course course = new Course(
                             rs.getInt("courseID"),
                             rs.getString("courseName"),
@@ -1616,5 +1666,381 @@ public class CourseDAO extends DBContext {
         }
         return list;
     }
- 
+
+    // CourseDAO.java
+    public List<Course> pagingCourseByOwnerId(int index, int ownerID) {
+        List<Course> list = new ArrayList<>();
+        String sql = "SELECT c.courseID, "
+                + "       c.courseName, "
+                + "       c.courseCategoryID, "
+                + "       c.briefInfo, " // Add briefInfo if you need it in the Course constructor
+                + "       c.description, "
+                + "       c.ownerID, "
+                + "       c.status, "
+                + "       c.numberOfLesson, "
+                + "       c.feature, " // Add feature if you need it in the Course constructor
+                + "       c.createDate, "
+                + "       c.updateDate, " // Add updateDate if you need it in the Course constructor
+                + "       i.thumbnail "
+                + "FROM Course c "
+                + "LEFT JOIN Image i ON c.courseID = i.courseID "
+                + "WHERE c.ownerID = ? "
+                + "ORDER BY c.courseID "
+                + "OFFSET ? ROWS FETCH NEXT 5 ROWS ONLY;";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, ownerID);
+            ps.setInt(2, (index - 1) * 5);
+            try (ResultSet rs = ps.executeQuery()) {
+                CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
+                UserDAO userDao = new UserDAO();
+                while (rs.next()) {
+                    CourseCategory courseCategory = courseCategoryDao.getCategoryById(rs.getInt("courseCategoryID"));
+                    User owner = userDao.getUserByID(rs.getInt("ownerID")); // Use getUserByID as per your getCourseByOwnerId
+                    String thumbnail = rs.getString("thumbnail");
+
+                    Course course = new Course(
+                            rs.getInt("courseID"),
+                            rs.getString("courseName"),
+                            courseCategory,
+                            thumbnail,
+                            rs.getString("description"),
+                            owner,
+                            rs.getString("status"),
+                            rs.getInt("numberOfLesson"),
+                            rs.getInt("feature"),
+                            rs.getDate("createDate")
+                    );
+                    list.add(course);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+// CourseDAO.java
+    public List<Course> pagingCourseByOwnerIdAndStatus(int index, int ownerID, String status) {
+        List<Course> list = new ArrayList<>();
+        String sql = "SELECT c.courseID, "
+                + "       c.courseName, "
+                + "       c.courseCategoryID, "
+                + "       c.briefInfo, "
+                + "       c.description, "
+                + "       c.ownerID, "
+                + "       c.status, "
+                + "       c.numberOfLesson, "
+                + "       c.feature, "
+                + "       c.createDate, "
+                + "       c.updateDate, "
+                + "       i.thumbnail "
+                + "FROM Course c "
+                + "LEFT JOIN Image i ON c.courseID = i.courseID "
+                + "WHERE c.ownerID = ? AND c.status = ? "
+                + "ORDER BY c.courseID "
+                + "OFFSET ? ROWS FETCH NEXT 5 ROWS ONLY;";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, ownerID);
+            ps.setString(2, status);
+            ps.setInt(3, (index - 1) * 5);
+            try (ResultSet rs = ps.executeQuery()) {
+                CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
+                UserDAO userDao = new UserDAO();
+                while (rs.next()) {
+                    CourseCategory courseCategory = courseCategoryDao.getCategoryById(rs.getInt("courseCategoryID"));
+                    User owner = userDao.getUserByID(rs.getInt("ownerID"));
+                    String thumbnail = rs.getString("thumbnail");
+
+                    Course course = new Course(
+                            rs.getInt("courseID"),
+                            rs.getString("courseName"),
+                            courseCategory,
+                            thumbnail,
+                            rs.getString("description"),
+                            owner,
+                            rs.getString("status"),
+                            rs.getInt("numberOfLesson"),
+                            rs.getInt("feature"),
+                            rs.getDate("createDate")
+                    );
+                    list.add(course);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+// CourseDAO.java
+    public List<Course> pagingCourseByOwnerIdAndCategory(int index, int ownerID, int categoryId) {
+        List<Course> list = new ArrayList<>();
+        String sql = "SELECT c.courseID, "
+                + "       c.courseName, "
+                + "       c.courseCategoryID, "
+                + "       c.briefInfo, "
+                + "       c.description, "
+                + "       c.ownerID, "
+                + "       c.status, "
+                + "       c.numberOfLesson, "
+                + "       c.feature, "
+                + "       c.createDate, "
+                + "       c.updateDate, "
+                + "       i.thumbnail "
+                + "FROM Course c "
+                + "LEFT JOIN Image i ON c.courseID = i.courseID "
+                + "WHERE c.ownerID = ? AND c.courseCategoryID = ? "
+                + "ORDER BY c.courseID "
+                + "OFFSET ? ROWS FETCH NEXT 5 ROWS ONLY;";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, ownerID);
+            ps.setInt(2, categoryId);
+            ps.setInt(3, (index - 1) * 5);
+            try (ResultSet rs = ps.executeQuery()) {
+                CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
+                UserDAO userDao = new UserDAO();
+                while (rs.next()) {
+                    CourseCategory courseCategory = courseCategoryDao.getCategoryById(rs.getInt("courseCategoryID"));
+                    User owner = userDao.getUserByID(rs.getInt("ownerID"));
+                    String thumbnail = rs.getString("thumbnail");
+
+                    Course course = new Course(
+                            rs.getInt("courseID"),
+                            rs.getString("courseName"),
+                            courseCategory,
+                            thumbnail,
+                            rs.getString("description"),
+                            owner,
+                            rs.getString("status"),
+                            rs.getInt("numberOfLesson"),
+                            rs.getInt("feature"),
+                            rs.getDate("createDate")
+                    );
+                    list.add(course);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+// CourseDAO.java
+    public List<Course> pagingCourseByOwnerIdCategoryAndStatus(int index, int ownerID, int categoryId, String status) {
+        List<Course> list = new ArrayList<>();
+        String sql = "SELECT c.courseID, "
+                + "       c.courseName, "
+                + "       c.courseCategoryID, "
+                + "       c.briefInfo, "
+                + "       c.description, "
+                + "       c.ownerID, "
+                + "       c.status, "
+                + "       c.numberOfLesson, "
+                + "       c.feature, "
+                + "       c.createDate, "
+                + "       c.updateDate, "
+                + "       i.thumbnail "
+                + "FROM Course c "
+                + "LEFT JOIN Image i ON c.courseID = i.courseID "
+                + "WHERE c.ownerID = ? AND c.courseCategoryID = ? AND c.status = ? "
+                + "ORDER BY c.courseID "
+                + "OFFSET ? ROWS FETCH NEXT 5 ROWS ONLY;";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, ownerID);
+            ps.setInt(2, categoryId);
+            ps.setString(3, status);
+            ps.setInt(4, (index - 1) * 5);
+            try (ResultSet rs = ps.executeQuery()) {
+                CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
+                UserDAO userDao = new UserDAO();
+                while (rs.next()) {
+                    CourseCategory courseCategory = courseCategoryDao.getCategoryById(rs.getInt("courseCategoryID"));
+                    User owner = userDao.getUserByID(rs.getInt("ownerID"));
+                    String thumbnail = rs.getString("thumbnail");
+
+                    Course course = new Course(
+                            rs.getInt("courseID"),
+                            rs.getString("courseName"),
+                            courseCategory,
+                            thumbnail,
+                            rs.getString("description"),
+                            owner,
+                            rs.getString("status"),
+                            rs.getInt("numberOfLesson"),
+                            rs.getInt("feature"),
+                            rs.getDate("createDate")
+                    );
+                    list.add(course);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    // CourseDAO.java
+    public List<Course> getAllCourseByOwnerIdAndStatus(int ownerID, String status) {
+        List<Course> list = new ArrayList<>();
+        String sql = "SELECT c.courseID, "
+                + "       c.courseName, "
+                + "       c.courseCategoryID, "
+                + "       c.briefInfo, "
+                + "       c.description, "
+                + "       c.ownerID, "
+                + "       c.status, "
+                + "       c.numberOfLesson, "
+                + "       c.feature, "
+                + "       c.createDate, "
+                + "       c.updateDate, "
+                + "       i.thumbnail "
+                + "FROM Course c "
+                + "LEFT JOIN Image i ON c.courseID = i.courseID "
+                + "WHERE c.ownerID = ? AND c.status = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, ownerID);
+            ps.setString(2, status);
+            try (ResultSet rs = ps.executeQuery()) {
+                CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
+                UserDAO userDao = new UserDAO();
+                while (rs.next()) {
+                    CourseCategory courseCategory = courseCategoryDao.getCategoryById(rs.getInt("courseCategoryID"));
+                    User owner = userDao.getUserByID(rs.getInt("ownerID"));
+                    String thumbnail = rs.getString("thumbnail");
+
+                    Course course = new Course(
+                            rs.getInt("courseID"),
+                            rs.getString("courseName"),
+                            courseCategory,
+                            thumbnail,
+                            rs.getString("description"),
+                            owner,
+                            rs.getString("status"),
+                            rs.getInt("numberOfLesson"),
+                            rs.getInt("feature"),
+                            rs.getDate("createDate")
+                    );
+                    list.add(course);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+// CourseDAO.java
+    public List<Course> getAllCourseByOwnerIdAndCategory(int ownerID, int categoryID) {
+        List<Course> list = new ArrayList<>();
+        String sql = "SELECT c.courseID, "
+                + "       c.courseName, "
+                + "       c.courseCategoryID, "
+                + "       c.briefInfo, "
+                + "       c.description, "
+                + "       c.ownerID, "
+                + "       c.status, "
+                + "       c.numberOfLesson, "
+                + "       c.feature, "
+                + "       c.createDate, "
+                + "       c.updateDate, "
+                + "       i.thumbnail "
+                + "FROM Course c "
+                + "LEFT JOIN Image i ON c.courseID = i.courseID "
+                + "WHERE c.ownerID = ? AND c.courseCategoryID = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, ownerID);
+            ps.setInt(2, categoryID);
+            try (ResultSet rs = ps.executeQuery()) {
+                CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
+                UserDAO userDao = new UserDAO();
+                while (rs.next()) {
+                    CourseCategory courseCategory = courseCategoryDao.getCategoryById(rs.getInt("courseCategoryID"));
+                    User owner = userDao.getUserByID(rs.getInt("ownerID"));
+                    String thumbnail = rs.getString("thumbnail");
+
+                    Course course = new Course(
+                            rs.getInt("courseID"),
+                            rs.getString("courseName"),
+                            courseCategory,
+                            thumbnail,
+                            rs.getString("description"),
+                            owner,
+                            rs.getString("status"),
+                            rs.getInt("numberOfLesson"),
+                            rs.getInt("feature"),
+                            rs.getDate("createDate")
+                    );
+                    list.add(course);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+// CourseDAO.java
+// CourseDAO.java
+    public List<Course> getAllCourseByOwnerIdCategoryAndStatus(int ownerID, int categoryID, String status) {
+        List<Course> list = new ArrayList<>();
+        String sql = "SELECT c.courseID, "
+                + "       c.courseName, "
+                + "       c.courseCategoryID, "
+                + "       c.briefInfo, "
+                + "       c.description, "
+                + "       c.ownerID, "
+                + "       c.status, "
+                + "       c.numberOfLesson, "
+                + "       c.feature, "
+                + "       c.createDate, "
+                + "       c.updateDate, "
+                + "       i.thumbnail "
+                + "FROM Course c "
+                + "LEFT JOIN Image i ON c.courseID = i.courseID "
+                + "WHERE c.ownerID = ? AND c.courseCategoryID = ? AND c.status = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, ownerID);
+            ps.setInt(2, categoryID);
+            ps.setString(3, status);
+            try (ResultSet rs = ps.executeQuery()) {
+                CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
+                UserDAO userDao = new UserDAO();
+                while (rs.next()) {
+                    CourseCategory courseCategory = courseCategoryDao.getCategoryById(rs.getInt("courseCategoryID"));
+                    User owner = userDao.getUserByID(rs.getInt("ownerID"));
+                    String thumbnail = rs.getString("thumbnail");
+
+                    Course course = new Course(
+                            rs.getInt("courseID"),
+                            rs.getString("courseName"),
+                            courseCategory,
+                            thumbnail,
+                            rs.getString("description"),
+                            owner,
+                            rs.getString("status"),
+                            rs.getInt("numberOfLesson"),
+                            rs.getInt("feature"),
+                            rs.getDate("createDate")
+                    );
+                    list.add(course);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    public static void main(String[] args) {
+        CourseDAO cd = new CourseDAO();
+        System.out.println(cd.getCourseByOwnerId(1).size());
+    }
+
 }
