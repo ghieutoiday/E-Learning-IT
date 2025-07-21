@@ -446,10 +446,7 @@
                                                                      style="color:white;">Dashboard <i
                                                     class="fa fa-chevron-down"></i></a>
                                             <ul class="sub-menu">
-                                                <li><a href="admin/index.jsp">Dashboard</a></li>
-                                                <li><a href="slidercontroller">Sliders List</a></li>
                                                 <li><a href="admin/bookmark.jsp">Bookmark</a></li>
-                                                <li><a href="postcontroller">Posts List</a></li>
                                                 <li><a href="admin/review.jsp">Review</a></li>
                                                 <li><a href="admin/teacher-profile.jsp">Teacher Profile</a></li>
                                                 <li><a href="admin/user-profile.jsp">User Profile</a></li>
