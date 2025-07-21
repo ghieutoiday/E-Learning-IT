@@ -43,7 +43,14 @@ public class PostController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 2) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+
         String action = request.getParameter("action");
 
         if (action == null) {
@@ -89,7 +96,7 @@ public class PostController extends HttpServlet {
                     request.setAttribute("dateFilter", dateFilter);
                     request.setAttribute("status", status);
                     request.setAttribute("feature", feature);
-
+                    request.setAttribute("user", user);
                     request.getRequestDispatcher("/admin/postslist.jsp").forward(request, response);
                     break;
 
@@ -98,6 +105,7 @@ public class PostController extends HttpServlet {
                     if (postId != null && !postId.isEmpty()) {
                         Post post = postDAO.getPostByID(Integer.parseInt(postId));
                         request.setAttribute("post", post);
+                        request.setAttribute("user", user);
                         request.getRequestDispatcher("/admin/postdetail.jsp").forward(request, response);
                     } else {
                         response.sendRedirect("postcontroller");
@@ -108,6 +116,7 @@ public class PostController extends HttpServlet {
                     if (idPost != null && !idPost.isEmpty()) {
                         Post post = postDAO.getPostByID(Integer.parseInt(idPost));
                         request.setAttribute("post", post);
+                        request.setAttribute("user", user);
                         request.getRequestDispatcher("/post-details.jsp").forward(request, response);
                     } else {
                         response.sendRedirect("postcontroller");
@@ -115,6 +124,7 @@ public class PostController extends HttpServlet {
                     break;
                 case "showAddForm":
                     request.setAttribute("categories", postCategoryDAO.getAllPostCategories());
+                    request.setAttribute("user", user);
                     request.getRequestDispatcher("/admin/addpost.jsp").forward(request, response);
                     break;
 
@@ -124,6 +134,7 @@ public class PostController extends HttpServlet {
                         Post post = postDAO.getPostByID(Integer.parseInt(editPostId));
                         request.setAttribute("post", post);
                         request.setAttribute("categories", postCategoryDAO.getAllPostCategories());
+                        request.setAttribute("user", user);
                         request.getRequestDispatcher("/admin/editpost.jsp").forward(request, response);
                     } else {
                         response.sendRedirect("postcontroller");
@@ -143,17 +154,27 @@ public class PostController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 2) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+
         String action = request.getParameter("action");
 
         try {
             switch (action) {
                 case "add":
                     UserDAO userDAO = new UserDAO();
-                    User owner = userDAO.getUserByEmail("tranthibich@gmail.com");
-
+                    User owner = userDAO.getUserByID(user.getUserID());
+                    System.out.println(user.getUserID());
+                    System.out.println(owner.getUserID());
                     if (owner == null) {
                         request.setAttribute("error", "Default owner not found");
                         request.setAttribute("categories", postCategoryDAO.getAllPostCategories());
+                        request.setAttribute("user", user);
                         request.getRequestDispatcher("/admin/addpost.jsp").forward(request, response);
                         return;
                     }
@@ -176,6 +197,7 @@ public class PostController extends HttpServlet {
                         request.setAttribute("oldCategory", categoryId);
                         request.setAttribute("oldStatus", status);
                         request.setAttribute("oldFeature", feature);
+                        request.setAttribute("user", user);
                         request.getRequestDispatcher("/admin/addpost.jsp").forward(request, response);
                         return;
                     }
@@ -226,6 +248,7 @@ public class PostController extends HttpServlet {
                         request.setAttribute("oldCategory", categoryId);
                         request.setAttribute("oldStatus", status);
                         request.setAttribute("oldFeature", feature);
+                        request.setAttribute("user", user);
                         request.getRequestDispatcher("/admin/addpost.jsp").forward(request, response);
                         return;
                     }
@@ -260,6 +283,7 @@ public class PostController extends HttpServlet {
                         request.setAttribute("oldCategory", editCategoryId);
                         request.setAttribute("oldStatus", editStatus);
                         request.setAttribute("oldFeature", editFeature);
+                        request.setAttribute("user", user);
                         request.getRequestDispatcher("/admin/editpost.jsp").forward(request, response);
                         return;
                     }
@@ -315,6 +339,7 @@ public class PostController extends HttpServlet {
                         request.setAttribute("oldCategory", editCategoryId);
                         request.setAttribute("oldStatus", editStatus);
                         request.setAttribute("oldFeature", editFeature);
+                        request.setAttribute("user", user);
                         request.getRequestDispatcher("/admin/editpost.jsp").forward(request, response);
                     }
                     break;
