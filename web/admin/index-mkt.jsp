@@ -1,4 +1,7 @@
-!DOCTYPE html>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!DOCTYPE html>
 <html lang="en">
 
     <!-- Mirrored from educhamp.themetrades.com/demo/admin/index.jsp by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:08:15 GMT -->
@@ -36,23 +39,42 @@
         <![endif]-->
 
         <!-- All PLUGINS CSS ============================================= -->
-        <link rel="stylesheet" type="text/css" href="assets/css/assets.css">
-        <link rel="stylesheet" type="text/css" href="assets/vendors/calendar/fullcalendar.css">
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/assets.css">
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/vendors/calendar/fullcalendar.css">
 
         <!-- TYPOGRAPHY ============================================= -->
-        <link rel="stylesheet" type="text/css" href="assets/css/typography.css">
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/typography.css">
 
         <!-- SHORTCODES ============================================= -->
-        <link rel="stylesheet" type="text/css" href="assets/css/shortcodes/shortcodes.css">
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/shortcodes/shortcodes.css">
 
         <!-- STYLESHEETS ============================================= -->
-        <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-        <link rel="stylesheet" type="text/css" href="assets/css/dashboard.css">
-        <link class="skin" rel="stylesheet" type="text/css" href="assets/css/color/color-1.css">
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/style.css">
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/dashboard.css">
+        <link class="skin" rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/color/color-1.css">
+        <style>
+            .wc-title{
+                padding-bottom: 10px;
+            }
+            .card-courses-list admin-courses th{
+                background-color: #E5E7EB;
+            }
+            #orderTrendChart {
+                width: 1050px !important;
+                height: 550px !important;
+                margin-left: 45px;
+            }
+            .wc-progress-bx{
+                font-size: 14px;
+            }
+            .wc-title{
+                font-size: 18px;
+            }
 
+
+        </style>
     </head>
     <body class="ttr-opened-sidebar ttr-pinned-sidebar">
-
         <!-- header start -->
         <header class="ttr-header">
             <div class="ttr-header-wrapper">
@@ -65,9 +87,9 @@
                 <!--logo start -->
                 <div class="ttr-logo-box">
                     <div>
-                        <a href="index.jsp" class="ttr-logo">
+                        <a href="dashboard" class="ttr-logo">
                             <img class="ttr-logo-mobile" alt="" src="assets/images/logo-mobile.png" width="30" height="30">
-                            <img class="ttr-logo-desktop" alt="" src="assets/images/logo-white.png" width="160" height="27">
+                            <img class="ttr-logo-desktop" alt="" src="assets/images/logowhite1.png" width="125" height="25">
                         </a>
                     </div>
                 </div>
@@ -76,18 +98,9 @@
                     <!-- header left menu start -->
                     <ul class="ttr-header-navigation">
                         <li>
-                            <a href="../index.jsp" class="ttr-material-button ttr-submenu-toggle">HOME</a>
+                            <a href="dashboard" class="ttr-material-button ttr-submenu-toggle">HOME</a>
                         </li>
-                        <li>
-                            <a href="#" class="ttr-material-button ttr-submenu-toggle">QUICK MENU <i class="fa fa-angle-down"></i></a>
-                            <div class="ttr-header-submenu">
-                                <ul>
-                                    <li><a href="../courses.jsp">Our Courses</a></li>
-                                    <li><a href="../event.jsp">New Event</a></li>
-                                    <li><a href="../membership.jsp">Membership</a></li>
-                                </ul>
-                            </div>
-                        </li>
+                
                     </ul>
                     <!-- header left menu end -->
                 </div>
@@ -95,137 +108,16 @@
                     <!-- header right menu start -->
                     <ul class="ttr-header-navigation">
                         <li>
-                            <a href="#" class="ttr-material-button ttr-search-toggle"><i class="fa fa-search"></i></a>
-                        </li>
-                        <li>
-                            <a href="#" class="ttr-material-button ttr-submenu-toggle"><i class="fa fa-bell"></i></a>
-                            <div class="ttr-header-submenu noti-menu">
-                                <div class="ttr-notify-header">
-                                    <span class="ttr-notify-text-top">9 New</span>
-                                    <span class="ttr-notify-text">User Notifications</span>
-                                </div>
-                                <div class="noti-box-list">
-                                    <ul>
-                                        <li>
-                                            <span class="notification-icon dashbg-gray">
-                                                <i class="fa fa-check"></i>
-                                            </span>
-                                            <span class="notification-text">
-                                                <span>Sneha Jogi</span> sent you a message.
-                                            </span>
-                                            <span class="notification-time">
-                                                <a href="#" class="fa fa-close"></a>
-                                                <span> 02:14</span>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="notification-icon dashbg-yellow">
-                                                <i class="fa fa-shopping-cart"></i>
-                                            </span>
-                                            <span class="notification-text">
-                                                <a href="#">Your order is placed</a> sent you a message.
-                                            </span>
-                                            <span class="notification-time">
-                                                <a href="#" class="fa fa-close"></a>
-                                                <span> 7 Min</span>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="notification-icon dashbg-red">
-                                                <i class="fa fa-bullhorn"></i>
-                                            </span>
-                                            <span class="notification-text">
-                                                <span>Your item is shipped</span> sent you a message.
-                                            </span>
-                                            <span class="notification-time">
-                                                <a href="#" class="fa fa-close"></a>
-                                                <span> 2 May</span>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="notification-icon dashbg-green">
-                                                <i class="fa fa-comments-o"></i>
-                                            </span>
-                                            <span class="notification-text">
-                                                <a href="#">Sneha Jogi</a> sent you a message.
-                                            </span>
-                                            <span class="notification-time">
-                                                <a href="#" class="fa fa-close"></a>
-                                                <span> 14 July</span>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="notification-icon dashbg-primary">
-                                                <i class="fa fa-file-word-o"></i>
-                                            </span>
-                                            <span class="notification-text">
-                                                <span>Sneha Jogi</span> sent you a message.
-                                            </span>
-                                            <span class="notification-time">
-                                                <a href="#" class="fa fa-close"></a>
-                                                <span> 15 Min</span>
-                                            </span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <a href="#" class="ttr-material-button ttr-submenu-toggle"><span class="ttr-user-avatar"><img alt="" src="assets/images/testimonials/pic3.jpg" width="32" height="32"></span></a>
+                            <a href="#" class="ttr-material-button ttr-submenu-toggle"><span class="ttr-user-avatar"><img alt="" src="${user.avatar}" width="32" height="32"></span></a>
                             <div class="ttr-header-submenu">
                                 <ul>
-                                    <li><a href="user-profile.jsp">My profile</a></li>
-                                    <li><a href="list-view-calendar.jsp">Activity</a></li>
-                                    <li><a href="mailbox.jsp">Messages</a></li>
-                                    <li><a href="../login.jsp">Logout</a></li>
+                                    <li><a href="logout">Logout</a></li>
                                 </ul>
-                            </div>
-                        </li>
-                        <li class="ttr-hide-on-mobile">
-                            <a href="#" class="ttr-material-button"><i class="ti-layout-grid3-alt"></i></a>
-                            <div class="ttr-header-submenu ttr-extra-menu">
-                                <a href="#">
-                                    <i class="fa fa-music"></i>
-                                    <span>Musics</span>
-                                </a>
-                                <a href="#">
-                                    <i class="fa fa-youtube-play"></i>
-                                    <span>Videos</span>
-                                </a>
-                                <a href="#">
-                                    <i class="fa fa-envelope"></i>
-                                    <span>Emails</span>
-                                </a>
-                                <a href="#">
-                                    <i class="fa fa-book"></i>
-                                    <span>Reports</span>
-                                </a>
-                                <a href="#">
-                                    <i class="fa fa-smile-o"></i>
-                                    <span>Persons</span>
-                                </a>
-                                <a href="#">
-                                    <i class="fa fa-picture-o"></i>
-                                    <span>Pictures</span>
-                                </a>
                             </div>
                         </li>
                     </ul>
                     <!-- header right menu end -->
                 </div>
-                <!--header search panel start -->
-                <div class="ttr-search-bar">
-                    <form class="ttr-search-form">
-                        <div class="ttr-search-input-wrapper">
-                            <input type="text" name="qq" placeholder="search something..." class="ttr-search-input">
-                            <button type="submit" name="search" class="ttr-search-submit"><i class="ti-arrow-right"></i></button>
-                        </div>
-                        <span class="ttr-search-close ttr-search-toggle">
-                            <i class="ti-close"></i>
-                        </span>
-                    </form>
-                </div>
-                <!--header search panel end -->
             </div>
         </header>
         <!-- header end -->
@@ -234,7 +126,7 @@
             <div class="ttr-sidebar-wrapper content-scroll">
                 <!-- side menu logo start -->
                 <div class="ttr-sidebar-logo">
-                    <a href="#"><img alt="" src="assets/images/logo.png" width="122" height="27"></a>
+                    <a href="dashboard"><img alt="" src="assets/images/logoblack1.png" width="100" height="20" style="margin-left: -12px;"></a>
                     <!-- <div class="ttr-sidebar-pin-button" title="Pin/Unpin Menu">
                             <i class="material-icons ttr-fixed-icon">gps_fixed</i>
                             <i class="material-icons ttr-not-fixed-icon">gps_not_fixed</i>
@@ -248,82 +140,31 @@
                 <nav class="ttr-sidebar-navi">
                     <ul>
                         <li>
-                            <a href="index.jsp" class="ttr-material-button">
+                            <a href="dashboard" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-home"></i></span>
                                 <span class="ttr-label">Dashborad</span>
                             </a>
                         </li>
+                        <br/>
                         <li>
-                            <a href="courses.jsp" class="ttr-material-button">
+                            <a href="postcontroller" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-book"></i></span>
-                                <span class="ttr-label">Courses</span>
+                                <span class="ttr-label">Post List</span>
                             </a>
                         </li>
+                        <br/>
                         <li>
-                            <a href="#" class="ttr-material-button">
-                                <span class="ttr-icon"><i class="ti-email"></i></span>
-                                <span class="ttr-label">Mailbox</span>
-                                <span class="ttr-arrow-icon"><i class="fa fa-angle-down"></i></span>
-                            </a>
-                            <ul>
-                                <li>
-                                    <a href="mailbox.jsp" class="ttr-material-button"><span class="ttr-label">Mail Box</span></a>
-                                </li>
-                                <li>
-                                    <a href="mailbox-compose.jsp" class="ttr-material-button"><span class="ttr-label">Compose</span></a>
-                                </li>
-                                <li>
-                                    <a href="mailbox-read.jsp" class="ttr-material-button"><span class="ttr-label">Mail Read</span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#" class="ttr-material-button">
+                            <a href="slidercontroller" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-calendar"></i></span>
-                                <span class="ttr-label">Calendar</span>
-                                <span class="ttr-arrow-icon"><i class="fa fa-angle-down"></i></span>
-                            </a>
-                            <ul>
-                                <li>
-                                    <a href="basic-calendar.jsp" class="ttr-material-button"><span class="ttr-label">Basic Calendar</span></a>
-                                </li>
-                                <li>
-                                    <a href="list-view-calendar.jsp" class="ttr-material-button"><span class="ttr-label">List View</span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="bookmark.jsp" class="ttr-material-button">
-                                <span class="ttr-icon"><i class="ti-bookmark-alt"></i></span>
-                                <span class="ttr-label">Bookmarks</span>
+                                <span class="ttr-label">Slider List</span>
                             </a>
                         </li>
+                        <br/>
                         <li>
-                            <a href="${pageContext.request.contextPath}/quizcontroller" class="ttr-material-button">
-                                <span class="ttr-icon"><i class="ti-comments"></i></span>
-                                <span class="ttr-label">Quizzes List</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="add-listing.jsp" class="ttr-material-button">
-                                <span class="ttr-icon"><i class="ti-layout-accordion-list"></i></span>
-                                <span class="ttr-label">Add listing</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="ttr-material-button">
+                            <a href="logout" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-user"></i></span>
-                                <span class="ttr-label">My Profile</span>
-                                <span class="ttr-arrow-icon"><i class="fa fa-angle-down"></i></span>
+                                <span class="ttr-label">Logout</span>
                             </a>
-                            <ul>
-                                <li>
-                                    <a href="user-profile.jsp" class="ttr-material-button"><span class="ttr-label">User Profile</span></a>
-                                </li>
-                                <li>
-                                    <a href="teacher-profile.jsp" class="ttr-material-button"><span class="ttr-label">Teacher Profile</span></a>
-                                </li>
-                            </ul>
                         </li>
                         <li class="ttr-seperate"></li>
                     </ul>
@@ -344,445 +185,211 @@
                         <li>Dashboard</li>
                     </ul>
                 </div>	
+                <form method="get" action="dashboard" style="display: flex; gap: 24px; align-items: center; margin-bottom: 24px;">
+                    <label style="color: black;font-size: 18px; font-weight: normal;">Start Date: <input type="date" name="startDate" value="${startDate}"></label>
+                    <label style="color: black;font-size: 18px; font-weight: normal;">End Date: <input type="date" name="endDate" value="${endDate}"></label>
+                    <button type="submit" class="btn btn-warning search" style="padding: 6px 10px;margin-bottom: 11px;">Change</button>
+                </form>
                 <!-- Card -->
                 <div class="row">
-                    <div class="col-md-6 col-lg-3 col-xl-3 col-sm-6 col-12">
-                        <div class="widget-card widget-bg1">					 
+                    <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4 col-12">
+                        <div class="widget-card widget-bg1">                     
                             <div class="wc-item">
-                                <h4 class="wc-title">
-                                    Total Frofit
-                                </h4>
-                                <span class="wc-des">
-                                    All Customs Value
-                                </span>
-                                <span class="wc-stats">
-                                    $<span class="counter">18</span>M 
-                                </span>		
-                                <div class="progress wc-progress">
-                                    <div class="progress-bar" role="progressbar" style="width: 78%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
+                                <h4 class="wc-title">New Subject</h4>
                                 <span class="wc-progress-bx">
-                                    <span class="wc-change">
-                                        Change
-                                    </span>
-                                    <span class="wc-number ml-auto">
-                                        78%
-                                    </span>
+                                    <span class="wc-change">New Subject</span>
+                                    <span class="wc-number ml-auto">All Subject</span>
                                 </span>
-                            </div>				      
+                                <span class="wc-progress-bx">
+                                    <span class="wc-change">${dashboardStats.newSubject}</span>
+                                    <span class="wc-number ml-auto">${dashboardStats.allSubject}</span>
+                                </span>
+                            </div>                     
                         </div>
                     </div>
-                    <div class="col-md-6 col-lg-3 col-xl-3 col-sm-6 col-12">
-                        <div class="widget-card widget-bg2">					 
+                    <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4 col-12">
+                        <div class="widget-card widget-bg2">                     
                             <div class="wc-item">
-                                <h4 class="wc-title">
-                                    New Feedbacks
-                                </h4>
-                                <span class="wc-des">
-                                    Customer Review
-                                </span>
-                                <span class="wc-stats counter">
-                                    120 
-                                </span>		
-                                <div class="progress wc-progress">
-                                    <div class="progress-bar" role="progressbar" style="width: 88%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
+                                <h4 class="wc-title">New Registrations</h4>
                                 <span class="wc-progress-bx">
-                                    <span class="wc-change">
-                                        Change
-                                    </span>
-                                    <span class="wc-number ml-auto">
-                                        88%
-                                    </span>
+                                    <span class="wc-change">Successful</span>
+                                    <span class="wc-number ml-auto">Cancelled</span>
+                                    <span class="wc-number ml-auto">Submitted</span>
                                 </span>
-                            </div>				      
+                                <span class="wc-progress-bx">
+                                    <span class="wc-change">${dashboardStats.successfulRegistration}</span>
+                                    <span class="wc-number ml-auto">${dashboardStats.cancelledRegistration}</span>
+                                    <span class="wc-number ml-auto">${dashboardStats.submittedRegistration}</span>
+                                </span>
+                            </div>                     
                         </div>
                     </div>
-                    <div class="col-md-6 col-lg-3 col-xl-3 col-sm-6 col-12">
-                        <div class="widget-card widget-bg3">					 
+                    <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4 col-12">
+                        <div class="widget-card widget-bg3">                     
                             <div class="wc-item">
-                                <h4 class="wc-title">
-                                    New Orders 
-                                </h4>
-                                <span class="wc-des">
-                                    Fresh Order Amount 
-                                </span>
-                                <span class="wc-stats counter">
-                                    772 
-                                </span>		
-                                <div class="progress wc-progress">
-                                    <div class="progress-bar" role="progressbar" style="width: 65%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
+                                <h4 class="wc-title">Customers</h4>
                                 <span class="wc-progress-bx">
-                                    <span class="wc-change">
-                                        Change
-                                    </span>
-                                    <span class="wc-number ml-auto">
-                                        65%
-                                    </span>
+                                    <span class="wc-change">New Accounts</span>
+                                    <span class="wc-number ml-auto">New bought</span>
                                 </span>
-                            </div>				      
+                                <span class="wc-progress-bx">
+                                    <span class="wc-change">${dashboardStats.newCustomer}</span>
+                                    <span class="wc-number ml-auto">${dashboardStats.newBought}</span>
+                                </span>
+                            </div>                     
                         </div>
                     </div>
-                    <div class="col-md-6 col-lg-3 col-xl-3 col-sm-6 col-12">
-                        <div class="widget-card widget-bg4">					 
-                            <div class="wc-item">
-                                <h4 class="wc-title">
-                                    New Users 
-                                </h4>
-                                <span class="wc-des">
-                                    Joined New User
-                                </span>
-                                <span class="wc-stats counter">
-                                    350 
-                                </span>		
-                                <div class="progress wc-progress">
-                                    <div class="progress-bar" role="progressbar" style="width: 90%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <span class="wc-progress-bx">
-                                    <span class="wc-change">
-                                        Change
-                                    </span>
-                                    <span class="wc-number ml-auto">
-                                        90%
-                                    </span>
-                                </span>
-                            </div>				      
-                        </div>
+                </div>
+                <!-- Revenues -->
+                <div class="widget-revenues">
+                    <h4 class="wc-title" style="font-size: 20px;">
+                        Revenues
+                    </h4>
+                    <h6 class="wc-title" style="font-weight: normal;font-size: 16px;margin-top: -15px;">
+                        Total Revenue: ${dashboardStats.totalRevenue} $
+                    </h6>
+                    <div class="card-courses-list admin-courses">
+                        <table border="1">
+                            <thead>
+                                <tr style="background-color: #E5E7EB;">
+                                    <th style="padding: 10px;width: 70%;">Category</th>
+                                    <th style="padding: 10px;width: 30%;">Revenue($)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:choose>
+                                    <c:when test="${not empty dashboardStats.categoryNames and not empty dashboardStats.categoryRevenues}">
+                                        <c:forEach var="categoryName" items="${dashboardStats.categoryNames}" varStatus="status">
+                                            <tr>
+                                                <td>${categoryName}</td>
+                                                <td>${dashboardStats.categoryRevenues[status.index]}$</td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <tr>
+                                            <td colspan="2" style="text-align:center; color: #888;">No revenue data for this period.</td>
+                                        </tr>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <!-- Card END -->
-                <div class="row">
-                    <!-- Your Profile Views Chart -->
-                    <div class="col-lg-8 m-b30">
-                        <div class="widget-box">
-                            <div class="wc-title">
-                                <h4>Your Profile Views</h4>
-                            </div>
-                            <div class="widget-inner">
-                                <canvas id="chart" width="100" height="45"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Your Profile Views Chart END-->
-                    <div class="col-lg-4 m-b30">
-                        <div class="widget-box">
-                            <div class="wc-title">
-                                <h4>Notifications</h4>
-                            </div>
-                            <div class="widget-inner">
-                                <div class="noti-box-list">
-                                    <ul>
-                                        <li>
-                                            <span class="notification-icon dashbg-gray">
-                                                <i class="fa fa-check"></i>
-                                            </span>
-                                            <span class="notification-text">
-                                                <span>Sneha Jogi</span> sent you a message.
-                                            </span>
-                                            <span class="notification-time">
-                                                <a href="#" class="fa fa-close"></a>
-                                                <span> 02:14</span>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="notification-icon dashbg-yellow">
-                                                <i class="fa fa-shopping-cart"></i>
-                                            </span>
-                                            <span class="notification-text">
-                                                <a href="#">Your order is placed</a> sent you a message.
-                                            </span>
-                                            <span class="notification-time">
-                                                <a href="#" class="fa fa-close"></a>
-                                                <span> 7 Min</span>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="notification-icon dashbg-red">
-                                                <i class="fa fa-bullhorn"></i>
-                                            </span>
-                                            <span class="notification-text">
-                                                <span>Your item is shipped</span> sent you a message.
-                                            </span>
-                                            <span class="notification-time">
-                                                <a href="#" class="fa fa-close"></a>
-                                                <span> 2 May</span>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="notification-icon dashbg-green">
-                                                <i class="fa fa-comments-o"></i>
-                                            </span>
-                                            <span class="notification-text">
-                                                <a href="#">Sneha Jogi</a> sent you a message.
-                                            </span>
-                                            <span class="notification-time">
-                                                <a href="#" class="fa fa-close"></a>
-                                                <span> 14 July</span>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="notification-icon dashbg-primary">
-                                                <i class="fa fa-file-word-o"></i>
-                                            </span>
-                                            <span class="notification-text">
-                                                <span>Sneha Jogi</span> sent you a message.
-                                            </span>
-                                            <span class="notification-time">
-                                                <a href="#" class="fa fa-close"></a>
-                                                <span> 15 Min</span>
-                                            </span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 m-b30">
-                        <div class="widget-box">
-                            <div class="wc-title">
-                                <h4>New Users</h4>
-                            </div>
-                            <div class="widget-inner">
-                                <div class="new-user-list">
-                                    <ul>
-                                        <li>
-                                            <span class="new-users-pic">
-                                                <img src="assets/images/testimonials/pic1.jpg" alt=""/>
-                                            </span>
-                                            <span class="new-users-text">
-                                                <a href="#" class="new-users-name">Anna Strong </a>
-                                                <span class="new-users-info">Visual Designer,Google Inc </span>
-                                            </span>
-                                            <span class="new-users-btn">
-                                                <a href="#" class="btn button-sm outline">Follow</a>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="new-users-pic">
-                                                <img src="assets/images/testimonials/pic2.jpg" alt=""/>
-                                            </span>
-                                            <span class="new-users-text">
-                                                <a href="#" class="new-users-name"> Milano Esco </a>
-                                                <span class="new-users-info">Product Designer, Apple Inc </span>
-                                            </span>
-                                            <span class="new-users-btn">
-                                                <a href="#" class="btn button-sm outline">Follow</a>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="new-users-pic">
-                                                <img src="assets/images/testimonials/pic1.jpg" alt=""/>
-                                            </span>
-                                            <span class="new-users-text">
-                                                <a href="#" class="new-users-name">Nick Bold  </a>
-                                                <span class="new-users-info">Web Developer, Facebook Inc </span>
-                                            </span>
-                                            <span class="new-users-btn">
-                                                <a href="#" class="btn button-sm outline">Follow</a>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="new-users-pic">
-                                                <img src="assets/images/testimonials/pic2.jpg" alt=""/>
-                                            </span>
-                                            <span class="new-users-text">
-                                                <a href="#" class="new-users-name">Wiltor Delton </a>
-                                                <span class="new-users-info">Project Manager, Amazon Inc </span>
-                                            </span>
-                                            <span class="new-users-btn">
-                                                <a href="#" class="btn button-sm outline">Follow</a>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="new-users-pic">
-                                                <img src="assets/images/testimonials/pic3.jpg" alt=""/>
-                                            </span>
-                                            <span class="new-users-text">
-                                                <a href="#" class="new-users-name">Nick Stone </a>
-                                                <span class="new-users-info">Project Manager, Amazon Inc  </span>
-                                            </span>
-                                            <span class="new-users-btn">
-                                                <a href="#" class="btn button-sm outline">Follow</a>
-                                            </span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 m-b30">
-                        <div class="widget-box">
-                            <div class="wc-title">
-                                <h4>Orders</h4>
-                            </div>
-                            <div class="widget-inner">
-                                <div class="orders-list">
-                                    <ul>
-                                        <li>
-                                            <span class="orders-title">
-                                                <a href="#" class="orders-title-name">Anna Strong </a>
-                                                <span class="orders-info">Order #02357 | Date 12/08/2019</span>
-                                            </span>
-                                            <span class="orders-btn">
-                                                <a href="#" class="btn button-sm red">Unpaid</a>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="orders-title">
-                                                <a href="#" class="orders-title-name">Revenue</a>
-                                                <span class="orders-info">Order #02357 | Date 12/08/2019</span>
-                                            </span>
-                                            <span class="orders-btn">
-                                                <a href="#" class="btn button-sm red">Unpaid</a>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="orders-title">
-                                                <a href="#" class="orders-title-name">Anna Strong </a>
-                                                <span class="orders-info">Order #02357 | Date 12/08/2019</span>
-                                            </span>
-                                            <span class="orders-btn">
-                                                <a href="#" class="btn button-sm green">Paid</a>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="orders-title">
-                                                <a href="#" class="orders-title-name">Revenue</a>
-                                                <span class="orders-info">Order #02357 | Date 12/08/2019</span>
-                                            </span>
-                                            <span class="orders-btn">
-                                                <a href="#" class="btn button-sm green">Paid</a>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="orders-title">
-                                                <a href="#" class="orders-title-name">Anna Strong </a>
-                                                <span class="orders-info">Order #02357 | Date 12/08/2019</span>
-                                            </span>
-                                            <span class="orders-btn">
-                                                <a href="#" class="btn button-sm green">Paid</a>
-                                            </span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-12 m-b30">
-                        <div class="widget-box">
-                            <div class="wc-title">
-                                <h4>Basic Calendar</h4>
-                            </div>
-                            <div class="widget-inner">
-                                <div id="calendar"></div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Order Counts Trend -->
+                <div class="bg-white p-6 rounded-lg shadow col-span-1 md:col-span-2" style="margin-bottom: 30px;padding-bottom: 30px;padding-top: 15px;">
+                    <h4 class="text-xl font-semibold mb-4" style="margin-left: 10px;font-size: 20px;">
+                        Order Counts Trend
+                        <c:if test="${not empty startDate and not empty endDate}">
+                            (${startDate} -> ${endDate})
+                        </c:if>
+                    </h4>
+                    <canvas id="orderTrendChart"></canvas>
                 </div>
+
+
+
             </div>
         </main>
         <div class="ttr-overlay"></div>
 
         <!-- External JavaScripts -->
-        <script src="assets/js/jquery.min.js"></script>
-        <script src="assets/vendors/bootstrap/js/popper.min.js"></script>
-        <script src="assets/vendors/bootstrap/js/bootstrap.min.js"></script>
-        <script src="assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
-        <script src="assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
-        <script src="assets/vendors/magnific-popup/magnific-popup.js"></script>
-        <script src="assets/vendors/counter/waypoints-min.js"></script>
-        <script src="assets/vendors/counter/counterup.min.js"></script>
-        <script src="assets/vendors/imagesloaded/imagesloaded.js"></script>
-        <script src="assets/vendors/masonry/masonry.js"></script>
-        <script src="assets/vendors/masonry/filter.js"></script>
-        <script src="assets/vendors/owl-carousel/owl.carousel.js"></script>
-        <script src='assets/vendors/scroll/scrollbar.min.js'></script>
-        <script src="assets/js/functions.js"></script>
-        <script src="assets/vendors/chart/chart.min.js"></script>
-        <script src="assets/js/admin.js"></script>
-        <script src='assets/vendors/calendar/moment.min.js'></script>
-        <script src='assets/vendors/calendar/fullcalendar.js'></script>
-        <script src='assets/vendors/switcher/switcher.js'></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/js/jquery.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/magnific-popup/magnific-popup.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/counter/waypoints-min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/counter/counterup.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/imagesloaded/imagesloaded.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/masonry/masonry.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/masonry/filter.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/owl-carousel/owl.carousel.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/scroll/scrollbar.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/js/functions.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/chart/chart.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/js/admin.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/calendar/moment.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/calendar/fullcalendar.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/switcher/switcher.js"></script>
+
+        <!--Script để khởi tạo mảng dữ liệu biểu đồ từ dashboardStats-->
         <script>
-            $(document).ready(function () {
-
-                $('#calendar').fullCalendar({
-                    header: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'month,agendaWeek,agendaDay,listWeek'
-                    },
-                    defaultDate: '2019-03-12',
-                    navLinks: true, // can click day/week names to navigate views
-
-                    weekNumbers: true,
-                    weekNumbersWithinDays: true,
-                    weekNumberCalculation: 'ISO',
-
-                    editable: true,
-                    eventLimit: true, // allow "more" link when too many events
-                    events: [
-                        {
-                            title: 'All Day Event',
-                            start: '2019-03-01'
-                        },
-                        {
-                            title: 'Long Event',
-                            start: '2019-03-07',
-                            end: '2019-03-10'
-                        },
-                        {
-                            id: 999,
-                            title: 'Repeating Event',
-                            start: '2019-03-09T16:00:00'
-                        },
-                        {
-                            id: 999,
-                            title: 'Repeating Event',
-                            start: '2019-03-16T16:00:00'
-                        },
-                        {
-                            title: 'Conference',
-                            start: '2019-03-11',
-                            end: '2019-03-13'
-                        },
-                        {
-                            title: 'Meeting',
-                            start: '2019-03-12T10:30:00',
-                            end: '2019-03-12T12:30:00'
-                        },
-                        {
-                            title: 'Lunch',
-                            start: '2019-03-12T12:00:00'
-                        },
-                        {
-                            title: 'Meeting',
-                            start: '2019-03-12T14:30:00'
-                        },
-                        {
-                            title: 'Happy Hour',
-                            start: '2019-03-12T17:30:00'
-                        },
-                        {
-                            title: 'Dinner',
-                            start: '2019-03-12T20:00:00'
-                        },
-                        {
-                            title: 'Birthday Party',
-                            start: '2019-03-13T07:00:00'
-                        },
-                        {
-                            title: 'Click for Google',
-                            url: 'http://google.com/',
-                            start: '2019-03-28'
-                        }
-                    ]
-                });
-
-            });
-
+            // Mảng nhãn (trục x) từ dashboardStats.orderLabels
+            var orderTrendLabels = [
+            <c:forEach var="label" items="${dashboardStats.orderLabels}" varStatus="status">
+            '${label}'<c:if test="${!status.last}">,</c:if>
+            </c:forEach>
+            ];
+            // Mảng số lượng đơn hàng từ dashboardStats.orderCounts
+            var orderTrendAll = [
+            <c:forEach var="count" items="${dashboardStats.orderCounts}" varStatus="status">
+                ${count}<c:if test="${!status.last}">,</c:if>
+            </c:forEach>
+            ];
+            // Mảng số lượng đơn hàng thành công từ dashboardStats.successfulOrderCounts
+            var orderTrendPaid = [
+            <c:forEach var="count" items="${dashboardStats.successfulOrderCounts}" varStatus="status">
+                ${count}<c:if test="${!status.last}">,</c:if>
+            </c:forEach>
+            ];
+            // Ghi log các mảng dữ liệu ra console để debug
+            console.log('orderTrendLabels:', orderTrendLabels);
+            console.log('orderTrendAll:', orderTrendAll);
+            console.log('orderTrendPaid:', orderTrendPaid);
         </script>
+        <!<!-- Script để vẽ biểu đồ sử dụng Chart.js -->
+        <script>
+            // Chờ DOM tải xong trước khi khởi tạo biểu đồ
+            document.addEventListener("DOMContentLoaded", function () {
+                var ctx = document.getElementById('orderTrendChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    // Các tập dữ liệu cho biểu đồ
+                    data: {
+                        // Tập dữ liệu cho Tất cả đơn hàng
+                        labels: orderTrendLabels,
+                        datasets: [
+                            {
+                                label: 'All Orders',
+                                data: orderTrendAll,
+                                borderColor: 'rgba(255,99,132,1)',
+                                backgroundColor: 'rgba(255,99,132,0.1)',
+                                borderWidth: 2,
+                                fill: false,
+                                tension: 0.3
+                            },
+                            // Tập dữ liệu cho Đơn hàng thành công
+                            {
+                                label: 'Successful Orders',
+                                data: orderTrendPaid,
+                                borderColor: 'rgba(54,162,235,1)',
+                                backgroundColor: 'rgba(54,162,235,0.1)',
+                                borderWidth: 2,
+                                fill: false,
+                                tension: 0.3
+                            }
+                        ]
+                    },
+                    // Cấu hình tùy chọn cho biểu đồ
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {display: true}
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {display: true, text: 'Order Count'}
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+
     </body>
 
     <!-- Mirrored from educhamp.themetrades.com/demo/admin/index.jsp by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:09:05 GMT -->
