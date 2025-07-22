@@ -30,6 +30,24 @@ public class DashboardController extends HttpServlet {
 
         String startDateStr = request.getParameter("startDate");
         String endDateStr = request.getParameter("endDate");
+        
+        //Kiểm tra hợp lệ của ngày nếu cả 2 đều được truyền vào
+        if (startDateStr != null && endDateStr != null) {
+            try {
+                LocalDate startDate = LocalDate.parse(startDateStr);
+                LocalDate endDate = LocalDate.parse(endDateStr);
+                // Nếu ngày bắt đầu sau ngày kết thúc thì báo lỗi
+                if (startDate.isAfter(endDate)) {
+                    request.setAttribute("error", "Start date cannot be after end date.");
+                    request.getRequestDispatcher("/admin/index-mkt.jsp").forward(request, response);
+                    return;
+                }
+            } catch (Exception e) {
+                request.setAttribute("error", "Invalid date format.");
+                request.getRequestDispatcher("/admin/index-mkt.jsp").forward(request, response);
+                return;
+            }
+        }
         // Xử lý ngày mặc định nếu không có giá trị
         LocalDate endDate = (endDateStr != null && !endDateStr.isEmpty()) ? LocalDate.parse(endDateStr) : LocalDate.now();
         LocalDate startDate = (startDateStr != null && !startDateStr.isEmpty()) ? LocalDate.parse(startDateStr) : endDate.minusMonths(1).plusDays(1);
