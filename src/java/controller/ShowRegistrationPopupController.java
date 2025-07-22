@@ -24,7 +24,7 @@ public class ShowRegistrationPopupController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        int courseId = Integer.parseInt(request.getParameter("courseId"));
+        int courseId = Integer.parseInt(request.getParameter("courseID"));
         String mode = request.getParameter("mode");
         
         RegistrationDAO regDAO = new RegistrationDAO(); // Khởi tạo DAO

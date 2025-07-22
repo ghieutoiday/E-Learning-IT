@@ -549,8 +549,8 @@
             </div>
             <div class="ttr-logo-box">
                 <a href="home" class="ttr-logo">
-                    <img alt="" class="ttr-logo-mobile" src="admin/assets/images/logo-mobile.png" width="30" height="30">
-                    <img alt="" class="ttr-logo-desktop" src="admin/assets/images/logo-white.png" width="160" height="27">
+                    <img alt="" class="ttr-logo-mobile" src="assets/images/logowhite1.png" width="30" height="30">
+                    <img alt="" class="ttr-logo-desktop" src="assets/images/logowhite1.png" width="130" height="20">
                 </a>
             </div>
             <div class="ttr-header-menu">
@@ -562,7 +562,6 @@
             <div class="ttr-header-right ttr-with-seperator">
                 <ul class="ttr-header-navigation">
                     <li><a href="#" class="ttr-material-button ttr-search-toggle"><i class="fas fa-tasks"></i> ${completedLessons}/${totalLessons} finished</a></li>
-                    <li><a href="#" class="ttr-material-button ttr-search-toggle"><i class="fa fa-search"></i></a></li>
                 </ul>
             </div>
         </div>
