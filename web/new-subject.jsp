@@ -530,15 +530,6 @@
                         </div>
 
 
-                        <!-- Status -->
-                        <div class="mb-4">
-                            <label class="form-label" forapd="status">Status *</label>
-                            <select class="form-select" id="status" name="status" required>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                            </select>
-                        </div>
-
                         <!-- Description -->
                         <div class="mb-4">
                             <label class="form-label" for="description">Course Description</label>
