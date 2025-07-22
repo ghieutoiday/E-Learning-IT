@@ -12,8 +12,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Registration;
+import model.User;
 
 /**
  *
@@ -60,8 +62,15 @@ public class MyCourseController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //Hard code userID 
-        int userID = 5;
+        // Kiểm tra quyền truy cập
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 1) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+        
+        int userID = user.getUserID();
         
         //Lấy toàn bộ Course(Registration) có status = paid và userID truyền vào
         List<Registration> listRegistration = RegistrationDAO.getInstance().getAllRegistrationOfUserHavePaidStatus(userID);

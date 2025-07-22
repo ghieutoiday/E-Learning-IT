@@ -1,8 +1,38 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+    <%@ page contentType="text/html" pageEncoding="UTF-8"%>
+    <%@ page import="model.User" %>
+    <%@ page import="model.Role" %>
+    <%@ page import="model.Course" %>
+    <%@ page import="model.Registration" %>
+    <%@ page import="dal.RegistrationDAO" %>
+    
+    <%
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 1) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+
+        // Lấy course từ request hoặc attribute
+        Course course = (Course) request.getAttribute("choosenCourse");
+
+        // Kiểm tra null để tránh lỗi
+        if (course != null) {
+            Registration regis = RegistrationDAO.getInstance()
+                .getRegistrationByUserAndCourse(user.getUserID(), course.getCourseID());
+            if (regis.getUser().getUserID() != user.getUserID()) {
+                response.sendRedirect(request.getContextPath() + "/home");
+                return;
+            }
+        } else {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+    %>
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -518,14 +548,14 @@
                 <i class="ti-menu ttr-close-icon"></i>
             </div>
             <div class="ttr-logo-box">
-                <a href="index.jsp" class="ttr-logo">
+                <a href="home" class="ttr-logo">
                     <img alt="" class="ttr-logo-mobile" src="admin/assets/images/logo-mobile.png" width="30" height="30">
                     <img alt="" class="ttr-logo-desktop" src="admin/assets/images/logo-white.png" width="160" height="27">
                 </a>
             </div>
             <div class="ttr-header-menu">
                 <ul class="ttr-header-navigation">
-                    <li><a href="index.jsp" class="ttr-material-button ttr-submenu-toggle">HOME</a></li>
+                    <li><a href="home" class="ttr-material-button ttr-submenu-toggle">HOME</a></li>
                     <li><a href="#" class="ttr-material-button ttr-submenu-toggle">${course.courseName}</a></li>
                 </ul>
             </div>

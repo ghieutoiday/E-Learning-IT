@@ -2,7 +2,16 @@
 <html lang="en">
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+    <%@ page import="model.User" %>
+    <%@ page import="model.Role" %>
 
+    <%
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 1) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+    %>
     <head>
 
         <!-- META ============================================= -->
@@ -134,8 +143,6 @@
                                             <option data-icon="flag flag-us">English US</option>
                                         </select>
                                     </li>
-                                    <li><a href="login.jsp">Login</a></li>
-                                    <li><a href="register.jsp">Register</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -146,7 +153,7 @@
                         <div class="container clearfix">
                             <!-- Header Logo ==== -->
                             <div class="menu-logo">
-                                <a href="index.jsp"><img src="assets/images/logo.png" alt=""></a>
+                                <a href="home"><img src="assets/images/logoblack1.png" alt=""></a>
                             </div>
                             <!-- Mobile Nav Button ==== -->
                             <button class="navbar-toggler collapsed menuicon justify-content-end" type="button" data-toggle="collapse" data-target="#menuDropdown" aria-controls="menuDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -164,11 +171,22 @@
                                         <!-- Search Button ==== -->
                                         <li class="search-btn"><button id="quik-search-btn" type="button" class="btn-link"><i class="fa fa-search"></i></button></li>
 
-                                        <!--My Course / My Registration-->
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <li><a href="mycoursecontroller" class="btn-link customer-course"><p>My Courses</p></a></li>
-                                        &nbsp;&nbsp;&nbsp;
-                                        <li><a href="registrationcontroller" class="btn-link customer-registration"><p>My Registrations</p></a></li>
+                                        <c:if test="${sessionScope.loggedInUser ne null}">
+                                            &nbsp;&nbsp;
+                                            <li>||</li>
+
+                                            <!--My Course / My Registration-->
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <li><a href="mycoursecontroller" class="btn-link customer-course">
+                                                    <p>My Courses</p>
+                                                </a>
+                                            </li>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <li><a href="registrationcontroller" class="btn-link customer-registration">
+                                                    <p>My Registrations</p>
+                                                </a>
+                                            </li>
+                                        </c:if>
                                     </ul>
                                 </div>
                             </div>
@@ -183,7 +201,7 @@
                             <!-- Navigation Menu ==== -->
                             <div class="menu-links navbar-collapse collapse justify-content-start" id="menuDropdown">
                                 <div class="menu-logo">
-                                    <a href="index.jsp"><img src="assets/images/logo.png" alt=""></a>
+                                        <a href="home"><img src="assets/images/logoblack1.png" alt=""></a>
                                 </div>
                                 <ul class="nav navbar-nav">	
                                     <li class="active"><a href="javascript:;">Home <i class="fa fa-chevron-down"></i></a>

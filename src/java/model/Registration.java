@@ -151,6 +151,6 @@ public class Registration {
     
     public int getTotalLesson() {
         LessonDAO lD = new LessonDAO();
-        return lD.getTotalNumberOfLessonInCourse(this.getCourse().getCourseID());
+        return lD.getAllSubLessonsByCourseIDOrdered(this.getCourse().getCourseID()).size();
     }
 }
