@@ -266,14 +266,15 @@
                             </div>
                             <div class="topbar-right">
                                 <ul>
-                                    <li>
-                                        <select class="header-lang-bx">
-                                            <option data-icon="flag flag-uk">English UK</option>
-                                            <option data-icon="flag flag-us">English US</option>
-                                        </select>
-                                    </li>
-                                    <li><a href="login.jsp">Login</a></li>
-                                    <li><a href="register.jsp">Register</a></li>
+                                    <c:if test="${sessionScope.loggedInUser eq null}">
+                                        <button id="openLoginModal">Login</button>
+                                    </c:if>
+                                    <c:if test="${sessionScope.loggedInUser eq null}">
+                                        <button id="openSignupModal" >Sign Up</button>
+                                    </c:if>
+                                    <c:if test="${sessionScope.loggedInUser ne null}">
+                                        <li><a href="logout">Logout</a></li>
+                                        </c:if>
                                 </ul>
                             </div>
                         </div>
@@ -284,7 +285,7 @@
                         <div class="container clearfix">
                             <!-- Header Logo ==== -->
                             <div class="menu-logo">
-                                <a href="index.jsp"><img src="assets/images/logo.png" alt=""></a>
+                                <a href="home"><img src="assets/images/logoblack1.png" alt=""></a>
                             </div>
                             <!-- Mobile Nav Button ==== -->
                             <button class="navbar-toggler collapsed menuicon justify-content-end" type="button" data-toggle="collapse" data-target="#menuDropdown" aria-controls="menuDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -315,12 +316,12 @@
                             <!-- Navigation Menu ==== -->
                             <div class="menu-links navbar-collapse collapse justify-content-start" id="menuDropdown">
                                 <div class="menu-logo">
-                                    <a href="index.jsp"><img src="assets/images/logo.png" alt=""></a>
+                                    <a href="home"><img src="assets/images/logo.png" alt=""></a>
                                 </div>
                                 <ul class="nav navbar-nav">	
                                     <li class="active"><a href="javascript:;">Home <i class="fa fa-chevron-down"></i></a>
                                         <ul class="sub-menu">
-                                            <li><a href="index.jsp">Home 1</a></li>
+                                            <li><a href="home">Home 1</a></li>
                                             <li><a href="index-2.jsp">Home 2</a></li>
                                         </ul>
                                     </li>
@@ -384,7 +385,7 @@
                                     </li>
                                     <li class="nav-dashboard"><a href="javascript:;">Dashboard <i class="fa fa-chevron-down"></i></a>
                                         <ul class="sub-menu">
-                                            <li><a href="admin/index.jsp">Dashboard</a></li>
+                                            <li><a href="admin/home">Dashboard</a></li>
                                             <li><a href="admin/add-listing.jsp">Add Listing</a></li>
                                             <li><a href="admin/bookmark.jsp">Bookmark</a></li>
                                             <li><a href="admin/postslist.jsp">Posts List</a></li>
@@ -578,7 +579,7 @@
                         <div class="container">
                             <div class="d-flex align-items-stretch">
                                 <div class="pt-logo mr-auto">
-                                    <a href="index.jsp"><img src="assets/images/logo-white.png" alt=""/></a>
+                                    <a href="home"><img src="assets/images/logo-white.png" alt=""/></a>
                                 </div>
                                 <div class="pt-social-link">
                                     <ul class="list-inline m-a0">
@@ -619,7 +620,7 @@
                                         <div class="widget footer_widget">
                                             <h5 class="footer-title">Company</h5>
                                             <ul>
-                                                <li><a href="index.jsp">Home</a></li>
+                                                <li><a href="home">Home</a></li>
                                                 <li><a href="about-1.jsp">About</a></li>
                                                 <li><a href="faq-1.jsp">FAQs</a></li>
                                                 <li><a href="contact-1.jsp">Contact</a></li>
@@ -630,7 +631,7 @@
                                         <div class="widget footer_widget">
                                             <h5 class="footer-title">Get In Touch</h5>
                                             <ul>
-                                                <li><a href="http://educhamp.themetrades.com/admin/index.jsp">Dashboard</a></li>
+                                                <li><a href="http://educhamp.themetrades.com/admin/home">Dashboard</a></li>
                                                 <li><a href="blog-classic-grid.jsp">Blog</a></li>
                                                 <li><a href="portfolio.jsp">Portfolio</a></li>
                                                 <li><a href="event.jsp">Event</a></li>
@@ -907,7 +908,7 @@
                         // Initialize prompt suggestions on page load
                         window.onload = displayPromptSuggestions;
         </script>
-
+        <%@ include file="login-register-modal.jsp" %>
     </body>
 
 </html>

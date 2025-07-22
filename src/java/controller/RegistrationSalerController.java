@@ -26,6 +26,7 @@ import java.util.Date;
 import model.User;
 import utils.EmailUtil;
 import utils.PasswordGenerator;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -51,7 +52,17 @@ public class RegistrationSalerController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        
+        HttpSession session = request.getSession();
+        User currentUser = (User) session.getAttribute("loggedInUser");
 
+        // Kiểm tra xem người dùng đã đăng nhập chưa và có phải là Saler không
+        if (currentUser == null || currentUser.getRole() == null || currentUser.getRole().getRoleID() != 3) {
+            request.setAttribute("errorMessage", "Bạn không có quyền truy cập trang này.");
+            response.sendRedirect("home"); 
+            return; 
+        }
+        
         String action = request.getParameter("action");
 
         if ("detail".equals(action)) {
@@ -113,6 +124,7 @@ public class RegistrationSalerController extends HttpServlet {
         String courseName = request.getParameter("courseName");
         String name = request.getParameter("name");
         String status = request.getParameter("status");
+        int lastUpdateByUserId = currentUser.getUserID();
 
         // Gửi lại các tham số sang JSP để hiện lại giá trị nhập
         request.setAttribute("sortBy", sortBy);
@@ -126,7 +138,7 @@ public class RegistrationSalerController extends HttpServlet {
         List<PricePackage> packageList = new PricePackageDAO().getAllDistinctPricePackagesByName();
 
         // Gọi ra DAO để có thể lấy ra tất cả registration, có thể sort tăng hoặc giảm dần ở các cột, có thể lọc theo courseName, name pricepackage và status
-        List<Registration> listRegistrationBySaler = RegistrationDAO.getInstance().getRegistrationsByAllFilters(emailSearch, courseName, name, status, sortBy, sortOrder);
+        List<Registration> listRegistrationBySaler = RegistrationDAO.getInstance().getRegistrationsByAllFilters(emailSearch, courseName, name, status, sortBy, sortOrder, lastUpdateByUserId);
 
         request.setAttribute("courseList", courseList);
         request.setAttribute("packageList", packageList);
@@ -147,14 +159,14 @@ public class RegistrationSalerController extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
         HttpSession session = request.getSession();
-//        User currentUser = (User) session.getAttribute("user"); // Người dùng đang đăng nhập (Saler)
+        User currentUser = (User) session.getAttribute("loggedInUser"); 
 
         // Kiểm tra xem currentUser có phải là Saler không
-//        if (currentUser == null || currentUser.getRole().getRoleID() != 3) { // Giả sử RoleID 3 là Saler
-//            request.setAttribute("errorMessage", "Bạn không có quyền thực hiện hành động này. Vui lòng đăng nhập với vai trò Saler.");
-//            response.sendRedirect("login.jsp"); // Hoặc trang lỗi phù hợp
-//            return;
-//        }
+        if (currentUser == null || currentUser.getRole().getRoleID() != 3) { 
+            request.setAttribute("errorMessage", "Bạn không có quyền thực hiện hành động này.");
+            response.sendRedirect("home"); 
+            return;
+        }
         if ("edit".equals(action)) {
             String registrationIDStr = request.getParameter("registrationID");
             String courseIDStr = request.getParameter("courseID");
@@ -318,6 +330,8 @@ public class RegistrationSalerController extends HttpServlet {
                 request.getRequestDispatcher("registration-edit-saler.jsp").forward(request, response);
             }
         } else if ("new".equals(action)) {
+            User user = (User) session.getAttribute("user");
+            
             String courseIDStr = request.getParameter("courseID");
             String packageName = request.getParameter("packageName");
             String listPriceStr = request.getParameter("listPrice");
@@ -396,7 +410,7 @@ public class RegistrationSalerController extends HttpServlet {
                 }
 
             } catch (NumberFormatException e) {
-                request.setAttribute("errorMessage", "Lỗi định dạng số (Course ID, List Price, Sale Price) không hợp lệ.");
+                session.setAttribute("errorMessage", "Lỗi định dạng số (Course ID, List Price, Sale Price) không hợp lệ.");
                 e.printStackTrace(); // In lỗi để debug
                 request.setAttribute("courseList", courseDAO.getAllDistinctCourseByName());
                 request.setAttribute("packageList", pricePackageDAO.getAllDistinctPricePackagesByName());
@@ -417,6 +431,7 @@ public class RegistrationSalerController extends HttpServlet {
             if (existingUser != null) {
                 userRegistration = existingUser;
             } else {
+                
                 // Email chưa tồn tại. Tạo User mới
                 User newUser = new User();
                 newUser.setFullName(fullName);
@@ -424,7 +439,7 @@ public class RegistrationSalerController extends HttpServlet {
                 newUser.setEmail(email);
                 newUser.setMobile(mobile);
                 String rawPassword = PasswordGenerator.generateRandomPassword(10); // Sinh mật khẩu ngẫu nhiên 10 ký tự
-                String hashedPassword = PasswordGenerator.hashPassword(rawPassword); // Mật khẩu đã băm để lưu vào DB
+                String hashedPassword = BCrypt.hashpw(rawPassword, BCrypt.gensalt()); 
                 newUser.setPassword(hashedPassword);
 
                 int newUserID = userDAO.addNewUser(newUser);
@@ -448,6 +463,7 @@ public class RegistrationSalerController extends HttpServlet {
             PricePackage finalPricePackage = pricePackageDAO.getPricePackageByPricePackageID(pricePackageID);
 
             // 6. Tạo Registration
+            int userID = user.getUserID();
             Registration newRegistration = new Registration();
             newRegistration.setUser(userRegistration);
             newRegistration.setCourse(courseRegistrationID);
@@ -460,7 +476,7 @@ public class RegistrationSalerController extends HttpServlet {
 
             int newRegistrationID = -1;
             try {
-                newRegistrationID = registrationDAO.addRegistration(newRegistration);
+                newRegistrationID = registrationDAO.addRegistration(newRegistration, userID);
             } catch (IllegalArgumentException e) {
                 // Bắt IllegalArgumentException từ DAO nếu user là null
                 request.setAttribute("errorMessage", "Lỗi dữ liệu đăng ký: " + e.getMessage());

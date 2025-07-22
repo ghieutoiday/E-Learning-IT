@@ -60,10 +60,6 @@
 
                 <button type="submit" class="btn button-md">Sign Up</button>
 
-                <div class="social-login text-center mt-3">
-                    <h6>Or Sign Up with Social Media</h6>
-                    <a class="btn google-plus" href="#"><i class="fa fa-google-plus"></i> Google</a>
-                </div>
             </form>
         </div>
     </div>
@@ -121,7 +117,7 @@
 
     .modal-content {
         background: white;
-        padding: 16px;
+        padding: 20px;
         border-radius: 10px;
         width: 100%;
         max-width: 400px;      /* Thu nh? chi?u ngang modal */
@@ -165,7 +161,7 @@
     }
 
     .form-group {
-        margin-bottom: 12px;
+        margin-bottom: 5px;
     }
 
     label {

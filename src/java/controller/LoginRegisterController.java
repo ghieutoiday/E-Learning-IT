@@ -95,8 +95,6 @@ public class LoginRegisterController extends HttpServlet {
                         // Đăng nhập THÀNH CÔNG
                         session.setAttribute("loggedInUser", user);
 
-                        session.setAttribute("user", user); // Đảm bảo đối tượng user được đặt vào session
-
                         if (user.getRole() != null) { // Thêm kiểm tra null ở đây
                             switch (user.getRole().getRoleID()) {
                                 case 1:

@@ -2,11 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
-
         <!-- META ============================================= -->
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,8 +23,8 @@
         <meta name="format-detection" content="telephone=no">
 
         <!-- FAVICONS ICON ============================================= -->
-        <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png" />
+        <link rel="icon" href="<%=request.getContextPath()%>/admin/assets/images/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" type="image/x-icon" href="<%=request.getContextPath()%>/admin/assets/images/favicon.png" />
 
         <!-- PAGE TITLE HERE ============================================= -->
         <title>EduChamp : Education HTML Template</title>
@@ -34,22 +33,24 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <!--[if lt IE 9]>
-        <script src="assets/js/html5shiv.min.js"></script>
-        <script src="assets/js/respond.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/js/html5shiv.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/js/respond.min.js"></script>
         <![endif]-->
 
         <!-- All PLUGINS CSS ============================================= -->
-        <link rel="stylesheet" type="text/css" href="assets/css/assets.css">
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/assets.css">
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/vendors/calendar/fullcalendar.css">
 
         <!-- TYPOGRAPHY ============================================= -->
-        <link rel="stylesheet" type="text/css" href="assets/css/typography.css">
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/typography.css">
 
         <!-- SHORTCODES ============================================= -->
-        <link rel="stylesheet" type="text/css" href="assets/css/shortcodes/shortcodes.css">
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/shortcodes/shortcodes.css">
 
         <!-- STYLESHEETS ============================================= -->
-        <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-        <link class="skin" rel="stylesheet" type="text/css" href="assets/css/color/color-1.css">
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/style.css">
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/dashboard.css">
+        <link class="skin" rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/color/color-1.css">
 
         <style>
             body {
@@ -59,7 +60,7 @@
                 padding: 0;
             }
             .page-banner {
-                background-image: url('assets/images/banner/banner2.jpg');
+                background-image: url('<%=request.getContextPath()%>/admin/assets/images/banner/banner2.jpg');
                 background-size: cover;
                 background-position: center;
                 padding: 60px 0;
@@ -84,7 +85,8 @@
             .action-bar {
                 display: flex;
                 justify-content: flex-end;
-                margin: 20px 20px 0;
+                margin: 20px auto;
+                max-width: 1200px; /* Căn giữa với chiều rộng tối đa */
             }
             .add-new-btn {
                 padding: 10px 20px;
@@ -106,11 +108,11 @@
             .add-new-btn:active {
                 transform: translateY(0);
             }
-
             table {
+                max-width: 1200px; /* Giới hạn chiều rộng bảng */
                 width: 100%;
                 border-collapse: collapse;
-                margin: 20px;
+                margin: 20px auto; /* Căn giữa bảng */
                 background-color: #fff;
                 border-radius: 8px;
                 overflow: hidden;
@@ -175,7 +177,6 @@
                 color: #fff;
                 border: none;
             }
-            /* CSS cho biểu tượng sort */
             .sort-icon {
                 display: inline-flex;
                 flex-direction: column;
@@ -200,7 +201,6 @@
                 opacity: 0.5;
                 margin-top: 2px;
             }
-            /* Khi cột đang được sắp xếp */
             .sort-asc .sort-icon::before {
                 opacity: 1;
                 border-bottom: 5px solid #007bff;
@@ -212,33 +212,28 @@
             .header-label {
                 display: inline-flex;
                 align-items: center;
-                gap: 4px; /* khoảng cách giữa chữ và icon */
+                gap: 4px;
             }
             .sort-icon {
                 font-size: 12px;
             }
+            .filter-form-container {
+                max-width: 1200px; /* Căn giữa biểu mẫu với chiều rộng tối đa */
+                margin: 0 auto 20px auto;
+            }
             .filter-form {
-                margin-bottom: 20px;
                 padding: 15px;
                 border: 1px solid #eee;
                 border-radius: 5px;
                 background-color: #f9f9f9;
-
                 display: flex;
                 gap: 10px;
                 align-items: center;
-
-                /* Bỏ flex-wrap để các phần tử nằm trên 1 hàng */
                 flex-wrap: nowrap;
-
-                /* Không cho xuống dòng */
                 white-space: nowrap;
-
-                /* Để dropdown có thể hiển thị ra bên ngoài */
                 overflow: visible;
-                position: relative; /* nếu dropdown cần định vị */
+                position: relative;
             }
-
             .filter-form input[type="text"],
             .filter-form select,
             .filter-form button {
@@ -255,449 +250,261 @@
             .filter-form button:hover {
                 background-color: #0056b3;
             }
-
-
-
-
-
         </style>
-
     </head>
-    <body id="bg">
-        <div class="page-wraper">
-            <div id="loading-icon-bx"></div>
-
-            <!-- Header Top ==== -->
-            <header class="header rs-nav">
-                <div class="top-bar">
-                    <div class="container">
-                        <div class="row d-flex justify-content-between">
-                            <div class="topbar-left">
+    <body>
+        <!-- Header -->
+        <header class="ttr-header">
+            <div class="ttr-header-wrapper">
+                <!--logo start -->
+                <div class="ttr-logo-box">
+                    <div>
+                        <a href="home" class="ttr-logo">
+                            <img alt="" class="ttr-logo-mobile" src="assets/images/logowhite1.png" width="30" height="30">
+                            <img alt="" class="ttr-logo-desktop" src="assets/images/logowhite1.png" width="160" height="27">
+                        </a>
+                    </div>
+                </div>
+                <!--logo end -->
+                <div class="ttr-header-right ttr-with-seperator">
+                    <!-- header right menu start -->
+                    <ul class="ttr-header-navigation">
+                        <li>
+                            <a href="#" class="ttr-material-button ttr-submenu-toggle"><span class="ttr-user-avatar"><img alt="" src="<%=request.getContextPath()%>/admin/assets/images/testimonials/pic3.jpg" width="32" height="32"></span></a>
+                            <div class="ttr-header-submenu">
                                 <ul>
-                                    <li><a href="faq-1.jsp"><i class="fa fa-question-circle"></i>Ask a Question</a></li>
-                                    <li><a href="javascript:;"><i class="fa fa-envelope-o"></i>Support@website.com</a></li>
+                                    <li><a href="user-profile.jsp">My profile</a></li>
+                                    <c:if test="${sessionScope.loggedInUser ne null}">
+                                    <li><a href="logout">Logout</a></li>
+                                    </c:if>
                                 </ul>
                             </div>
-                            <div class="topbar-right">
-                                <ul>
-                                    <li>
-                                        <select class="header-lang-bx">
-                                            <option data-icon="flag flag-uk">English UK</option>
-                                            <option data-icon="flag flag-us">English US</option>
-                                        </select>
-                                    </li>
-                                    <li><a href="login.jsp">Login</a></li>
-                                    <li><a href="register.jsp">Register</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                        </li>
+                    </ul>
+                    <!-- header right menu end -->
                 </div>
-                <div class="sticky-header navbar-expand-lg">
-                    <div class="menu-bar clearfix">
-                        <div class="container clearfix">
-                            <!-- Header Logo ==== -->
-                            <div class="menu-logo">
-                                <a href="index.jsp"><img src="assets/images/logo.png" alt=""></a>
-                            </div>
-                            <!-- Mobile Nav Button ==== -->
-                            <button class="navbar-toggler collapsed menuicon justify-content-end" type="button" data-toggle="collapse" data-target="#menuDropdown" aria-controls="menuDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </button>
-                            <!-- Author Nav ==== -->
-                            <div class="secondary-menu">
-                                <div class="secondary-inner">
-                                    <ul>
-                                        <li><a href="javascript:;" class="btn-link"><i class="fa fa-facebook"></i></a></li>
-                                        <li><a href="javascript:;" class="btn-link"><i class="fa fa-google-plus"></i></a></li>
-                                        <li><a href="javascript:;" class="btn-link"><i class="fa fa-linkedin"></i></a></li>
-                                        <!-- Search Button ==== -->
-                                        <li class="search-btn"><button id="quik-search-btn" type="button" class="btn-link"><i class="fa fa-search"></i></button></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Search Box ==== -->
-                            <div class="nav-search-bar">
-                                <form action="#">
-                                    <input name="search" value="" type="text" class="form-control" placeholder="Type to search">
-                                    <span><i class="ti-search"></i></span>
-                                </form>
-                                <span id="search-remove"><i class="ti-close"></i></span>
-                            </div>
-                            <!-- Navigation Menu ==== -->
-                            <div class="menu-links navbar-collapse collapse justify-content-start" id="menuDropdown">
-                                <div class="menu-logo">
-                                    <a href="index.jsp"><img src="assets/images/logo.png" alt=""></a>
-                                </div>
-                                <ul class="nav navbar-nav">	
-                                    <li class="active"><a href="javascript:;">Home <i class="fa fa-chevron-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="index.jsp">Home 1</a></li>
-                                            <li><a href="index-2.jsp">Home 2</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="javascript:;">Pages <i class="fa fa-chevron-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="javascript:;">About<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="about-1.jsp">About 1</a></li>
-                                                    <li><a href="about-2.jsp">About 2</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="javascript:;">Event<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="event.jsp">Event</a></li>
-                                                    <li><a href="events-details.jsp">Events Details</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="javascript:;">FAQ's<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="faq-1.jsp">FAQ's 1</a></li>
-                                                    <li><a href="faq-2.jsp">FAQ's 2</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="javascript:;">Contact Us<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="contact-1.jsp">Contact Us 1</a></li>
-                                                    <li><a href="contact-2.jsp">Contact Us 2</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="portfolio.jsp">Portfolio</a></li>
-                                            <li><a href="profile.jsp">Profile</a></li>
-                                            <li><a href="membership.jsp">Membership</a></li>
-                                            <li><a href="error-404.jsp">404 Page</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="add-mega-menu"><a href="javascript:;">Our Courses <i class="fa fa-chevron-down"></i></a>
-                                        <ul class="sub-menu add-menu">
-                                            <li class="add-menu-left">
-                                                <h5 class="menu-adv-title">Our Courses</h5>
-                                                <ul>
-                                                    <li><a href="courses.jsp">Courses </a></li>
-                                                    <li><a href="courses-details.jsp">Courses Details</a></li>
-                                                    <li><a href="profile.jsp">Instructor Profile</a></li>
-                                                    <li><a href="event.jsp">Upcoming Event</a></li>
-                                                    <li><a href="membership.jsp">Membership</a></li>
-                                                </ul>
-                                            </li>
-                                            <li class="add-menu-right">
-                                                <img src="assets/images/adv/adv.jpg" alt=""/>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="javascript:;">Blog <i class="fa fa-chevron-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="blog-classic-grid.jsp">Blog Classic</a></li>
-                                            <li><a href="blog-classic-sidebar.jsp">Blog Classic Sidebar</a></li>
-                                            <li><a href="postcontroller?pageforward=bloglist">Blog List Sidebar</a></li>
-                                            <li><a href="blog-standard-sidebar.jsp">Blog Standard Sidebar</a></li>
-                                            <li><a href="postcontroller?pageforward=blogdetail">Blog Details</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="nav-dashboard"><a href="javascript:;">Dashboard <i class="fa fa-chevron-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="admin/index.jsp">Dashboard</a></li>
-                                            <li><a href="admin/add-listing.jsp">Add Listing</a></li>
-                                            <li><a href="admin/bookmark.jsp">Bookmark</a></li>
-                                            <li><a href="admin/courses.jsp">Courses</a></li>
-                                            <li><a href="admin/review.jsp">Review</a></li>
-                                            <li><a href="admin/teacher-profile.jsp">Teacher Profile</a></li>
-                                            <li><a href="admin/user-profile.jsp">User Profile</a></li>
-                                            <li><a href="javascript:;">Calendar<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="admin/basic-calendar.jsp">Basic Calendar</a></li>
-                                                    <li><a href="admin/list-view-calendar.jsp">List View Calendar</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="javascript:;">Mailbox<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="admin/mailbox.jsp">Mailbox</a></li>
-                                                    <li><a href="admin/mailbox-compose.jsp">Compose</a></li>
-                                                    <li><a href="admin/mailbox-read.jsp">Mail Read</a></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                                <div class="nav-social-link">
-                                    <a href="javascript:;"><i class="fa fa-facebook"></i></a>
-                                    <a href="javascript:;"><i class="fa fa-google-plus"></i></a>
-                                    <a href="javascript:;"><i class="fa fa-linkedin"></i></a>
-                                </div>
-                            </div>
-                            <!-- Navigation Menu END ==== -->
-                        </div>
-                    </div>
-                </div>
-            </header>
-            <!-- header END ==== -->
-            <!-- Content -->
-            <div class="page-content bg-white">
-                <!-- inner page banner -->
-                <div class="page-banner ovbl-dark">
-                    <div class="container">
-                        <div class="page-banner-entry">
-                            <h1 class="text-white">New Course</h1>
-                        </div>
-                    </div>
-                </div>
-                <!-- Breadcrumb row -->
-                <div class="breadcrumb-row">
-                    <div class="container">
-                        <ul class="list-inline">
-                            <li><a href="#">Home</a></li>
-                            <li>Registration List</li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- contact area -->
-                <div class="content-block">
-                    <div class="section-area section-sp1">
+            </div>
+        </header>
+        <!-- header end -->
+        <!-- Main container -->
+        <main class="ttr-wrapper">
+            <div class="container-fluid">
+                <div class="page-content bg-white">
+                    <!-- inner page banner -->
+                    <div class="page-banner ovbl-dark">
                         <div class="container">
-                            <div class="action-bar">
-                                <a href="registrationsalercontroller?action=new" class="add-new-btn btn btn-primary">Add New</a>
+                            <div class="page-banner-entry">
+                                <h1 class="text-white">Registration List</h1>
                             </div>
-
-                            <div class="filter-bar">
-                                <form action="registrationsalercontroller" method="GET" class="filter-form">
-                                    <input type="text" name="emailSearch" placeholder="Search Email"
-                                           value="${param.emailSearch != null ? param.emailSearch : ''}"/>
-
-                                    <select name="courseName">
-                                        <option value="">All Courses</option>
-                                        <c:forEach var="course" items="${courseList}">
-                                            <option value="${course.courseName}" 
-                                                    ${param.courseName != null && param.courseName == course.courseName ? 'selected' : ''}>
-                                                ${course.courseName}
-                                            </option>
-                                        </c:forEach>
-                                    </select>
-
-                                    <select name="name">
-                                        <option value="">All Packages</option>
-                                        <c:forEach var="pkg" items="${packageList}">
-                                            <option value="${pkg.name}" ${name != null && name.equals(pkg.name) ? 'selected' : ''}>
-                                                ${pkg.name}
-                                            </option>
-                                        </c:forEach>
-                                    </select>
-
-
-                                    <select name="validFrom">
-                                        <option value="">From</option>
-                                        <c:forEach var="fromDate" items="${fromDateList}">
-                                            <option value="${fromDate}" ${param.validFrom == fromDate ? 'selected' : ''}>${fromDate}</option>
-                                        </c:forEach>
-                                    </select>
-
-                                    <select name="validTo">
-                                        <option value="">To</option>
-                                        <c:forEach var="fromDate" items="${fromDateList}">
-                                            <option value="${fromDate}" ${param.validFrom == fromDate ? 'selected' : ''}>${fromDate}</option>
-                                        </c:forEach>
-                                    </select>
-
-
-                                    <select name="status">
-                                        <option value="">All Status</option>
-                                        <option value="Submitted" ${param.status == 'Submitted' ? 'selected' : ''}>Submitted</option>
-                                        <option value="Paid" ${param.status == 'Paid' ? 'selected' : ''}>Paid</option>
-                                        <option value="Cancelled" ${param.status == 'Cancelled' ? 'selected' : ''}>Cancelled</option>
-                                    </select>
-
-                                    <button type="submit">Apply Filter</button>
-                                </form>
-
-                            </div>
-
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=registrationID&sortOrder=${sortBy == 'registrationID' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'registrationID' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    ID
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'registrationID' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'registrationID' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=email&sortOrder=${sortBy == 'email' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'email' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Email
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'email' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'email' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=registrationTime&sortOrder=${sortBy == 'registrationTime' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'registrationTime' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Registration Time
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'registrationTime' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'registrationTime' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=courseName&sortOrder=${sortBy == 'courseName' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'courseName' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Subject
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'courseName' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'courseName' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=name&sortOrder=${sortBy == 'name' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'name' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Package
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'name' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'name' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=totalCost&sortOrder=${sortBy == 'totalCost' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'totalCost' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Total Cost
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'totalCost' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'totalCost' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=status&sortOrder=${sortBy == 'status' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'status' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Status
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'status' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'status' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=validFrom&sortOrder=${sortBy == 'validFrom' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'validFrom' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Valid From
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'validFrom' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'validFrom' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=validTo&sortOrder=${sortBy == 'validTo' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'validTo' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Valid To
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'validTo' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'validTo' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th class="sortable-header">
-                                            <a href="registrationsalercontroller?sortBy=fullName&sortOrder=${sortBy == 'fullName' && sortOrder == 'asc' ? 'desc' : 'asc'}"
-                                               class="${sortBy == 'fullName' ? 'active-sort' : ''}">
-                                                <span class="header-label">
-                                                    Last Update By
-                                                    <span class="sort-icon">
-                                                        <c:choose>
-                                                            <c:when test="${sortBy == 'fullName' && sortOrder == 'asc'}">&#9650;</c:when>
-                                                            <c:when test="${sortBy == 'fullName' && sortOrder == 'desc'}">&#9660;</c:when>
-                                                        </c:choose>
-                                                    </span>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    <!-- Example data rows -->
-                                    <c:forEach items="${listRegistrationBySaler}" var="Saler">
+                        </div>
+                    </div>
+                    <!-- contact area -->
+                    <div class="content-block">
+                        <div class="section-area section-sp1">
+                            <div class="container">
+                                <div class="action-bar">
+                                    <a href="registrationsalercontroller?action=new" class="add-new-btn btn btn-primary">Add New</a>
+                                </div>
+                                <div class="filter-form-container">
+                                    <form action="registrationsalercontroller" method="GET" class="filter-form">
+                                        <input type="text" name="emailSearch" placeholder="Search Email" value="${param.emailSearch != null ? param.emailSearch : ''}"/>
+                                        <select name="courseName">
+                                            <option value="">All Courses</option>
+                                            <c:forEach var="course" items="${courseList}">
+                                                <option value="${course.courseName}" ${param.courseName != null && param.courseName == course.courseName ? 'selected' : ''}>
+                                                    ${course.courseName}
+                                                </option>
+                                            </c:forEach>
+                                        </select>
+                                        <select name="name">
+                                            <option value="">All Packages</option>
+                                            <c:forEach var="pkg" items="${packageList}">
+                                                <option value="${pkg.name}" ${name != null && name.equals(pkg.name) ? 'selected' : ''}>
+                                                    ${pkg.name}
+                                                </option>
+                                            </c:forEach>
+                                        </select>
+                                        <select name="status">
+                                            <option value="">All Status</option>
+                                            <option value="Submitted" ${param.status == 'Submitted' ? 'selected' : ''}>Submitted</option>
+                                            <option value="Paid" ${param.status == 'Paid' ? 'selected' : ''}>Paid</option>
+                                            <option value="Cancelled" ${param.status == 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                                        </select>
+                                        <button type="submit">Apply Filter</button>
+                                    </form>
+                                </div>
+                                <table>
+                                    <thead>
                                         <tr>
-                                            <td>${Saler.registrationID}</td>
-                                            <td>${Saler.user.email}</td>
-                                            <td><fmt:formatDate value="${Saler.registrationTime}" pattern="dd-MM-yyyy"/></td>
-                                            <td>${Saler.course.courseName}</td>
-                                            <td>${Saler.pricePackage.name}</td>
-                                            <td>${Saler.totalCost}</td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${Saler.status == 'Submitted'}">
-                                                        <span class="status-submitted">Submitted</span>
-                                                    </c:when>
-                                                    <c:when test="${Saler.status == 'Paid'}">
-                                                        <span class="status-paid">Paid</span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="status-cancelled">Cancelled</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-
-                                            </td>
-                                            <td><fmt:formatDate value="${Saler.validFrom}" pattern="dd-MM-yyyy"/></td>
-                                            <td><fmt:formatDate value="${Saler.validTo}" pattern="dd-MM-yyyy"/></td>
-                                            <td>${Saler.lastUpdateBy.fullName}</td>
-                                            <td>
-                                                <span class="action-link">
-                                                    <a href="registrationsalercontroller?action=edit&registrationID=${Saler.registrationID}">Edit</a>&nbsp;&nbsp;
-                                                    <a href="registrationsalercontroller?action=detail&registrationID=${Saler.registrationID}">Detail</a>
-                                                </span>
-                                            </td>
-
+                                            <th class="sortable-header">
+                                                <a href="registrationsalercontroller?sortBy=registrationID&sortOrder=${sortBy == 'registrationID' && sortOrder == 'asc' ? 'desc' : 'asc'}" class="${sortBy == 'registrationID' ? 'active-sort' : ''}">
+                                                    <span class="header-label">
+                                                        ID
+                                                        <span class="sort-icon">
+                                                            <c:choose>
+                                                                <c:when test="${sortBy == 'registrationID' && sortOrder == 'asc'}">▲</c:when>
+                                                                <c:when test="${sortBy == 'registrationID' && sortOrder == 'desc'}">▼</c:when>
+                                                            </c:choose>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </th>
+                                            <th class="sortable-header">
+                                                <a href="registrationsalercontroller?sortBy=email&sortOrder=${sortBy == 'email' && sortOrder == 'asc' ? 'desc' : 'asc'}" class="${sortBy == 'email' ? 'active-sort' : ''}">
+                                                    <span class="header-label">
+                                                        Email
+                                                        <span class="sort-icon">
+                                                            <c:choose>
+                                                                <c:when test="${sortBy == 'email' && sortOrder == 'asc'}">▲</c:when>
+                                                                <c:when test="${sortBy == 'email' && sortOrder == 'desc'}">▼</c:when>
+                                                            </c:choose>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </th>
+                                            <th class="sortable-header">
+                                                <a href="registrationsalercontroller?sortBy=registrationTime&sortOrder=${sortBy == 'registrationTime' && sortOrder == 'asc' ? 'desc' : 'asc'}" class="${sortBy == 'registrationTime' ? 'active-sort' : ''}">
+                                                    <span class="header-label">
+                                                        Registration Time
+                                                        <span class="sort-icon">
+                                                            <c:choose>
+                                                                <c:when test="${sortBy == 'registrationTime' && sortOrder == 'asc'}">▲</c:when>
+                                                                <c:when test="${sortBy == 'registrationTime' && sortOrder == 'desc'}">▼</c:when>
+                                                            </c:choose>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </th>
+                                            <th class="sortable-header">
+                                                <a href="registrationsalercontroller?sortBy=courseName&sortOrder=${sortBy == 'courseName' && sortOrder == 'asc' ? 'desc' : 'asc'}" class="${sortBy == 'courseName' ? 'active-sort' : ''}">
+                                                    <span class="header-label">
+                                                        Subject
+                                                        <span class="sort-icon">
+                                                            <c:choose>
+                                                                <c:when test="${sortBy == 'courseName' && sortOrder == 'asc'}">▲</c:when>
+                                                                <c:when test="${sortBy == 'courseName' && sortOrder == 'desc'}">▼</c:when>
+                                                            </c:choose>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </th>
+                                            <th class="sortable-header">
+                                                <a href="registrationsalercontroller?sortBy=name&sortOrder=${sortBy == 'name' && sortOrder == 'asc' ? 'desc' : 'asc'}" class="${sortBy == 'name' ? 'active-sort' : ''}">
+                                                    <span class="header-label">
+                                                        Package
+                                                        <span class="sort-icon">
+                                                            <c:choose>
+                                                                <c:when test="${sortBy == 'name' && sortOrder == 'asc'}">▲</c:when>
+                                                                <c:when test="${sortBy == 'name' && sortOrder == 'desc'}">▼</c:when>
+                                                            </c:choose>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </th>
+                                            <th class="sortable-header">
+                                                <a href="registrationsalercontroller?sortBy=totalCost&sortOrder=${sortBy == 'totalCost' && sortOrder == 'asc' ? 'desc' : 'asc'}" class="${sortBy == 'totalCost' ? 'active-sort' : ''}">
+                                                    <span class="header-label">
+                                                        Total Cost
+                                                        <span class="sort-icon">
+                                                            <c:choose>
+                                                                <c:when test="${sortBy == 'totalCost' && sortOrder == 'asc'}">▲</c:when>
+                                                                <c:when test="${sortBy == 'totalCost' && sortOrder == 'desc'}">▼</c:when>
+                                                            </c:choose>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </th>
+                                            <th class="sortable-header">
+                                                <a href="registrationsalercontroller?sortBy=status&sortOrder=${sortBy == 'status' && sortOrder == 'asc' ? 'desc' : 'asc'}" class="${sortBy == 'status' ? 'active-sort' : ''}">
+                                                    <span class="header-label">
+                                                        Status
+                                                        <span class="sort-icon">
+                                                            <c:choose>
+                                                                <c:when test="${sortBy == 'status' && sortOrder == 'asc'}">▲</c:when>
+                                                                <c:when test="${sortBy == 'status' && sortOrder == 'desc'}">▼</c:when>
+                                                            </c:choose>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </th>
+                                            <th class="sortable-header">
+                                                <a href="registrationsalercontroller?sortBy=validFrom&sortOrder=${sortBy == 'validFrom' && sortOrder == 'asc' ? 'desc' : 'asc'}" class="${sortBy == 'validFrom' ? 'active-sort' : ''}">
+                                                    <span class="header-label">
+                                                        Valid From
+                                                        <span class="sort-icon">
+                                                            <c:choose>
+                                                                <c:when test="${sortBy == 'validFrom' && sortOrder == 'asc'}">▲</c:when>
+                                                                <c:when test="${sortBy == 'validFrom' && sortOrder == 'desc'}">▼</c:when>
+                                                            </c:choose>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </th>
+                                            <th class="sortable-header">
+                                                <a href="registrationsalercontroller?sortBy=validTo&sortOrder=${sortBy == 'validTo' && sortOrder == 'asc' ? 'desc' : 'asc'}" class="${sortBy == 'validTo' ? 'active-sort' : ''}">
+                                                    <span class="header-label">
+                                                        Valid To
+                                                        <span class="sort-icon">
+                                                            <c:choose>
+                                                                <c:when test="${sortBy == 'validTo' && sortOrder == 'asc'}">▲</c:when>
+                                                                <c:when test="${sortBy == 'validTo' && sortOrder == 'desc'}">▼</c:when>
+                                                            </c:choose>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </th>
+                                            <th class="sortable-header">
+                                                <a href="registrationsalercontroller?sortBy=fullName&sortOrder=${sortBy == 'fullName' && sortOrder == 'asc' ? 'desc' : 'asc'}" class="${sortBy == 'fullName' ? 'active-sort' : ''}">
+                                                    <span class="header-label">
+                                                        Last Update By
+                                                        <span class="sort-icon">
+                                                            <c:choose>
+                                                                <c:when test="${sortBy == 'fullName' && sortOrder == 'asc'}">▲</c:when>
+                                                                <c:when test="${sortBy == 'fullName' && sortOrder == 'desc'}">▼</c:when>
+                                                            </c:choose>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </th>
+                                            <th>Actions</th>
                                         </tr>
-                                    </c:forEach>
-                                    <!-- More rows can be populated dynamically -->
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach items="${listRegistrationBySaler}" var="Saler">
+                                            <tr>
+                                                <td>${Saler.registrationID}</td>
+                                                <td>${Saler.user.email}</td>
+                                                <td><fmt:formatDate value="${Saler.registrationTime}" pattern="dd-MM-yyyy"/></td>
+                                                <td>${Saler.course.courseName}</td>
+                                                <td>${Saler.pricePackage.name}</td>
+                                                <td>${Saler.totalCost}</td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${Saler.status == 'Submitted'}">
+                                                            <span class="status-submitted">Submitted</span>
+                                                        </c:when>
+                                                        <c:when test="${Saler.status == 'Paid'}">
+                                                            <span class="status-paid">Paid</span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="status-cancelled">Cancelled</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td><fmt:formatDate value="${Saler.validFrom}" pattern="dd-MM-yyyy"/></td>
+                                                <td><fmt:formatDate value="${Saler.validTo}" pattern="dd-MM-yyyy"/></td>
+                                                <td>${Saler.lastUpdateBy.fullName}</td>
+                                                <td>
+                                                    <span class="action-link">
+                                                        <a href="registrationsalercontroller?action=edit&registrationID=${Saler.registrationID}">Edit</a>  
+                                                        <a href="registrationsalercontroller?action=detail&registrationID=${Saler.registrationID}">Detail</a>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -710,7 +517,7 @@
                         <div class="container">
                             <div class="d-flex align-items-stretch">
                                 <div class="pt-logo mr-auto">
-                                    <a href="index.jsp"><img src="assets/images/logo-white.png" alt=""/></a>
+                                    <a href="index.jsp"><img src="<%=request.getContextPath()%>/admin/assets/images/logo-white.png" alt=""/></a>
                                 </div>
                                 <div class="pt-social-link">
                                     <ul class="list-inline m-a0">
@@ -736,10 +543,10 @@
                                         <form class="subscription-form" action="http://educhamp.themetrades.com/demo/assets/script/mailchamp.php" method="post">
                                             <div class="ajax-message"></div>
                                             <div class="input-group">
-                                                <input name="email" required="required"  class="form-control" placeholder="Your Email Address" type="email">
+                                                <input name="email" required="required" class="form-control" placeholder="Your Email Address" type="email">
                                                 <span class="input-group-btn">
                                                     <button name="submit" value="Submit" type="submit" class="btn"><i class="fa fa-arrow-right"></i></button>
-                                                </span> 
+                                                </span>
                                             </div>
                                         </form>
                                     </div>
@@ -786,14 +593,14 @@
                                 <div class="widget widget_gallery gallery-grid-4">
                                     <h5 class="footer-title">Our Gallery</h5>
                                     <ul class="magnific-image">
-                                        <li><a href="assets/images/gallery/pic1.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic1.jpg" alt=""></a></li>
-                                        <li><a href="assets/images/gallery/pic2.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic2.jpg" alt=""></a></li>
-                                        <li><a href="assets/images/gallery/pic3.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic3.jpg" alt=""></a></li>
-                                        <li><a href="assets/images/gallery/pic4.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic4.jpg" alt=""></a></li>
-                                        <li><a href="assets/images/gallery/pic5.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic5.jpg" alt=""></a></li>
-                                        <li><a href="assets/images/gallery/pic6.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic6.jpg" alt=""></a></li>
-                                        <li><a href="assets/images/gallery/pic7.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic7.jpg" alt=""></a></li>
-                                        <li><a href="assets/images/gallery/pic8.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic8.jpg" alt=""></a></li>
+                                        <li><a href="<%=request.getContextPath()%>/admin/assets/images/gallery/pic1.jpg" class="magnific-anchor"><img src="<%=request.getContextPath()%>/admin/assets/images/gallery/pic1.jpg" alt=""></a></li>
+                                        <li><a href="<%=request.getContextPath()%>/admin/assets/images/gallery/pic2.jpg" class="magnific-anchor"><img src="<%=request.getContextPath()%>/admin/assets/images/gallery/pic2.jpg" alt=""></a></li>
+                                        <li><a href="<%=request.getContextPath()%>/admin/assets/images/gallery/pic3.jpg" class="magnific-anchor"><img src="<%=request.getContextPath()%>/admin/assets/images/gallery/pic3.jpg" alt=""></a></li>
+                                        <li><a href="<%=request.getContextPath()%>/admin/assets/images/gallery/pic4.jpg" class="magnific-anchor"><img src="<%=request.getContextPath()%>/admin/assets/images/gallery/pic4.jpg" alt=""></a></li>
+                                        <li><a href="<%=request.getContextPath()%>/admin/assets/images/gallery/pic5.jpg" class="magnific-anchor"><img src="<%=request.getContextPath()%>/admin/assets/images/gallery/pic5.jpg" alt=""></a></li>
+                                        <li><a href="<%=request.getContextPath()%>/admin/assets/images/gallery/pic6.jpg" class="magnific-anchor"><img src="<%=request.getContextPath()%>/admin/assets/images/gallery/pic6.jpg" alt=""></a></li>
+                                        <li><a href="<%=request.getContextPath()%>/admin/assets/images/gallery/pic7.jpg" class="magnific-anchor"><img src="<%=request.getContextPath()%>/admin/assets/images/gallery/pic7.jpg" alt=""></a></li>
+                                        <li><a href="<%=request.getContextPath()%>/admin/assets/images/gallery/pic8.jpg" class="magnific-anchor"><img src="<%=request.getContextPath()%>/admin/assets/images/gallery/pic8.jpg" alt=""></a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -802,29 +609,36 @@
                     <div class="footer-bottom">
                         <div class="container">
                             <div class="row">
-                                <div class="col-lg-12 col-md-12 col-sm-12 text-center"> <a target="_blank" href="https://www.templateshub.net">Templates Hub</a></div>
+                                <div class="col-lg-12 col-md-12 col-sm-12 text-center"><a target="_blank" href="https://www.templateshub.net">Templates Hub</a></div>
                             </div>
                         </div>
-                        </footer>
-                        <!-- Footer END ==== -->
-                        <!-- scroll top button -->
-                        <button class="back-to-top fa fa-chevron-up" ></button>
                     </div>
-                    <!-- External JavaScripts -->
-                    <script src="assets/js/jquery.min.js"></script>
-                    <script src="assets/vendors/bootstrap/js/popper.min.js"></script>
-                    <script src="assets/vendors/bootstrap/js/bootstrap.min.js"></script>
-                    <script src="assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
-                    <script src="assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
-                    <script src="assets/vendors/magnific-popup/magnific-popup.js"></script>
-                    <script src="assets/vendors/counter/waypoints-min.js"></script>
-                    <script src="assets/vendors/counter/counterup.min.js"></script>
-                    <script src="assets/vendors/imagesloaded/imagesloaded.js"></script>
-                    <script src="assets/vendors/masonry/masonry.js"></script>
-                    <script src="assets/vendors/masonry/filter.js"></script>
-                    <script src="assets/vendors/owl-carousel/owl.carousel.js"></script>
-                    <script src="assets/js/functions.js"></script>
-                    <script src="assets/js/contact.js"></script>
-                    <script src='assets/vendors/switcher/switcher.js'></script>
-                    </body>
-                    </html>
+            </footer>
+            <!-- Footer END ==== -->
+            <!-- scroll top button -->
+            <button class="back-to-top fa fa-chevron-up"></button>
+        </div>
+    </main>
+    <div class="ttr-overlay"></div>
+    <!-- External JavaScripts -->
+    <script src="<%=request.getContextPath()%>/admin/assets/js/jquery.min.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/vendors/magnific-popup/magnific-popup.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/vendors/counter/waypoints-min.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/vendors/counter/counterup.min.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/vendors/imagesloaded/imagesloaded.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/vendors/masonry/masonry.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/vendors/masonry/filter.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/vendors/owl-carousel/owl.carousel.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/vendors/scroll/scrollbar.min.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/js/functions.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/js/contact.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/vendors/switcher/switcher.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/vendors/chart/chart.min.js"></script>
+    <script src="<%=request.getContextPath()%>/admin/assets/js/admin.js"></script>
+</body>
+</html>
+```

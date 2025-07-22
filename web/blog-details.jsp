@@ -83,6 +83,7 @@
                                             <a href="logout">Logout</a>
                                         </c:if>
                                     </li>
+
                                 </ul>
                             </div>
                         </div>
@@ -144,7 +145,7 @@
                                 <ul class="nav navbar-nav">	
                                     <li class="active"><a href="javascript:;">Home <i class="fa fa-chevron-down"></i></a>
                                         <ul class="sub-menu">
-                                            <li><a href="index.jsp">Home 1</a></li>
+                                            <li><a href="home">Home 1</a></li>
                                             <li><a href="index-2.jsp">Home 2</a></li>
                                         </ul>
                                     </li>
@@ -208,7 +209,7 @@
                                     </li>
                                     <li class="nav-dashboard"><a href="javascript:;">Dashboard <i class="fa fa-chevron-down"></i></a>
                                         <ul class="sub-menu">
-                                            <li><a href="admin/index.jsp">Dashboard</a></li>
+                                            <li><a href="admin/home">Dashboard</a></li>
                                             <li><a href="admin/add-listing.jsp">Add Listing</a></li>
                                             <li><a href="admin/bookmark.jsp">Bookmark</a></li>
                                             <li><a href="admin/courses.jsp">Courses</a></li>
@@ -364,7 +365,7 @@
                         <div class="container">
                             <div class="d-flex align-items-stretch">
                                 <div class="pt-logo mr-auto">
-                                    <a href="index.jsp"><img src="assets/images/logo-white.png" alt=""/></a>
+                                    <a href="home"><img src="assets/images/logo-white.png" alt=""/></a>
                                 </div>
                                 <div class="pt-social-link">
                                     <ul class="list-inline m-a0">
@@ -389,7 +390,7 @@
                                         <div class="widget footer_widget">
                                             <h5 class="footer-title">Company</h5>
                                             <ul>
-                                                <li><a href="index.jsp">Home</a></li>
+                                                <li><a href="home">Home</a></li>
                                                 <li><a href="about-1.jsp">About</a></li>
                                                 <li><a href="faq-1.jsp">FAQs</a></li>
                                                 <li><a href="contact-1.jsp">Contact</a></li>
@@ -400,7 +401,7 @@
                                         <div class="widget footer_widget">
                                             <h5 class="footer-title">Get In Touch</h5>
                                             <ul>
-                                                <li><a href="http://educhamp.themetrades.com/admin/index.jsp">Dashboard</a></li>
+                                                <li><a href="http://educhamp.themetrades.com/admin/home">Dashboard</a></li>
                                                 <li><a href="blog-classic-grid.jsp">Blog</a></li>
                                                 <li><a href="portfolio.jsp">Portfolio</a></li>
                                                 <li><a href="event.jsp">Event</a></li>
@@ -452,6 +453,8 @@
         <script src="assets/js/functions.js"></script>
         <script src="assets/js/contact.js"></script>
         <script src='assets/vendors/switcher/switcher.js'></script>
+        
+        <%@ include file="login-register-modal.jsp" %>
     </body>
 
 </html>

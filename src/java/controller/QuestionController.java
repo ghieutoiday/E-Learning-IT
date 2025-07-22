@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Course;
 import model.SubjectDimension;
+import model.User;
 
 @WebServlet("/questioncontroller")
 @MultipartConfig(maxFileSize = 1024 * 1024 * 10) // Kích thước file tối đa 10MB
@@ -47,6 +48,15 @@ public class QuestionController extends HttpServlet {
             throws ServletException, IOException {
         // Chỉ forward đến JSP, không còn logic download ở đây
         String action = request.getParameter("action");
+        HttpSession session = request.getSession();
+        User currentUser = (User) session.getAttribute("loggedInUser"); 
+
+        // Kiểm tra xem currentUser có phải là Expert không
+        if (currentUser == null || currentUser.getRole().getRoleID() != 4) { 
+            request.setAttribute("errorMessage", "Bạn không có quyền thực hiện hành động này.");
+            response.sendRedirect("home"); 
+            return;
+        }
         if ("edit".equalsIgnoreCase(action)) {
             // String questionIDParam = request.getParameter("questionID");
             //int questionID = Integer.parseInt(questionIDParam);
@@ -68,6 +78,15 @@ public class QuestionController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
+        HttpSession session = request.getSession();
+        User currentUser = (User) session.getAttribute("loggedInUser"); 
+
+        // Kiểm tra xem currentUser có phải là Expert không
+        if (currentUser == null || currentUser.getRole().getRoleID() != 4) { 
+            request.setAttribute("errorMessage", "Bạn không có quyền thực hiện hành động này.");
+            response.sendRedirect("home"); 
+            return;
+        }
         if ("import".equals(action)) {
             Part filePart = request.getPart("file");
             QuestionDAO questionDAO = new QuestionDAO();
@@ -203,9 +222,7 @@ public class QuestionController extends HttpServlet {
                 LOGGER.log(Level.SEVERE, "Lỗi khi chuyển hướng đến JSP", ex);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi khi chuyển hướng.");
             }
-        } else if ("edit".equalsIgnoreCase(action)) {
-            HttpSession session = request.getSession();
-            
+        } else if ("edit".equalsIgnoreCase(action)) { 
             String questionIDStr = request.getParameter("questionID");
             String courseIDStr = request.getParameter("courseID");
             String dimensionIDStr = request.getParameter("dimensionID");
