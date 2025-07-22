@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import model.DimensionResult;
-import model.QuizLessonDTO;
+import dto.QuizLessonDTO;
 
 /**
  *
