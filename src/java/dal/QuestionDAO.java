@@ -188,6 +188,49 @@ public class QuestionDAO extends DBContext {
         }
     }
     
+    //Hàm kiểm tra khóa ngoại
+    public boolean validateForeignKeys(int courseID, int lessonID, int dimensionID, int typeQuestionID) {
+        String sql = "SELECT 1 FROM Course WHERE courseID = ? "
+                + "AND EXISTS (SELECT 1 FROM Lesson WHERE lessonID = ? AND courseID = ?) "
+                + "AND EXISTS (SELECT 1 FROM SubjectDimension WHERE dimensionID = ? AND courseID = ?) "
+                + "AND EXISTS (SELECT 1 FROM TypeQuestion WHERE typeQuestionId = ?)";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, courseID);
+            ps.setInt(2, lessonID);
+            ps.setInt(3, courseID);
+            ps.setInt(4, dimensionID);
+            ps.setInt(5, courseID);
+            ps.setInt(6, typeQuestionID);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException ex) {
+            Logger.getLogger(QuestionDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    /**
+     * Lấy danh sách tất cả các khóa học để hiển thị trong bộ lọc.
+     * @return Danh sách các đối tượng Course.
+     */
+    public List<Course> getAllCourses() {
+        List<Course> list = new ArrayList<>();
+        String sql = "SELECT courseID, courseName FROM Course";
+        try (PreparedStatement st = connection.prepareStatement(sql);
+             ResultSet rs = st.executeQuery()) {
+            while (rs.next()) {
+                Course c = new Course();
+                c.setCourseID(rs.getInt("courseID"));
+                c.setCourseName(rs.getString("courseName"));
+                list.add(c);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+    
     /**
      * Lấy danh sách tất cả các chiều hướng (dimension) để tra cứu.
      * @return Danh sách các đối tượng SubjectDimension.
@@ -260,6 +303,7 @@ public class QuestionDAO extends DBContext {
         }
         return list;
     }
+    
 
     /**
      * Đếm tổng số câu hỏi thỏa mãn điều kiện lọc để tính toán phân trang.
@@ -270,6 +314,7 @@ public class QuestionDAO extends DBContext {
      * @param search Từ khóa tìm kiếm.
      * @return Tổng số câu hỏi.
      */
+    
     public int getFilteredQuestionCount(int courseId, int dimensionId, int level, String status, String search) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM Question WHERE 1=1 ");
         
