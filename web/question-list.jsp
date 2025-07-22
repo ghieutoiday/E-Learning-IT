@@ -84,7 +84,7 @@
                         <th>Dimension</th>
                         <th>Level</th>
                         <th>Status</th>
-                    </tr>
+                        <th>Actions</th> </tr>
                 </thead>
                 <tbody>
                     <c:forEach var="q" items="${questions}">
@@ -111,10 +111,13 @@
                             <td>
                                 <span class="badge ${q.status == 'Active' ? 'bg-success' : 'bg-secondary'}">${q.status}</span>
                             </td>
+                            <td>
+                                <a href="questioncontroller?action=edit&questionID=${q.questionID}" class="btn btn-sm btn-info">Detail</a>
+                            </td>
                         </tr>
                     </c:forEach>
                     <c:if test="${empty questions}">
-                        <tr><td colspan="6" class="text-center">No questions found.</td></tr>
+                         <tr><td colspan="7" class="text-center">No questions found.</td></tr>
                     </c:if>
                 </tbody>
             </table>

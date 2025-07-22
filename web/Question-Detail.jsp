@@ -449,7 +449,7 @@
                                 <select class="form-control" id="courseID" name="courseID" required>
                                     <c:forEach var="course" items="${courseList}">
                                         <option value="${course.courseID}"
-                                                ${course.courseID == question.courseID ? 'selected' : ''}> <%-- ĐÃ SỬA DÒNG NÀY --%>
+                                                ${course.courseID == question.courseID ? 'selected' : ''}> 
                                             ${course.courseName}
                                         </option>
                                     </c:forEach>
@@ -461,7 +461,7 @@
                                 <select class="form-control" id="dimensionID" name="dimensionID" required>
                                     <c:forEach var="dimension" items="${dimensionList}">
                                         <option value="${dimension.dimensionID}"
-                                                ${dimension.dimensionID == question.dimensionID ? 'selected' : ''}> <%-- ĐÃ SỬA DÒNG NÀY (giả sử thuộc tính là 'dimensionID') --%>
+                                                ${dimension.dimensionID == question.dimensionID ? 'selected' : ''}> 
                                             ${dimension.name}
                                         </option>
                                     </c:forEach>

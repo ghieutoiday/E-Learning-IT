@@ -58,9 +58,8 @@ public class QuestionController extends HttpServlet {
             return;
         }
         if ("edit".equalsIgnoreCase(action)) {
-            // String questionIDParam = request.getParameter("questionID");
-            //int questionID = Integer.parseInt(questionIDParam);
-            int questionID = 5;
+             String questionIDParam = request.getParameter("questionID");
+            int questionID = Integer.parseInt(questionIDParam);
             Question question = questionDAO.getQuestionByQuestionID(questionID);
             request.setAttribute("question", question);
             request.setAttribute("courseList", courseDAO.getAllDistinctCourseByName());
