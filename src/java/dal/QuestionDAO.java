@@ -214,22 +214,22 @@ public class QuestionDAO extends DBContext {
      * Lấy danh sách tất cả các khóa học để hiển thị trong bộ lọc.
      * @return Danh sách các đối tượng Course.
      */
-    public List<Course> getAllCourses() {
-        List<Course> list = new ArrayList<>();
-        String sql = "SELECT courseID, courseName FROM Course";
-        try (PreparedStatement st = connection.prepareStatement(sql);
-             ResultSet rs = st.executeQuery()) {
-            while (rs.next()) {
-                Course c = new Course();
-                c.setCourseID(rs.getInt("courseID"));
-                c.setCourseName(rs.getString("courseName"));
-                list.add(c);
-            }
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-        return list;
-    }
+//    public List<Course> getAllCourses() {
+//        List<Course> list = new ArrayList<>();
+//        String sql = "SELECT courseID, courseName FROM Course";
+//        try (PreparedStatement st = connection.prepareStatement(sql);
+//             ResultSet rs = st.executeQuery()) {
+//            while (rs.next()) {
+//                Course c = new Course();
+//                c.setCourseID(rs.getInt("courseID"));
+//                c.setCourseName(rs.getString("courseName"));
+//                list.add(c);
+//            }
+//        } catch (SQLException e) {
+//            System.out.println(e);
+//        }
+//        return list;
+//    }
     
     /**
      * Lấy danh sách tất cả các chiều hướng (dimension) để tra cứu.

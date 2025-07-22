@@ -57,9 +57,12 @@
                     <label>Password</label>
                     <input name="password" type="password" required class="form-control">
                 </div>
-
+                
                 <button type="submit" class="btn button-md">Sign Up</button>
-
+                <div class="social-login text-center mt-3">
+                    <h6>Login with Social media</h6>
+                    <a class="btn google-plus" href="#"><i class="fa fa-google-plus"></i> Google</a>
+                </div>
             </form>
         </div>
     </div>

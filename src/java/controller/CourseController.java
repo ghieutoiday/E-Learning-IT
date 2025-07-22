@@ -48,13 +48,13 @@ public class CourseController extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-        UserDAO userDao = new UserDAO();
-        User user = (User) session.getAttribute("user");
-//        int id = userDao.getRoleByID(user.getRole().getRoleID());
-        if (user.getRoleID() == 5 && user.getRoleID() == 4) {
-            response.sendRedirect("home");
-            return;
-        }
+//        UserDAO userDao = new UserDAO();
+//        User user = (User) session.getAttribute("user");
+////        int id = userDao.getRoleByID(user.getRole().getRoleID());
+//        if (user.getRoleID() == 5 && user.getRoleID() == 4) {
+//            response.sendRedirect("home");
+//            return;
+//        }
 //        HttpSession session = request.getSession(false);
 //        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
 //        if (user == null) {
