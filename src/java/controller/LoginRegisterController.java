@@ -101,13 +101,13 @@ public class LoginRegisterController extends HttpServlet {
                                     response.sendRedirect("home?userID=" + user.getUserID());
                                     break;
                                 case 2:
-                                    response.sendRedirect("postcontroller?userID=" + user.getUserID());
+                                    response.sendRedirect("dashboard");
                                     break;
                                 case 3:
                                     response.sendRedirect("registrationsalercontroller");
                                     break;
                                 case 4:
-                                    response.sendRedirect("home");
+                                    response.sendRedirect("coursecontroller");
                                     break;
                                 case 5:
                                     response.sendRedirect("postcontroller");

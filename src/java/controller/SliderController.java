@@ -17,6 +17,7 @@ import java.util.List;
 import model.Slider;
 import java.io.File;
 import jakarta.servlet.http.Part;
+import model.User;
 
 @WebServlet(name = "SliderController", urlPatterns = {"/slidercontroller"})
 @MultipartConfig(
@@ -33,7 +34,14 @@ public class SliderController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
+        // Kiểm tra quyền truy cập
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 2) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
         String action = request.getParameter("action");
 
         if (action == null) {
@@ -80,7 +88,7 @@ public class SliderController extends HttpServlet {
                     request.setAttribute("hideTitle", hideTitle);
                     request.setAttribute("hideBacklink", hideBacklink);
                     request.setAttribute("hideStatus", hideStatus);
-
+                    request.setAttribute("user", user);
                     request.getRequestDispatcher("/admin/sliderlist.jsp").forward(request, response);
                     break;
 
@@ -89,6 +97,7 @@ public class SliderController extends HttpServlet {
                     if (sliderId != null && !sliderId.isEmpty()) {
                         Slider slider = sliderDAO.getSliderById(Integer.parseInt(sliderId));
                         request.setAttribute("slider", slider);
+                        request.setAttribute("user", user);
                         request.getRequestDispatcher("/admin/sliderdetail.jsp").forward(request, response);
                     } else {
                         response.sendRedirect("slidercontroller");
@@ -104,6 +113,7 @@ public class SliderController extends HttpServlet {
                     if (editSliderId != null && !editSliderId.isEmpty()) {
                         Slider slider = sliderDAO.getSliderById(Integer.parseInt(editSliderId));
                         request.setAttribute("slider", slider);
+                        request.setAttribute("user", user);
                         request.getRequestDispatcher("/admin/editslider.jsp").forward(request, response);
                     } else {
                         response.sendRedirect("slidercontroller");
@@ -133,6 +143,14 @@ public class SliderController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 2) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+
         String action = request.getParameter("action");
 
         try {
@@ -162,6 +180,7 @@ public class SliderController extends HttpServlet {
                         request.setAttribute("oldStatus", editStatus);
                         request.setAttribute("oldNotes", editNotes);
                         request.setAttribute("oldUserID", editUserID);
+                        request.setAttribute("user", user);
                         request.getRequestDispatcher("/admin/editslider.jsp").forward(request, response);
                         return;
                     }
@@ -176,9 +195,8 @@ public class SliderController extends HttpServlet {
                         editNewFileName = System.currentTimeMillis() + editFileExtension;//Tạo tên tệp duy nhất cho tệp mới.
 
                         // Get the web root directory path
-                        
                         //Trả về đường dẫn tuyệt đối đến thư mục gốc của ứng dụng web
-                        String editWebRootPath = request.getServletContext().getRealPath("/"); 
+                        String editWebRootPath = request.getServletContext().getRealPath("/");
                         //Điều chỉnh đường dẫn để trỏ đến thư mục nguồn của dự án, không bao gồm thư mục build .
                         String editProjectRootPath = editWebRootPath.substring(0, editWebRootPath.indexOf("build"));
                         String editUploadPath = editProjectRootPath + "web" + File.separator + "assets" + File.separator + "images" + File.separator + "sliderlist" + File.separator;
@@ -214,6 +232,7 @@ public class SliderController extends HttpServlet {
                         request.setAttribute("oldStatus", editStatus);
                         request.setAttribute("oldNotes", editNotes);
                         request.setAttribute("oldUserID", editUserID);
+                        request.setAttribute("user", user);
                         request.getRequestDispatcher("/admin/editslider.jsp").forward(request, response);
                     }
                     break;

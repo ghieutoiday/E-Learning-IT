@@ -66,15 +66,24 @@
                             </div>
                             <div class="topbar-right">
                                 <ul>
-                                    <c:if test="${sessionScope.loggedInUser eq null}">
-                                        <button id="openLoginModal">Login</button>
-                                    </c:if>
-                                    <c:if test="${sessionScope.loggedInUser eq null}">
-                                        <button id="openSignupModal" >Sign Up</button>
-                                    </c:if>
-                                    <c:if test="${sessionScope.loggedInUser ne null}">
-                                        <li><a href="logout">Logout</a></li>
+                                    <li>
+                                        <select class="header-lang-bx">
+                                            <option data-icon="flag flag-uk">English UK</option>
+                                            <option data-icon="flag flag-us">English US</option>
+                                        </select>
+                                    </li>
+                                    <li>
+                                        <c:if test="${sessionScope.loggedInUser eq null}">
+                                            <a><button id="openLoginModal" ">Login</button></a>
                                         </c:if>
+                                        <c:if test="${sessionScope.loggedInUser eq null}">
+                                            <button id="openSignupModal" >Sign Up</button>
+                                        </c:if>
+                                        <c:if test="${sessionScope.loggedInUser ne null}">
+                                            <a href="logout">Logout</a>
+                                        </c:if>
+                                    </li>
+
                                 </ul>
                             </div>
                         </div>
@@ -101,7 +110,22 @@
                                         <li><a href="javascript:;" class="btn-link"><i class="fa fa-google-plus"></i></a></li>
                                         <li><a href="javascript:;" class="btn-link"><i class="fa fa-linkedin"></i></a></li>
                                         <!-- Search Button ==== -->
-                                        <li class="search-btn"><button id="quik-search-btn" type="button" class="btn-link"><i class="fa fa-search"></i></button></li>
+                                        <c:if test="${sessionScope.loggedInUser ne null}">
+                                            &nbsp;&nbsp;
+                                            <li>||</li>
+
+                                            <!--My Course / My Registration-->
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <li><a href="mycoursecontroller" class="btn-link customer-course">
+                                                    <p>My Courses</p>
+                                                </a>
+                                            </li>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <li><a href="registrationcontroller" class="btn-link customer-registration">
+                                                    <p>My Registrations</p>
+                                                </a>
+                                            </li>
+                                        </c:if>
                                     </ul>
                                 </div>
                             </div>
@@ -116,7 +140,7 @@
                             <!-- Navigation Menu ==== -->
                             <div class="menu-links navbar-collapse collapse justify-content-start" id="menuDropdown">
                                 <div class="menu-logo">
-                                    <a href="home"><img src="assets/images/logo.png" alt=""></a>
+                                    <a href="home"><img src="assets/images/logoblack1.png" alt=""></a>
                                 </div>
                                 <ul class="nav navbar-nav">	
                                     <li class="active"><a href="javascript:;">Home <i class="fa fa-chevron-down"></i></a>

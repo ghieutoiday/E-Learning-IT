@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import model.DimensionResult;
-import model.QuizLessonDTO;
+import dto.QuizLessonDTO;
 
 /**
  *
@@ -90,7 +90,9 @@ public class QuizLessonDTO_DAO extends DBContext{
                              SUM(CASE WHEN uqa.selectedAnswerID IS NULL THEN 1 ELSE 0 END) AS unansweredQuestions,
                              DATEDIFF(SECOND, uqa.startTime, uqa.endTime) AS actualQuizTime,
                              CASE 
-                                 WHEN SUM(CASE WHEN uqa.isCorrect = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) >= (SELECT passRate FROM Quiz WHERE quizID = uqa.quizID)
+                                 WHEN SUM(CASE WHEN uqa.isCorrect = 1 
+                                 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) >= 
+                                 (SELECT passRate FROM Quiz WHERE quizID = uqa.quizID)
                                  THEN 'Pass'
                                  ELSE 'Fail'
                              END AS quizStatus

@@ -14,10 +14,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Course;
 import model.CourseCategory;
 import model.Registration;
+import model.User;
 
 /**
  *
@@ -67,9 +69,15 @@ public class RegistrationController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //Đáng lẽ phải lấy userID từ session nhưng vì chưa có tính năng login
-        //nên ở đây tôi hard code giá trị userID;
-        int userID = 5;
+        // Kiểm tra quyền truy cập
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 1) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+        
+        int userID = user.getUserID();
 
         //Lấy ra course Category để hiển thị ở thanh sider bar bên trái giúp fitler
         List<CourseCategory> listCourseCategory = courseCategoryDAO.getAllCategory();
@@ -97,6 +105,18 @@ public class RegistrationController extends HttpServlet {
             List<Course> listAllRegistrationByCourseOfUserAfterSearch = courseDAO.getAllCoureByCourseName(searchCourseName);
             List<Registration> listRegistrationByListCourseOfUser = RegistrationDAO.getInstance().getAllRegistrationByListCourseOfUser(userID, listAllRegistrationByCourseOfUserAfterSearch);
             request.setAttribute("listRegistration", listRegistrationByListCourseOfUser);
+        } else if (action != null && action.equals("cancel")) {
+            //Lấy searchCourseName từ thẻ form bên my-registration.jsp
+            String regisID_raw = request.getParameter("regisID");
+            int regisID = -1;
+            try {
+                regisID = Integer.parseInt(regisID_raw);
+            } catch (NumberFormatException e) {
+                System.out.println(e.getMessage());
+            }
+            RegistrationDAO.getInstance().cancelRegistration(regisID);
+            List<Registration> listRegistrationOfUser = RegistrationDAO.getInstance().getAllRegistrationOfUserByUserID(userID);
+            request.setAttribute("listRegistration", listRegistrationOfUser);
         } else {
             List<Registration> listRegistrationOfUser = RegistrationDAO.getInstance().getAllRegistrationOfUserByUserID(userID);
             request.setAttribute("listRegistration", listRegistrationOfUser);

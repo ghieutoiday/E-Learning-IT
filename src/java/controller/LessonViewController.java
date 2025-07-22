@@ -16,6 +16,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,8 @@ import java.util.logging.Level;
 import model.Course;
 import model.Lesson;
 import model.Quiz;
-import model.QuizLessonDTO;
+import dto.QuizLessonDTO;
+import model.User;
 import model.UserLessonNotes;
 import model.UserLessonProgress;
 
@@ -37,8 +39,15 @@ public class LessonViewController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        //Tạm thời hardcode
-        int userID = 5;
+        // Kiểm tra quyền truy cập
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 1) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+        
+        int userID = user.getUserID();
         
         //Lấy courseID
         String courseID_raw = request.getParameter("courseID");
@@ -57,7 +66,7 @@ public class LessonViewController extends HttpServlet {
         
         //Lấy 2 tham số này để hiển thị trên tranh tiến độ
         int completedLessons = LessonDAO.getInstance().getTotalNumberOfCompletedLessonInCourse(userID, courseID);
-        int totalLessons = LessonDAO.getInstance().getTotalNumberOfLessonInCourse(courseID);
+        int totalLessons = LessonDAO.getInstance().getAllSubLessonsByCourseIDOrdered(courseID).size();
         request.setAttribute("completedLessons", completedLessons);
         request.setAttribute("totalLessons", totalLessons);
 
@@ -146,8 +155,6 @@ public class LessonViewController extends HttpServlet {
             return;
         }
         
-        //Lấy thông tin của bài Quiz user làm mới nhất
-
 
         request.getRequestDispatcher("lesson-view.jsp").forward(request, response);
     }

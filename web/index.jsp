@@ -8,7 +8,7 @@
 
         <!-- META ============================================= -->
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="X-UA- Compatible" content="IE=edge">
         <meta name="keywords" content="" />
         <meta name="author" content="" />
         <meta name="robots" content="" />
@@ -334,25 +334,28 @@
                                             <li><a href="javascript:;" class="btn-link" style="color:white"><i
                                                         class="fa fa-google-plus"></i></a></li>
                                             <li></li>
-                                            <li  style="color:white">||</li>
-                                            <!-- Search Button ==== -->
 
+                                            <c:if test="${sessionScope.loggedInUser ne null}">
+                                                <li  style="color:white">||</li>
 
-                                            <!--My Course / My Registration-->
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <li><a href="mycoursecontroller" class="btn-link customer-course"
-                                                   style="color:white">
-                                                    <p>My Courses</p>
-                                                </a></li>
-                                            &nbsp;&nbsp;&nbsp;
-                                            <li><a href="registrationcontroller"
-                                                   class="btn-link customer-registration" style="color:white">
-                                                    <p>My Registrations</p>
-                                                </a></li>
+                                                <!--My Course / My Registration-->
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <li><a href="mycoursecontroller" class="btn-link customer-course"
+                                                       style="color:white">
+                                                        <p>My Courses</p>
+                                                    </a>
+                                                </li>
+                                                &nbsp;&nbsp;&nbsp;
+                                                <li><a href="registrationcontroller"
+                                                       class="btn-link customer-registration" style="color:white">
+                                                        <p>My Registrations</p>
+                                                    </a>
+                                                </li>
+                                            </c:if>
+
                                         </ul>
                                     </div>
                                 </div>
-                                <!-- Search Box ==== -->
 
                                 <!-- Navigation Menu ==== -->
                                 <div class="menu-links navbar-collapse collapse justify-content-start"
@@ -446,10 +449,7 @@
                                                                      style="color:white;">Dashboard <i
                                                     class="fa fa-chevron-down"></i></a>
                                             <ul class="sub-menu">
-                                                <li><a href="admin/index.jsp">Dashboard</a></li>
-                                                <li><a href="slidercontroller">Sliders List</a></li>
                                                 <li><a href="admin/bookmark.jsp">Bookmark</a></li>
-                                                <li><a href="postcontroller">Posts List</a></li>
                                                 <li><a href="admin/review.jsp">Review</a></li>
                                                 <li><a href="admin/teacher-profile.jsp">Teacher Profile</a></li>
                                                 <li><a href="admin/user-profile.jsp">User Profile</a></li>

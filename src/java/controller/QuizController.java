@@ -62,7 +62,6 @@ public class QuizController extends HttpServlet {
 
                     // Column visibility parameters
                     boolean hideID = "true".equals(request.getParameter("hideID"));
-                    boolean hideName = "true".equals(request.getParameter("hideName"));
                     boolean hideSubject = "true".equals(request.getParameter("hideSubject"));
                     boolean hideLevel = "true".equals(request.getParameter("hideLevel"));
                     boolean hideNOQ = "true".equals(request.getParameter("hideNOQ"));
@@ -84,7 +83,6 @@ public class QuizController extends HttpServlet {
                     
 
                     request.setAttribute("hideID", hideID);
-                    request.setAttribute("hideName", hideName);
                     request.setAttribute("hideSubject",hideSubject);
                     request.setAttribute("hideLevel",hideLevel);
                     request.setAttribute("hideNOQ",hideNOQ);
