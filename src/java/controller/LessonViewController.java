@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import model.Course;
 import model.Lesson;
 import model.Quiz;
-import model.QuizLessonDTO;
+import dto.QuizLessonDTO;
 import model.User;
 import model.UserLessonNotes;
 import model.UserLessonProgress;
