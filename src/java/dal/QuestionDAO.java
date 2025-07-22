@@ -170,6 +170,116 @@ public class QuestionDAO extends DBContext {
             System.out.println("Error in updateQuestion: " + e.getMessage());
         }
     }
+    
+    /**
+     * Lấy danh sách tất cả các chiều hướng (dimension) để tra cứu.
+     * @return Danh sách các đối tượng SubjectDimension.
+     */
+    public List<SubjectDimension> getAllDimensions() {
+        List<SubjectDimension> list = new ArrayList<>();
+        String sql = "SELECT dimensionID, name FROM SubjectDimension";
+        try (PreparedStatement st = connection.prepareStatement(sql);
+             ResultSet rs = st.executeQuery()) {
+            while (rs.next()) {
+                SubjectDimension sd = new SubjectDimension();
+                sd.setDimensionID(rs.getInt("dimensionID"));
+                sd.setName(rs.getString("name"));
+                list.add(sd);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+
+    /**
+     * Lấy danh sách câu hỏi đã được lọc và phân trang.
+     * @param courseId ID của khóa học để lọc.
+     * @param dimensionId ID của chiều hướng để lọc.
+     * @param level Cấp độ để lọc.
+     * @param status Trạng thái để lọc ('Active' hoặc 'Inactive').
+     * @param search Từ khóa tìm kiếm trong nội dung câu hỏi.
+     * @param page Trang hiện tại.
+     * @param pageSize Số lượng câu hỏi trên mỗi trang.
+     * @return Danh sách các đối tượng Question thỏa mãn điều kiện.
+     */
+    public List<Question> getFilteredQuestions(int courseId, int dimensionId, int level, String status, String search, int page, int pageSize) {
+        List<Question> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM Question WHERE 1=1 ");
+
+        if (courseId > 0) sql.append("AND courseID = ? ");
+        if (dimensionId > 0) sql.append("AND dimensionID = ? ");
+        if (level > 0) sql.append("AND level = ? ");
+        if (status != null && !status.isEmpty()) sql.append("AND status = ? ");
+        if (search != null && !search.isEmpty()) sql.append("AND content LIKE ? ");
+        
+        sql.append("ORDER BY questionID ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+
+        try (PreparedStatement st = connection.prepareStatement(sql.toString())) {
+            int paramIndex = 1;
+            
+            if (courseId > 0) st.setInt(paramIndex++, courseId);
+            if (dimensionId > 0) st.setInt(paramIndex++, dimensionId);
+            if (level > 0) st.setInt(paramIndex++, level);
+            if (status != null && !status.isEmpty()) st.setString(paramIndex++, status);
+            if (search != null && !search.isEmpty()) st.setString(paramIndex++, "%" + search + "%");
+            
+            st.setInt(paramIndex++, (page - 1) * pageSize);
+            st.setInt(paramIndex++, pageSize);
+
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Question q = new Question();
+                q.setQuestionID(rs.getInt("questionID"));
+                q.setCourseID(rs.getInt("courseID"));
+                q.setDimensionID(rs.getInt("dimensionID"));
+                q.setContent(rs.getString("content"));
+                q.setLevel(rs.getInt("level"));
+                q.setStatus(rs.getString("status"));
+                list.add(q);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+
+    /**
+     * Đếm tổng số câu hỏi thỏa mãn điều kiện lọc để tính toán phân trang.
+     * @param courseId ID của khóa học.
+     * @param dimensionId ID của chiều hướng.
+     * @param level Cấp độ.
+     * @param status Trạng thái.
+     * @param search Từ khóa tìm kiếm.
+     * @return Tổng số câu hỏi.
+     */
+    public int getFilteredQuestionCount(int courseId, int dimensionId, int level, String status, String search) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM Question WHERE 1=1 ");
+        
+        if (courseId > 0) sql.append("AND courseID = ? ");
+        if (dimensionId > 0) sql.append("AND dimensionID = ? ");
+        if (level > 0) sql.append("AND level = ? ");
+        if (status != null && !status.isEmpty()) sql.append("AND status = ? ");
+        if (search != null && !search.isEmpty()) sql.append("AND content LIKE ? ");
+
+        try (PreparedStatement st = connection.prepareStatement(sql.toString())) {
+            int paramIndex = 1;
+            
+            if (courseId > 0) st.setInt(paramIndex++, courseId);
+            if (dimensionId > 0) st.setInt(paramIndex++, dimensionId);
+            if (level > 0) st.setInt(paramIndex++, level);
+            if (status != null && !status.isEmpty()) st.setString(paramIndex++, status);
+            if (search != null && !search.isEmpty()) st.setString(paramIndex++, "%" + search + "%");
+            
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return 0;
+    }
 
     public static void main(String[] args) {
         QuestionDAO qd = new QuestionDAO();
