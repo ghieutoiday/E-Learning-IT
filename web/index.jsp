@@ -301,14 +301,14 @@
                                             <div class="topbar-right">
                                                 <ul>
                                                     <c:if test="${sessionScope.loggedInUser eq null}">
-                                                        <button id="openLoginModal" class="btn btn-primary">Login</button>
+                                                        <button id="openLoginModal">Login</button>
                                                     </c:if>
                                                     <c:if test="${sessionScope.loggedInUser eq null}">
-                                                        <button id="openSignupModal" class="btn btn-success">Sign Up</button>
+                                                        <button id="openSignupModal">Sign Up</button>
                                                     </c:if>
                                                     <c:if test="${sessionScope.loggedInUser ne null}">
                                                         <li><a href="logout" style="color:white">Logout</a></li>
-                                                        </c:if>
+                                                    </c:if>
                                                 </ul>
                                             </div>
                                         </div>

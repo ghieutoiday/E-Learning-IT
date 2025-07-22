@@ -4,6 +4,7 @@
  */
 package dal;
 //Hieu
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -117,22 +118,20 @@ public class RegistrationDAO extends DBContext {
         }
         return list;
     }
-    
+
     //Hàm của thịnh
-    public List<Registration> getRegistrationsByAllFilters(String emailSearch, String courseName, String name, String status, String sortBy, String sortOrder) {
+    public List<Registration> getRegistrationsByAllFilters(String emailSearch, String courseName, String name, String status, String sortBy, String sortOrder, int lastUpdateByUserId) {
         List<Registration> list = new ArrayList<>();
 
         try {
-            StringBuilder sql = new StringBuilder
-                     ("SELECT * FROM Registration r "
+            StringBuilder sql = new StringBuilder("SELECT * FROM Registration r "
                     + "JOIN [User] u ON r.userID = u.userID "
                     + "JOIN Course c ON r.courseID = c.courseID "
                     + "JOIN PricePackage p ON r.pricePackageID = p.pricePackageID "
-                    + "LEFT JOIN [User] lu ON r.lastUpdateBy = lu.userID " // lấy tất cả các bản ghi từ bên trái là registration phù hợp với bản ghi bên phải là user
-                    + "WHERE 1=1 "); // để có thể thêm các điều kiện khác ( AND )
-            // Danh sách các giá trị tham số sẽ truyền vào câu SQL
+                    + "LEFT JOIN [User] lu ON r.lastUpdateBy = lu.userID "
+                    + "WHERE 1=1 ");
             List<Object> params = new ArrayList<>();
-            
+
             // Lọc theo email người dùng nếu có
             if (emailSearch != null && !emailSearch.trim().isEmpty()) {
                 sql.append("AND LOWER(u.email) LIKE ? ");
@@ -154,10 +153,13 @@ public class RegistrationDAO extends DBContext {
                 params.add(status);
             }
 
+            // Bổ sung điều kiện lọc theo lastUpdateByUserId
+            // Điều kiện này sẽ luôn được áp dụng để chỉ lấy các bản ghi do người dùng hiện tại cập nhật cuối cùng
+            sql.append("AND r.lastUpdateBy = ? ");
+            params.add(lastUpdateByUserId);
+
             // Handle sorting
-            // kiểm tra xem có yêu cầu sắp xếp không
             if (sortBy != null && !sortBy.trim().isEmpty()) {
-                //Dựa vào giá trị sortBy, xác định cột thực tế trong SQL cần dùng để sắp xếp
                 String orderColumn;
                 switch (sortBy) {
                     case "registrationID":
@@ -194,12 +196,12 @@ public class RegistrationDAO extends DBContext {
                         orderColumn = "r.registrationID";
                 }
 
-                sql.append(" ORDER BY ").append(orderColumn).append(" ")  //  sắp xếp kết quả truy vấn theo yêu cầu của người dùng
+                sql.append(" ORDER BY ").append(orderColumn).append(" ")
                         .append("desc".equalsIgnoreCase(sortOrder) ? "DESC" : "ASC");
             }
-            // chuyển đối tượng StringBuilder thành chuỗi hoàn chỉnh.
+
             PreparedStatement ps = connection.prepareStatement(sql.toString());
-            //gán từng giá trị trong danh sách params vào các dấu ? trong câu SQL tương ứng.
+
             for (int i = 0; i < params.size(); i++) {
                 ps.setObject(i + 1, params.get(i));
             }
@@ -208,7 +210,7 @@ public class RegistrationDAO extends DBContext {
 
             while (rs.next()) {
                 int registrationID = rs.getInt("registrationID");
-                Registration registration = getRegistrationByRegistrationID(registrationID); //  lấy chi tiết thông tin Registration dựa vào registrationID từ hàm getRegistrationByRegistrationID() .
+                Registration registration = getRegistrationByRegistrationID(registrationID);
                 list.add(registration);
             }
 
@@ -218,8 +220,6 @@ public class RegistrationDAO extends DBContext {
 
         return list;
     }
-    
-    
 
     //Lọc và lấy Registration theo courseCategoryID
     public List<Registration> getAllRegistrationByCourseCategory(int courseCategoryID) {
@@ -327,7 +327,7 @@ public class RegistrationDAO extends DBContext {
         }
         return list;
     }
-    
+
     //Lấy ra những registration của user mà có status = paid
     public List<Registration> getAllRegistrationOfUserHavePaidStatus(int userID) {
         List<Registration> list = new ArrayList();
@@ -351,7 +351,7 @@ public class RegistrationDAO extends DBContext {
         }
         return list;
     }
-    
+
     // hàm update registration
     public boolean updateRegistration(Registration registration) {
         String sql = "UPDATE Registration SET "
@@ -379,9 +379,9 @@ public class RegistrationDAO extends DBContext {
     }
 
     //Thêm mới registration 
-    public int addRegistration(Registration reg) {
+    public int addRegistration(Registration reg, int user) {
         String sql = "INSERT INTO Registration (userID, courseID, pricePackageID, validFrom, validTo, status, totalCost, lastUpdateBy, note) "
-                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int generatedId = -1;
         try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -397,7 +397,7 @@ public class RegistrationDAO extends DBContext {
             ps.setString(6, reg.getStatus());
             ps.setDouble(7, reg.getTotalCost());
             // saler
-            ps.setInt(8, 24);
+            ps.setInt(8, user);
             ps.setString(9, reg.getNote());
             int affectedRows = ps.executeUpdate();
             if (affectedRows > 0) {
@@ -428,7 +428,7 @@ public class RegistrationDAO extends DBContext {
         }
         return false;
     }
-    
+
     public boolean save(Registration registration) {
         String sql = "INSERT INTO Registration (userID, courseID, pricePackageID, totalCost, status, registrationTime) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -476,7 +476,7 @@ public class RegistrationDAO extends DBContext {
         }
         return false;
     }
-    
+
     //Lấy đơn đăng kí của user cho 1 course
     public Registration getRegistrationByUserAndCourse(int userId, int courseId) {
         String sql = "SELECT * FROM Registration WHERE userID = ? AND courseID = ? AND status != 'Cancelled'";
@@ -505,7 +505,7 @@ public class RegistrationDAO extends DBContext {
             ps.setInt(1, newPricePackageId);
             ps.setDouble(2, newTotalCost);
             ps.setInt(3, registrationId);
-            
+
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             System.out.println("Lỗi trong updateRegistrationPackage: " + e.getMessage());

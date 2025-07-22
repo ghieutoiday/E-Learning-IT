@@ -56,6 +56,15 @@ public class CourseController extends HttpServlet {
         String service = request.getParameter("service");
         String courseIdParam = request.getParameter("id");
         String pageSubjectList = request.getParameter("pageSubjectList");
+        
+        User currentUser = (User) session.getAttribute("loggedInUser"); 
+
+        // Kiểm tra xem currentUser có phải là Expert không
+        if (currentUser == null || currentUser.getRole().getRoleID() != 4) { 
+            request.setAttribute("errorMessage", "Bạn không có quyền thực hiện hành động này.");
+            response.sendRedirect("home"); 
+            return;
+        }
 
         if (action == null) {
             action = "view";
@@ -318,8 +327,7 @@ public class CourseController extends HttpServlet {
         String action = request.getParameter("action");
         
         if ("create".equals(action)) {
-            
-
+           
             try {
                 // Lấy dữ liệu từ form gửi lên
                 String courseName = request.getParameter("courseName");

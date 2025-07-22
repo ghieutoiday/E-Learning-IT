@@ -307,9 +307,9 @@ public class CourseDAO extends DBContext {
 
         try {
             //  lọc ra các bản ghi Course với tên name duy nhất (không trùng nhau).
-            // Mỗi name chỉ lấy 1 bản ghi đại diện (bản ghi có pricePackageID nhỏ nhất).
+            // Mỗi name chỉ lấy 1 bản ghi đại diện (bản ghi có CourseID nhỏ nhất).
             String sql = "SELECT * FROM Course WHERE courseID IN ( "
-                    + "SELECT MIN(courseID) FROM Course GROUP BY courseName )";
+                       + "SELECT MIN(courseID) FROM Course GROUP BY courseName )";
 
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();

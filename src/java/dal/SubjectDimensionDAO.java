@@ -212,7 +212,7 @@ public class SubjectDimensionDAO extends DBContext {
             //  lọc ra các bản ghi SubjectDimension với tên name duy nhất (không trùng nhau).
             // Mỗi name chỉ lấy 1 bản ghi đại diện (bản ghi có dimensionID nhỏ nhất).
             String sql = "SELECT * FROM SubjectDimension WHERE [dimensionID] IN ( "
-                    + "SELECT MIN(dimensionID) FROM SubjectDimension GROUP BY name )";
+                       + "SELECT MIN(dimensionID) FROM SubjectDimension GROUP BY name )";
 
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
