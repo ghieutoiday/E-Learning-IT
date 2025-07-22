@@ -8,7 +8,7 @@
 
         <!-- META ============================================= -->
         <meta charset="utf-8">
-        <meta http-equiv="X-UA- Compatible" content="IE=edge">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="keywords" content="" />
         <meta name="author" content="" />
         <meta name="robots" content="" />
@@ -23,11 +23,11 @@
         <meta name="format-detection" content="telephone=no">
 
         <!-- FAVICONS ICON ============================================= -->
-        <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png" />
+        <link rel="icon" href="assets/images/favicon3.png" type="image/x-icon" />
+        <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon3.png" />
 
         <!-- PAGE TITLE HERE ============================================= -->
-        <title>EduChamp : Education HTML Template </title>
+        <title>E-Learning IT : Education HTML Template </title>
 
         <!-- MOBILE SPECIFIC ============================================= -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -301,14 +301,14 @@
                                             <div class="topbar-right">
                                                 <ul>
                                                     <c:if test="${sessionScope.loggedInUser eq null}">
-                                                        <button id="openLoginModal">Login</button>
+                                                        <button id="openLoginModal" class="btn btn-primary">Login</button>
                                                     </c:if>
                                                     <c:if test="${sessionScope.loggedInUser eq null}">
-                                                        <button id="openSignupModal">Sign Up</button>
+                                                        <button id="openSignupModal" class="btn btn-success">Sign Up</button>
                                                     </c:if>
                                                     <c:if test="${sessionScope.loggedInUser ne null}">
                                                         <li><a href="logout" style="color:white">Logout</a></li>
-                                                    </c:if>
+                                                        </c:if>
                                                 </ul>
                                             </div>
                                         </div>
@@ -334,28 +334,25 @@
                                             <li><a href="javascript:;" class="btn-link" style="color:white"><i
                                                         class="fa fa-google-plus"></i></a></li>
                                             <li></li>
+                                            <li  style="color:white">||</li>
+                                            <!-- Search Button ==== -->
 
-                                            <c:if test="${sessionScope.loggedInUser ne null}">
-                                                <li  style="color:white">||</li>
 
-                                                <!--My Course / My Registration-->
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                <li><a href="mycoursecontroller" class="btn-link customer-course"
-                                                       style="color:white">
-                                                        <p>My Courses</p>
-                                                    </a>
-                                                </li>
-                                                &nbsp;&nbsp;&nbsp;
-                                                <li><a href="registrationcontroller"
-                                                       class="btn-link customer-registration" style="color:white">
-                                                        <p>My Registrations</p>
-                                                    </a>
-                                                </li>
-                                            </c:if>
-
+                                            <!--My Course / My Registration-->
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <li><a href="mycoursecontroller" class="btn-link customer-course"
+                                                   style="color:white">
+                                                    <p>My Courses</p>
+                                                </a></li>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <li><a href="registrationcontroller"
+                                                   class="btn-link customer-registration" style="color:white">
+                                                    <p>My Registrations</p>
+                                                </a></li>
                                         </ul>
                                     </div>
                                 </div>
+                                <!-- Search Box ==== -->
 
                                 <!-- Navigation Menu ==== -->
                                 <div class="menu-links navbar-collapse collapse justify-content-start"
@@ -395,13 +392,9 @@
                                                         <li><a href="faq-2.jsp">FAQ's 2</a></li>
                                                     </ul>
                                                 </li>
-                                                <li><a href="javascript:;">Contact Us<i
-                                                            class="fa fa-angle-right"></i></a>
-                                                    <ul class="sub-menu">
-                                                        <li><a href="contact-1.jsp">Contact Us 1</a></li>
-                                                        <li><a href="contact-2.jsp">Contact Us 2</a></li>
-                                                        <li><a href="lessonviewcontroller">Lesson View</a></li>
-                                                    </ul>
+                                                <li><a href="contact-1.jsp">Contact Us<i
+                                                            ></i></a>
+
                                                 </li>
                                                 <li><a href="portfolio.jsp">Portfolio</a></li>
                                                 <li><a href="profile.jsp">Profile</a></li>
@@ -417,67 +410,33 @@
                                                     <h5 class="menu-adv-title">Our Courses</h5>
                                                     <ul>
                                                         <li><a href="courseslist?pageforward=courselist">Courses </a></li>
-                                                        <li><a href="courseslist?pageforward=coursedetail">Courses Details</a>
-                                                        </li>
-                                                        <li><a href="profile.jsp">Instructor Profile</a></li>
-                                                        <li><a href="event.jsp">Upcoming Event</a></li>
-                                                        <li><a href="membership.jsp">Membership</a></li>
-                                                    </ul>
+
                                                 </li>
-                                                <li class="add-menu-right">
-                                                    <img src="assets/images/adv/adv.jpg" alt="" />
-                                                </li>
+                                                <li><a href="profile.jsp">Instructor Profile</a></li>
+                                                <li><a href="event.jsp">Upcoming Event</a></li>
+                                                <li><a href="membership.jsp">Membership</a></li>
                                             </ul>
                                         </li>
-                                        <li><a href="javascript:;" style="color:white;">Blog <i
-                                                    class="fa fa-chevron-down"></i></a>
-                                            <ul class="sub-menu">
-                                                <li><a href="blog-classic-grid.jsp">Blog Classic</a></li>
-                                                <li><a href="blog-classic-sidebar.jsp">Blog Classic Sidebar</a>
-                                                </li>
-                                                <li><a href="blogcontroller?pageforward=bloglist">Blog List
-                                                        Sidebar</a></li>
-                                                <li><a href="blog-standard-sidebar.jsp">Blog Standard
-                                                        Sidebar</a>
-                                                </li>
-                                                <li><a href="blogcontroller?pageforward=blogdetail">Blog
-                                                        Details</a>
-                                                </li>
-                                            </ul>
+                                        <li class="add-menu-right">
+                                            <img src="assets/images/adv/adv.jpg" alt="" />
                                         </li>
-                                        <li class="nav-dashboard"><a href="javascript:;"
-                                                                     style="color:white;">Dashboard <i
-                                                    class="fa fa-chevron-down"></i></a>
-                                            <ul class="sub-menu">
-                                                <li><a href="admin/bookmark.jsp">Bookmark</a></li>
-                                                <li><a href="admin/review.jsp">Review</a></li>
-                                                <li><a href="admin/teacher-profile.jsp">Teacher Profile</a></li>
-                                                <li><a href="admin/user-profile.jsp">User Profile</a></li>
-                                                <li><a href="coursecontroller">Subject List</a></li>
-                                                <li><a href="registrationsalercontroller">Registration List</a></li>
-                                                <li><a href="change-password.jsp">Change Password</a></li>
-                                                <li><a href="userController">Users List</a></li>
-                                                <li><a href="settingController">Settings List</a></li>
-                                                <li><a href="javascript:;">Calendar<i
-                                                            class="fa fa-angle-right"></i></a>
-                                                    <ul class="sub-menu">
-                                                        <li><a href="admin/basic-calendar.jsp">Basic
-                                                                Calendar</a>
-                                                        </li>
-                                                        <li><a href="admin/list-view-calendar.jsp">List View
-                                                                Calendar</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li><a href="javascript:;" style="color:white;">Mailbox<i
-                                                            class="fa fa-angle-right"></i></a>
-                                                    <ul class="sub-menu">
-                                                        <li><a href="admin/mailbox.jsp">Mailbox</a></li>
-                                                        <li><a href="admin/mailbox-compose.jsp">Compose</a></li>
-                                                        <li><a href="admin/mailbox-read.jsp">Mail Read</a></li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </li>
+                                    </ul>
+                                    </li>
+                                    <li><a href="javascript:;" style="color:white;">Blog <i
+                                                class="fa fa-chevron-down"></i></a>
+                                        <ul class="sub-menu">
+                                            <li><a href="blog-classic-grid.jsp">Blog Classic</a></li>
+                                            <li><a href="blog-classic-sidebar.jsp">Blog Classic Sidebar</a>
+                                            </li>
+                                            <li><a href="blogcontroller?pageforward=bloglist">Blog List
+                                                    Sidebar</a></li>
+                                            <li><a href="blog-standard-sidebar.jsp">Blog Standard
+                                                    Sidebar</a>
+                                            </li>
+
+                                        </ul>
+                                    </li>
+
                                     </ul>
 
 
@@ -586,7 +545,7 @@
                                                         <a href="courseslist?courseId=${i.courseID}&pageforward=coursedetail" class="btn">Read More</a>
                                                     </div>
                                                     <div class="info-bx text-center">
-                                                        <h5><a href="course/${i.courseID}">${i.courseName}</a>
+                                                        <h5><a href="courseslist?courseId=${i.courseID}&pageforward=coursedetail">${i.courseName}</a>
                                                         </h5>
                                                         <span>${i.courseCategory}</span>
                                                     </div>
