@@ -64,6 +64,11 @@ public class LessonViewController extends HttpServlet {
             System.out.println(e.getMessage());
         }
         
+        String form = request.getParameter("form");
+        if (form != null && "form".equals(form)) {
+            request.setAttribute("form", "form");
+        }
+        
         //Lấy 2 tham số này để hiển thị trên tranh tiến độ
         int completedLessons = LessonDAO.getInstance().getTotalNumberOfCompletedLessonInCourse(userID, courseID);
         int totalLessons = LessonDAO.getInstance().getAllSubLessonsByCourseIDOrdered(courseID).size();
