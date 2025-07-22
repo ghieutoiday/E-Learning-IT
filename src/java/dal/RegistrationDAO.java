@@ -429,6 +429,20 @@ public class RegistrationDAO extends DBContext {
         return false;
     }
     
+    public boolean cancelRegistration(int registrationID) {
+        String sql = "UPDATE Registration SET status = 'Cancelled' WHERE registrationID = ?";
+        try (
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, registrationID);
+
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
     public boolean save(Registration registration) {
         String sql = "INSERT INTO Registration (userID, courseID, pricePackageID, totalCost, status, registrationTime) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -513,6 +527,8 @@ public class RegistrationDAO extends DBContext {
             return false;
         }
     }
+    
+    
 
     public static void main(String[] args) {
         RegistrationDAO d = new RegistrationDAO();

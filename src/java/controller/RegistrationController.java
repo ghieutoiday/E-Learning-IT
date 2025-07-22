@@ -105,6 +105,18 @@ public class RegistrationController extends HttpServlet {
             List<Course> listAllRegistrationByCourseOfUserAfterSearch = courseDAO.getAllCoureByCourseName(searchCourseName);
             List<Registration> listRegistrationByListCourseOfUser = RegistrationDAO.getInstance().getAllRegistrationByListCourseOfUser(userID, listAllRegistrationByCourseOfUserAfterSearch);
             request.setAttribute("listRegistration", listRegistrationByListCourseOfUser);
+        } else if (action != null && action.equals("cancel")) {
+            //Lấy searchCourseName từ thẻ form bên my-registration.jsp
+            String regisID_raw = request.getParameter("regisID");
+            int regisID = -1;
+            try {
+                regisID = Integer.parseInt(regisID_raw);
+            } catch (NumberFormatException e) {
+                System.out.println(e.getMessage());
+            }
+            RegistrationDAO.getInstance().cancelRegistration(regisID);
+            List<Registration> listRegistrationOfUser = RegistrationDAO.getInstance().getAllRegistrationOfUserByUserID(userID);
+            request.setAttribute("listRegistration", listRegistrationOfUser);
         } else {
             List<Registration> listRegistrationOfUser = RegistrationDAO.getInstance().getAllRegistrationOfUserByUserID(userID);
             request.setAttribute("listRegistration", listRegistrationOfUser);

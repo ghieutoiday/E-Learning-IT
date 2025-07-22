@@ -416,8 +416,8 @@
                                                                             <a href="lessonviewcontroller?courseID=${reg.course.courseID}" class="btn btn-info btn-sm">View</a>
                                                                         </c:if>
                                                                         <c:if test="${reg.status == 'Submitted'}">
-                                                                            <a href="#" class="btn btn-warning btn-sm">Edit</a>
-                                                                            <a href="#" class="btn btn-danger btn-sm">Cancel</a>
+                                                                            <a href="showRegistration?courseID=${reg.course.courseID}" class="btn btn-warning btn-sm">Edit</a>
+                                                                            <a href="registrationcontroller?regisID=${reg.registrationID}&action=cancel" class="btn btn-danger btn-sm">Cancel</a>
                                                                         </c:if>
 
                                                                     </td>
