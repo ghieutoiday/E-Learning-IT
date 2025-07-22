@@ -1,7 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     // Lấy user từ session
-    Object userObj = session.getAttribute("user");
+    Object userObj = session.getAttribute("loggedInUser");
     if (userObj != null) {
         model.User user = (model.User) userObj;
         int roleId = user.getRole().getRoleID();

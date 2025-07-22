@@ -462,7 +462,15 @@ public class CourseController extends HttpServlet {
         CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
 
         String action = request.getParameter("action");
+        
+        User currentUser = (User) session.getAttribute("loggedInUser"); 
 
+        // Kiểm tra xem currentUser có phải là Expert không
+        if (currentUser == null || currentUser.getRole().getRoleID() != 4) { 
+            request.setAttribute("errorMessage", "Bạn không có quyền thực hiện hành động này.");
+            response.sendRedirect("home"); 
+            return;
+        }
         if ("create".equals(action)) {
 
             try {
@@ -470,7 +478,6 @@ public class CourseController extends HttpServlet {
                 String courseName = request.getParameter("courseName");
                 String courseCategoryId = request.getParameter("courseCategory");
                 String description = request.getParameter("description");
-                String status = request.getParameter("status");
                 String ownerId = request.getParameter("owner");
                 String featureCourse = request.getParameter("feature");
                 int feature = (featureCourse != null) ? 1 : 0;
@@ -478,7 +485,7 @@ public class CourseController extends HttpServlet {
                 Course course = new Course();
                 course.setCourseName(courseName);
                 course.setDescription(description);
-                course.setStatus(status);
+                course.setStatus("Inactive");
                 course.setFeature(feature);
 
                 CourseCategory category = new CourseCategoryDAO().getCategoryById(Integer.parseInt(courseCategoryId));
