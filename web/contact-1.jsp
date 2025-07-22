@@ -65,17 +65,6 @@
                             <div class="topbar-right">
                                 <ul>
 
-                                    <li>
-                                    <c:if test="${sessionScope.loggedInUser eq null}">
-                                        <a><button id="openLoginModal" ">Login</button></a>
-                                    </c:if>
-                                    <c:if test="${sessionScope.loggedInUser eq null}">
-                                        <button id="openSignupModal" >Sign Up</button>
-                                    </c:if>
-                                    <c:if test="${sessionScope.loggedInUser ne null}">
-                                        <a href="logout">Logout</a>
-                                    </c:if>
-                                    </li>
                                 </ul>
                             </div>
                         </div>

@@ -204,10 +204,16 @@
                         <li>Dashboard</li>
                     </ul>
                 </div>	
-                <form method="get" action="dashboard" style="display: flex; gap: 24px; align-items: center; margin-bottom: 24px;">
+                <c:if test="${not empty error}">
+                    <div style="color: red; font-weight: bold; margin-bottom: 12px;">
+                        ${error}
+                    </div>
+                </c:if>
+                <form method="get" action="dashboard" style="display: flex; gap: 24px; align-items: center; margin-bottom: 24px;" onsubmit="return validateDates()">
                     <label style="color: black;font-size: 18px; font-weight: normal;">Start Date: <input type="date" name="startDate" value="${startDate}"></label>
                     <label style="color: black;font-size: 18px; font-weight: normal;">End Date: <input type="date" name="endDate" value="${endDate}"></label>
                     <button type="submit" class="btn btn-warning search" style="padding: 6px 10px;margin-bottom: 11px;">Change</button>
+
                 </form>
                 <!-- Card -->
                 <div class="row">
@@ -336,28 +342,28 @@
 
         <!--Script để khởi tạo mảng dữ liệu biểu đồ từ dashboardStats-->
         <script>
-            // Mảng nhãn (trục x) từ dashboardStats.orderLabels
-            var orderTrendLabels = [
+                    // Mảng nhãn (trục x) từ dashboardStats.orderLabels
+                    var orderTrendLabels = [
             <c:forEach var="label" items="${dashboardStats.orderLabels}" varStatus="status">
-            '${label}'<c:if test="${!status.last}">,</c:if>
+                    '${label}'<c:if test="${!status.last}">,</c:if>
             </c:forEach>
-            ];
-            // Mảng số lượng đơn hàng từ dashboardStats.orderCounts
-            var orderTrendAll = [
+                    ];
+                    // Mảng số lượng đơn hàng từ dashboardStats.orderCounts
+                    var orderTrendAll = [
             <c:forEach var="count" items="${dashboardStats.orderCounts}" varStatus="status">
                 ${count}<c:if test="${!status.last}">,</c:if>
             </c:forEach>
-            ];
-            // Mảng số lượng đơn hàng thành công từ dashboardStats.successfulOrderCounts
-            var orderTrendPaid = [
+                    ];
+                    // Mảng số lượng đơn hàng thành công từ dashboardStats.successfulOrderCounts
+                    var orderTrendPaid = [
             <c:forEach var="count" items="${dashboardStats.successfulOrderCounts}" varStatus="status">
                 ${count}<c:if test="${!status.last}">,</c:if>
             </c:forEach>
-            ];
-            // Ghi log các mảng dữ liệu ra console để debug
-            console.log('orderTrendLabels:', orderTrendLabels);
-            console.log('orderTrendAll:', orderTrendAll);
-            console.log('orderTrendPaid:', orderTrendPaid);
+                    ];
+                    // Ghi log các mảng dữ liệu ra console để debug
+                    console.log('orderTrendLabels:', orderTrendLabels);
+                    console.log('orderTrendAll:', orderTrendAll);
+                    console.log('orderTrendPaid:', orderTrendPaid);
         </script>
         <!<!-- Script để vẽ biểu đồ sử dụng Chart.js -->
         <script>
@@ -407,6 +413,17 @@
                     }
                 });
             });
+        </script>   
+        <script>
+            function validateDates() {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                if (startDate && endDate && startDate > endDate) {
+                    alert("Start Date cannot be after End Date.");
+                    return false;
+                }
+                return true;
+            }
         </script>
 
     </body>
