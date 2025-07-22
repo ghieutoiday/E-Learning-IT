@@ -16,6 +16,14 @@ public class AnswerOption {
         this.isCorrect = isCorrect;
     }
 
+    public AnswerOption(int answerOptionID, int questionID, String content, boolean isCorrect) {
+        this.answerOptionID = answerOptionID;
+        this.questionID = questionID;
+        this.content = content;
+        this.isCorrect = isCorrect;
+    }
+    
+    
     // Getters and setters
     public int getAnswerOptionID() {
         return answerOptionID;
