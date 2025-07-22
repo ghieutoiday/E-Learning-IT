@@ -1,7 +1,15 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
+<%@ page import="model.User" %>
+<%@ page import="model.Role" %>
+<%
+    User user = (User) session.getAttribute("loggedInUser");
+    if (user == null || user.getRole() == null || user.getRole().getRoleID() != 2) {
+        response.sendRedirect(request.getContextPath() + "/home");
+        return;
+    }
+%>
 
 <!DOCTYPE html>
 <html>
@@ -75,7 +83,7 @@
                 <!--logo start -->
                 <div class="ttr-logo-box">
                     <div>
-                        <a href="dashboard" class="ttr-logo">
+                        <a href="home" class="ttr-logo">
                             <img class="ttr-logo-mobile" alt="" src="assets/images/logo-mobile.png" width="30" height="30">
                             <img class="ttr-logo-desktop" alt="" src="assets/images/logowhite1.png" width="125" height="25">
                         </a>
@@ -86,7 +94,7 @@
                     <!-- header left menu start -->
                     <ul class="ttr-header-navigation">
                         <li>
-                            <a href="dashboard" class="ttr-material-button ttr-submenu-toggle">HOME</a>
+                            <a href="home" class="ttr-material-button ttr-submenu-toggle">HOME</a>
                         </li>
 
                     </ul>
@@ -99,6 +107,7 @@
                             <a href="#" class="ttr-material-button ttr-submenu-toggle"><span class="ttr-user-avatar"><img alt="" src="${user.avatar}" width="32" height="32"></span></a>
                             <div class="ttr-header-submenu">
                                 <ul>
+                                    <li><a href="viewUser?id=${user.userID}">My profile</a></li>
                                     <li><a href="logout">Logout</a></li>
                                 </ul>
                             </div>
@@ -114,7 +123,7 @@
             <div class="ttr-sidebar-wrapper content-scroll">
                 <!-- side menu logo start -->
                 <div class="ttr-sidebar-logo">
-                    <a href="dashboard"><img alt="" src="assets/images/logoblack1.png" width="100" height="20" style="margin-left: -12px;"></a>
+                    <a href="home"><img alt="" src="assets/images/logoblack1.png" width="100" height="20" style="margin-left: -12px;"></a>
                     <!-- <div class="ttr-sidebar-pin-button" title="Pin/Unpin Menu">
                             <i class="material-icons ttr-fixed-icon">gps_fixed</i>
                             <i class="material-icons ttr-not-fixed-icon">gps_not_fixed</i>
@@ -149,10 +158,19 @@
                         </li>
                         <br/>
                         <li>
-                            <a href="logout" class="ttr-material-button">
+                            <a href="#" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-user"></i></span>
-                                <span class="ttr-label">Logout</span>
+                                <span class="ttr-label">My Profile</span>
+                                <span class="ttr-arrow-icon"><i class="fa fa-angle-down"></i></span>
                             </a>
+                            <ul>
+                                <li>
+                                    <a href="viewUser?id=${user.userID}" class="ttr-material-button"><span class="ttr-label">User Profile</span></a>
+                                </li>
+                                <li>
+                                    <a href="logout" class="ttr-material-button"><span class="ttr-label">Logout</span></a>
+                                </li>
+                            </ul>
                         </li>
                         <li class="ttr-seperate"></li>
                     </ul>
@@ -162,6 +180,7 @@
             </div>
         </div>
         <!-- Left sidebar menu end -->
+
         <main class="ttr-wrapper">
             <div class="container-fluid">
                 <div class="row">
