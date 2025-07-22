@@ -264,7 +264,7 @@ public class PostController extends HttpServlet {
                     String editStatus = request.getParameter("status");
                     boolean editFeature = request.getParameter("feature") != null;
 
-                    // Check for duplicate title (excluding current post)
+                    // Kiểm tra tiêu đề trùng lặp (ngoại trừ bài đăng hiện tại)
                     Post existingPost = postDAO.getPostByID(editPostId);
                     if (existingPost == null) {
                         request.setAttribute("error", "Post not found!");
@@ -276,7 +276,7 @@ public class PostController extends HttpServlet {
                         request.setAttribute("error", "A post with this title already exists!");
                         request.setAttribute("categories", postCategoryDAO.getAllPostCategories());
                         request.setAttribute("post", existingPost);
-                        // Preserve form data
+                        // Giữ lại dữ liệu form
                         request.setAttribute("oldTitle", editTitle);
                         request.setAttribute("oldBriefInfo", editBriefInfo);
                         request.setAttribute("oldDescription", editDescription);
@@ -288,16 +288,16 @@ public class PostController extends HttpServlet {
                         return;
                     }
 
-                    // Handle file upload if a new file is provided
+                    // Xử lý tải lên tệp nếu có tệp mới được cung cấp
                     Part editFilePart = request.getPart("thumbnail");
                     String editFileName = editFilePart.getSubmittedFileName();
-                    String editNewFileName = existingPost.getThumbnail(); // Keep existing thumbnail by default
+                    String editNewFileName = existingPost.getThumbnail(); // Giữ thumbnail hiện tại theo mặc định
 
                     if (editFileName != null && !editFileName.isEmpty()) {
                         String editFileExtension = editFileName.substring(editFileName.lastIndexOf("."));
                         editNewFileName = System.currentTimeMillis() + editFileExtension;
 
-                        // Get the web root directory path
+                        // Lấy đường dẫn thư mục gốc của web
                         String editWebRootPath = request.getServletContext().getRealPath("/");
                         String editProjectRootPath = editWebRootPath.substring(0, editWebRootPath.indexOf("build"));
                         String editUploadPath = editProjectRootPath + "web" + File.separator + "assets" + File.separator + "images" + File.separator + "post" + File.separator;
@@ -307,7 +307,7 @@ public class PostController extends HttpServlet {
                             editUploadDir.mkdirs();
                         }
 
-                        // Save file
+                        // Lưu tệp
                         String editFilePath = editUploadPath + editNewFileName;
                         editFilePart.write(editFilePath);
                     }

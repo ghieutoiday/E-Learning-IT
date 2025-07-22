@@ -68,7 +68,7 @@ public class SliderController extends HttpServlet {
                     // Column visibility parameters
                     boolean hideID = "true".equals(request.getParameter("hideID"));
                     boolean hideImage = "true".equals(request.getParameter("hideImage"));
-                    boolean hideTitle = "true".equals(request.getParameter("hideTitle"));
+                    //boolean hideTitle = "true".equals(request.getParameter("hideTitle"));
                     boolean hideBacklink = "true".equals(request.getParameter("hideBacklink"));
                     boolean hideStatus = "true".equals(request.getParameter("hideStatus"));
 
@@ -85,7 +85,7 @@ public class SliderController extends HttpServlet {
 
                     request.setAttribute("hideID", hideID);
                     request.setAttribute("hideImage", hideImage);
-                    request.setAttribute("hideTitle", hideTitle);
+                    //request.setAttribute("hideTitle", hideTitle);
                     request.setAttribute("hideBacklink", hideBacklink);
                     request.setAttribute("hideStatus", hideStatus);
                     request.setAttribute("user", user);
