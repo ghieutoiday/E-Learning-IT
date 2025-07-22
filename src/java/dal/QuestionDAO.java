@@ -88,6 +88,23 @@ public class QuestionDAO extends DBContext {
         }
         return questionID;
     }
+    
+    public List<Course> getAllCourses() {
+        List<Course> list = new ArrayList<>();
+        String sql = "SELECT courseID, courseName FROM Course";
+        try (PreparedStatement st = connection.prepareStatement(sql);
+             ResultSet rs = st.executeQuery()) {
+            while (rs.next()) {
+                Course c = new Course();
+                c.setCourseID(rs.getInt("courseID"));
+                c.setCourseName(rs.getString("courseName"));
+                list.add(c);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
 
     /**
      * Xác thực xem các khóa ngoại đã cung cấp (courseID, dimensionID, typeQuestionID) có tồn tại
