@@ -633,7 +633,6 @@
                                         <div class="d-flex align-items-center">
                                             <span>Choose column to hide: </span>
                                             <label style="margin-left: 15px;margin-top: 13px;font-weight: normal"><input type="checkbox" name="hideID" value="true" ${param.hideID == 'true' ? 'checked' : ''}> ID</label>
-                                            <label style="margin-left: 15px;margin-top: 13px;font-weight: normal"><input type="checkbox" name="hideName" value="true" ${param.hideName == 'true' ? 'checked' : ''}> Name</label>
                                             <label style="margin-left: 15px;margin-top: 13px;font-weight: normal"><input type="checkbox" name="hideSubject" value="true" ${param.hideSubject == 'true' ? 'checked' : ''}> Subject</label>
                                             <label style="margin-left: 15px;margin-top: 13px;font-weight: normal"><input type="checkbox" name="hideLevel" value="true" ${param.hideLevel == 'true' ? 'checked' : ''}> Level</label>
                                             <label style="margin-left: 15px;margin-top: 13px;font-weight: normal"><input type="checkbox" name="hideNOQ" value="true" ${param.hideNOQ == 'true' ? 'checked' : ''}> Number of Question</label>
@@ -655,7 +654,7 @@
                                         <thead>
                                             <tr>
                                                 <c:if test="${param.hideID != 'true'}"><th>ID</th></c:if>
-                                                <c:if test="${param.hideName != 'true'}"><th>Name</th></c:if>
+                                                    <th>Quiz Name</th>
                                                 <c:if test="${param.hideSubject != 'true'}"><th>Subject</th></c:if>
                                                 <c:if test="${param.hideLevel != 'true'}"><th>Level</th></c:if>
                                                 <c:if test="${param.hideNOQ != 'true'}"><th>Number of Question</th></c:if>
@@ -669,7 +668,7 @@
                                             <c:forEach var="a" items="${listAllQuiz}" varStatus="loop">
                                                 <tr>
                                                     <c:if test="${param.hideID != 'true'}"><td>${a.quizID}</td></c:if>
-                                                    <c:if test="${param.hideName != 'true'}"><td>${a.name}</td></c:if>
+                                                        <td>${a.name}</td>
                                                     <c:if test="${param.hideSubject != 'true'}"><td>${a.course.courseName}</td></c:if>
                                                     <c:if test="${param.hideLevel != 'true'}"><td>${a.level}</td></c:if>
                                                     <c:if test="${param.hideNOQ != 'true'}"><td>${a.numberQuestions}</td></c:if>
@@ -695,7 +694,6 @@
                                         <c:if test="${not empty param.quiztype}"><c:set var="baseQuery" value="${baseQuery}&quiztype=${param.quiztype}" /></c:if>
                                         <c:if test="${not empty param.rowsPerPage}"><c:set var="baseQuery" value="${baseQuery}&rowsPerPage=${param.rowsPerPage}" /></c:if>
                                         <c:if test="${param.hideID == 'true'}"><c:set var="baseQuery" value="${baseQuery}&hideID=true" /></c:if>
-                                        <c:if test="${param.hideName == 'true'}"><c:set var="baseQuery" value="${baseQuery}&hideName=true" /></c:if>
                                         <c:if test="${param.hideSubject == 'true'}"><c:set var="baseQuery" value="${baseQuery}&hideSubject=true" /></c:if>
                                         <c:if test="${param.hideLevel == 'true'}"><c:set var="baseQuery" value="${baseQuery}&hideLevel=true" /></c:if>
                                         <c:if test="${param.hideNOQ == 'true'}"><c:set var="baseQuery" value="${baseQuery}&hideNOQ=true" /></c:if>
