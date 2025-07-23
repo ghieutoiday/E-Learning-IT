@@ -13,9 +13,9 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                min-height: 100vh; 
-                padding: 20px 0; 
-                line-height: 1.6; 
+                min-height: 100vh;
+                padding: 20px 0;
+                line-height: 1.6;
                 color: #333;
             }
             .container {
@@ -23,11 +23,11 @@
                 padding: 30px;
                 border-radius: 8px;
                 box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-                width: 80%; 
-                max-width: 700px; 
+                width: 80%;
+                max-width: 700px;
                 display: flex;
-                flex-direction: column; 
-                align-items: center; 
+                flex-direction: column;
+                align-items: center;
             }
             h1 {
                 color: #333;
@@ -39,41 +39,41 @@
             .user-info-section {
                 display: flex;
                 width: 100%;
-                gap: 30px; 
-                margin-top: 20px; 
-                flex-wrap: wrap; 
+                gap: 30px;
+                margin-top: 20px;
+                flex-wrap: wrap;
                 /* THAY ĐỔI: Căn các item lên trên nếu chúng không cao bằng nhau */
-                align-items: flex-start; 
-                justify-content: center; 
+                align-items: flex-start;
+                justify-content: center;
             }
             .avatar-section { /* THÊM MỚI: Wrapper cho avatar và tên */
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 flex: 0 0 150px; /* Giữ kích thước cho phần avatar */
-                 margin-bottom: 15px; /* Khoảng cách nếu details-box xuống dòng trên mobile */
+                margin-bottom: 15px; /* Khoảng cách nếu details-box xuống dòng trên mobile */
             }
             .avatar-container {
                 /* flex: 0 0 150px; */ /* Chuyển flex-basis ra avatar-section */
                 width: 150px; /* Kích thước cố định */
                 height: 150px;
-                border-radius: 50%; 
-                overflow: hidden; 
-                background-color: #e9ecef; 
+                border-radius: 50%;
+                overflow: hidden;
+                background-color: #e9ecef;
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                border: 2px solid #dee2e6; 
+                border: 2px solid #dee2e6;
                 margin-bottom: 10px; /* Khoảng cách giữa avatar và tên */
             }
             .avatar-container img {
                 width: 100%;
                 height: 100%;
-                object-fit: cover; 
+                object-fit: cover;
             }
             .avatar-container .default-avatar {
-                font-size: 80px; 
-                color: #adb5bd; 
+                font-size: 80px;
+                color: #adb5bd;
             }
             .user-name-under-avatar { /* THÊM MỚI: CSS cho tên dưới avatar */
                 font-size: 1.2em;
@@ -83,53 +83,53 @@
                 margin-top: 5px; /* Điều chỉnh khoảng cách với avatar nếu cần */
             }
             .details-box {
-                flex: 1; 
-                background-color: #f8f9fa; 
-                padding: 25px; 
+                flex: 1;
+                background-color: #f8f9fa;
+                padding: 25px;
                 border-radius: 8px;
-                color: #343a40; 
-                box-sizing: border-box; 
+                color: #343a40;
+                box-sizing: border-box;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
-                min-width: 300px; 
-                border: 1px solid #e9ecef; 
+                min-width: 300px;
+                border: 1px solid #e9ecef;
             }
             .details-box p {
-                margin: 12px 0; 
-                font-size: 1rem; 
+                margin: 12px 0;
+                font-size: 1rem;
                 display: flex;
-                align-items: baseline; 
-                line-height: 1.5; 
+                align-items: baseline;
+                line-height: 1.5;
                 flex-wrap: wrap;
             }
             .details-box p .detail-label {
                 display: inline-block;
-                width: 110px; 
-                color: #495057; 
-                font-weight: 600; 
+                width: 110px;
+                color: #495057;
+                font-weight: 600;
                 flex-shrink: 0;
-                margin-right: 15px; 
+                margin-right: 15px;
                 text-align: right;
             }
-            .details-box p .value-text, 
-            .details-box p select { 
+            .details-box p .value-text,
+            .details-box p select {
                 flex-grow: 1;
                 word-wrap: break-word;
-                box-sizing: border-box; 
-                color: #212529; 
+                box-sizing: border-box;
+                color: #212529;
             }
-             .details-box select { 
-                padding: 8px 10px; 
-                border: 1px solid #ced4da; 
+            .details-box select {
+                padding: 8px 10px;
+                border: 1px solid #ced4da;
                 border-radius: 4px;
-                font-size: 0.95rem; 
-                min-width: 150px; 
-                background-color: #fff; 
-                color: #495057; 
+                font-size: 0.95rem;
+                min-width: 150px;
+                background-color: #fff;
+                color: #495057;
             }
-            .details-box p strong { 
-                font-weight: 600; 
+            .details-box p strong {
+                font-weight: 600;
             }
             .actions {
                 margin-top: 30px;
@@ -142,46 +142,46 @@
             }
             .actions a, .actions button {
                 display: inline-block;
-                padding: 10px 22px; 
+                padding: 10px 22px;
                 text-decoration: none;
                 color: white;
                 border: none;
                 border-radius: 5px;
                 cursor: pointer;
-                transition: background-color 0.2s ease, transform 0.1s ease; 
-                font-size: 0.95rem; 
-                font-weight: 500; 
+                transition: background-color 0.2s ease, transform 0.1s ease;
+                font-size: 0.95rem;
+                font-weight: 500;
                 white-space: nowrap;
             }
             .actions a:hover, .actions button:hover {
-                opacity: 0.9; 
+                opacity: 0.9;
             }
             .actions a:active, .actions button:active {
-                transform: scale(0.98); 
+                transform: scale(0.98);
             }
-            .actions .save-button { 
-                 background-color: #28a745; 
+            .actions .save-button {
+                background-color: #28a745;
             }
             .actions .save-button:hover {
-                 background-color: #218838; 
-                 opacity: 1; 
+                background-color: #218838;
+                opacity: 1;
             }
-            .actions .back-button { 
+            .actions .back-button {
                 background-color: #007bff;
             }
             .actions .back-button:hover {
-                background-color: #0056b3; 
-                opacity: 1; 
+                background-color: #0056b3;
+                opacity: 1;
             }
             .error-message, .success-message {
                 text-align: center;
-                margin-top: 20px; 
+                margin-top: 20px;
                 margin-bottom: 15px;
                 width: 100%;
-                padding: 12px 15px; 
+                padding: 12px 15px;
                 border-radius: 5px;
                 box-sizing: border-box;
-                font-size: 0.95rem; 
+                font-size: 0.95rem;
             }
             .error-message {
                 color: #721c24;
@@ -194,29 +194,89 @@
                 border: 1px solid #c3e6cb;
             }
             @media (max-width: 768px) {
-                body { padding: 15px 0; }
-                .container { width: 95%; padding: 20px; }
-                h1 { font-size: 1.6em; }
-                .user-info-section {  align-items: center; gap: 20px; } /* Giữ lại flex-direction: column; nếu muốn xếp chồng avatar và details-box*/
+                body {
+                    padding: 15px 0;
+                }
+                .container {
+                    width: 95%;
+                    padding: 20px;
+                }
+                h1 {
+                    font-size: 1.6em;
+                }
+                .user-info-section {
+                    align-items: center;
+                    gap: 20px;
+                } /* Giữ lại flex-direction: column; nếu muốn xếp chồng avatar và details-box*/
                 .avatar-section { /* Điều chỉnh cho mobile */
                     flex-basis: auto; /* Cho phép co giãn */
                     width: 100%; /* Chiếm hết chiều rộng nếu xếp chồng */
                     margin-bottom: 20px;
                 }
-                .avatar-container { flex-basis: 120px; height: 120px; margin-left:auto; margin-right:auto; /* Căn giữa avatar trong .avatar-section */}
-                .avatar-container .default-avatar { font-size: 60px; }
-                .details-box { min-width: unset; width: 100%; margin-top: 0; padding: 15px; }
-                .details-box p { margin: 8px 0; font-size: 0.95rem; }
-                .details-box p .detail-label { width: 100%; text-align: left; margin-right: 0; margin-bottom: 3px; font-weight: 500; }
-                .details-box p { flex-direction: column; align-items: flex-start; }
-                .details-box select { width: 100%; font-size: 0.9rem; padding: 8px; }
-                .actions { gap: 10px; }
-                .actions a, .actions button { font-size: 0.9rem; padding: 10px 15px; }
+                .avatar-container {
+                    flex-basis: 120px;
+                    height: 120px;
+                    margin-left:auto;
+                    margin-right:auto; /* Căn giữa avatar trong .avatar-section */
+                }
+                .avatar-container .default-avatar {
+                    font-size: 60px;
+                }
+                .details-box {
+                    min-width: unset;
+                    width: 100%;
+                    margin-top: 0;
+                    padding: 15px;
+                }
+                .details-box p {
+                    margin: 8px 0;
+                    font-size: 0.95rem;
+                }
+                .details-box p .detail-label {
+                    width: 100%;
+                    text-align: left;
+                    margin-right: 0;
+                    margin-bottom: 3px;
+                    font-weight: 500;
+                }
+                .details-box p {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+                .details-box select {
+                    width: 100%;
+                    font-size: 0.9rem;
+                    padding: 8px;
+                }
+                .actions {
+                    gap: 10px;
+                }
+                .actions a, .actions button {
+                    font-size: 0.9rem;
+                    padding: 10px 15px;
+                }
             }
         </style>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
     <body>
+        <%@ page import="model.User" %>
+
+        <%@ page import="model.Role" %>
+
+        <%
+
+            User user = (User) session.getAttribute("loggedInUser");
+
+            if (user == null || user.getRole() == null || user.getRole().getRoleID() != 5) {
+
+                response.sendRedirect(request.getContextPath() + "/home");
+
+                return;
+
+            }
+
+        %>
         <div class="container">
             <h1>User Details</h1>
 
@@ -250,14 +310,14 @@
                                 <c:out value="${user.fullName}"/>
                             </div>
                         </div>
-                        
+
                         <div class="details-box">
                             <%-- Các trường thông tin khác giữ nguyên --%>
                             <p><label class="detail-label">Name:</label> <span class="value-text"><c:out value="${user.fullName}"/></span></p>
                             <p><label class="detail-label">Sex:</label> <span class="value-text"><c:out value="${user.gender}"/></span></p>
                             <p><label class="detail-label">E-Mail:</label> <span class="value-text"><c:out value="${user.email}"/></span></p>
                             <p><label class="detail-label">Mobile:</label> <span class="value-text"><c:out value="${user.mobile}"/></span></p>
-                            
+
                             <p>
                                 <label class="detail-label" for="roleID"><strong>Role:</strong></label>
                                 <select name="roleID" id="roleID">

@@ -35,8 +35,12 @@ public class UserController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8"); // Đảm bảo request được đọc với encoding UTF-8
 
-        //HttpSession session = request.getSession();
         HttpSession session = request.getSession(false);
+        User userr = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+        if (userr == null || userr.getRole() == null || userr.getRole().getRoleID() !=5) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
 
         handleNotifications(request);
         String action = request.getParameter("action");
@@ -190,9 +194,13 @@ public class UserController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        HttpSession session = request.getSession(false);
+        User userr = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+        if (userr == null || userr.getRole() == null || userr.getRole().getRoleID() !=5) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
         request.setCharacterEncoding("UTF-8"); 
-        HttpSession session = request.getSession(); 
         String action = request.getParameter("formAction"); 
         String queryString = request.getParameter("currentQueryString");
         if (queryString == null) queryString = "";
