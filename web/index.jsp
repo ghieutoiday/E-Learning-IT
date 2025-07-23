@@ -349,6 +349,17 @@
                                                    class="btn-link customer-registration" style="color:white">
                                                     <p>My Registrations</p>
                                                 </a></li>
+                                                <c:if test="${sessionScope.loggedInUser.role.roleID != null}">
+                                                <li class="user-profile-dropdown" style="position: relative; display: inline-block; margin-left: 10px;">
+                                                    <a href="javascript:void(0);" style="color: white;" onclick="toggleDropdown()">
+                                                        <img src="assets/images/testimonials/pic3.jpg" alt="User Profile" style="width: 30px; height: 30px; border-radius: 50%;">
+                                                    </a>
+                                                    <div id="userDropdown" class="dropdown-content" style="display: none; position: absolute; background-color: #f9f9f9; min-width: 100px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; right: 0;">
+                                                        <a href="userProfileController" style="color: black; padding: 12px 16px; text-decoration: none; display: block;">My Profile</a>
+                                                        <a href="logout" style="color: black; padding: 12px 16px; text-decoration: none; display: block;">Logout</a>
+                                                    </div>
+                                                </li>
+                                            </c:if>
                                         </ul>
                                     </div>
                                 </div>
@@ -436,6 +447,12 @@
 
                                         </ul>
                                     </li>
+                                    <li><a>
+                                            <c:if test="${sessionScope.loggedInUser.role.roleID == 5}">
+                                                <li><a href="userController" style="color:white;">Dashboard</a></li>
+                                                </c:if>
+
+                                        </a></li>
 
                                     </ul>
 
@@ -828,6 +845,28 @@
                 delay: 5000, // Chuyển slide tự động sau 5 giây
             },
         });
+    </script>
+    <script>
+        function toggleDropdown() {
+            var dropdown = document.getElementById("userDropdown");
+            if (dropdown.style.display === "block") {
+                dropdown.style.display = "none";
+            } else {
+                dropdown.style.display = "block";
+            }
+        }
+        // Đóng dropdown khi click ra ngoài
+        window.onclick = function (event) {
+            if (!event.target.matches('.user-profile-dropdown a img')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.style.display === "block") {
+                        openDropdown.style.display = "none";
+                    }
+                }
+            }
+        }
     </script>
     <%@ include file="login-register-modal.jsp" %>
 </body>

@@ -1,3 +1,4 @@
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -277,6 +278,7 @@
 
 
         <div class="sidebar">
+            <h2><a href="home" class="home-link">Home</a></h2>
             <h2>Admin Panel</h2>
             <ul>
                 <li><a href="usercontroller">Users List</a></li>
@@ -302,7 +304,7 @@
 
             %>
             <div class="header-section">
-                <a href="index.jsp" class="home-link">Home</a>
+                
                 <h1>All Users</h1>
                 <button id="toggleAddUserFormBtn" class="action-button">Add New User</button>
             </div>
@@ -561,6 +563,6 @@
                 </c:if>
             </div>
         </div>
-
+                                
     </body>
 </html>
