@@ -23,7 +23,7 @@ public class EmailService {
     public static boolean sendNewUserPasswordEmail(String recipientEmail, String recipientName, String generatedPassword) {
 
         final String fromEmail = "nguyenthehungas2711@gmail.com";   
-        final String password = "xeoyocienojlnshr"; 
+        final String password = "usax veho wgbr nqvy"; 
 
         // CẤU HÌNH MÁY CHỦ GỬI MAIL CỦA GMAIL
         Properties props = new Properties();

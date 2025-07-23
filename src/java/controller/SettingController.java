@@ -7,8 +7,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Setting;
+import model.User;
 
 @WebServlet(name="SettingController", urlPatterns={"/settingController"})
 public class SettingController extends HttpServlet {
@@ -16,6 +18,12 @@ public class SettingController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        User userr = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+        if (userr == null || userr.getRole() == null || userr.getRole().getRoleID() !=5) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         
@@ -102,7 +110,12 @@ public class SettingController extends HttpServlet {
         String description = request.getParameter("description");
         String orderNumStr = request.getParameter("orderNum");
         String status = request.getParameter("status");
-
+        HttpSession session = request.getSession(false);
+        User userr = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+        if (userr == null || userr.getRole() == null || userr.getRole().getRoleID() !=5) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
         try {
             int orderNum = Integer.parseInt(orderNumStr);
             Setting newSetting = new Setting(0, type, settingKey, value, description, orderNum, status);
