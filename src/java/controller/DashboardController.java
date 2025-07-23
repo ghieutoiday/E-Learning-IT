@@ -50,7 +50,7 @@ public class DashboardController extends HttpServlet {
         }
         // Xử lý ngày mặc định nếu không có giá trị
         LocalDate endDate = (endDateStr != null && !endDateStr.isEmpty()) ? LocalDate.parse(endDateStr) : LocalDate.now();
-        LocalDate startDate = (startDateStr != null && !startDateStr.isEmpty()) ? LocalDate.parse(startDateStr) : endDate.minusMonths(1).plusDays(1);
+        LocalDate startDate = (startDateStr != null && !startDateStr.isEmpty()) ? LocalDate.parse(startDateStr) : endDate.minusDays(6);
         // Gọi DAO để lấy dữ liệu thống kê
         DashboardDAO dao = new DashboardDAO();
         DashboardStatsDTO stats = dao.getDashboardData(startDate, endDate);

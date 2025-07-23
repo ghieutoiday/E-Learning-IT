@@ -354,7 +354,7 @@
                             <a href="#" class="ttr-material-button ttr-submenu-toggle"><span class="ttr-user-avatar"><img alt="" src="${user.avatar}" width="32" height="32"></span></a>
                             <div class="ttr-header-submenu">
                                 <ul>
-                                    <li><a href="viewUser?id=${user.userID}">My profile</a></li>
+                                    <li><a href="userProfileController">My profile</a></li>
                                     <li><a href="logout">Logout</a></li>
                                 </ul>
                             </div>
@@ -412,7 +412,7 @@
                             </a>
                             <ul>
                                 <li>
-                                    <a href="viewUser?id=${user.userID}" class="ttr-material-button"><span class="ttr-label">User Profile</span></a>
+                                    <a href="userProfileController" class="ttr-material-button"><span class="ttr-label">User Profile</span></a>
                                 </li>
                                 <li>
                                     <a href="logout" class="ttr-material-button"><span class="ttr-label">Logout</span></a>
