@@ -67,7 +67,7 @@
             .profile-avatar {
                 margin-left: auto;
 
-margin-right: auto;
+                margin-right: auto;
                 width: 160px;
                 height: 160px;
                 border-radius: 50%;
@@ -268,6 +268,15 @@ margin-right: auto;
         </style>
     </head>
     <body>
+        <%@ page import="model.User" %>
+        <%@ page import="model.Role" %>
+        <%
+            User user = (User) session.getAttribute("loggedInUser");
+            if (user == null) {
+                response.sendRedirect(request.getContextPath() + "/home");
+                return;
+            }
+        %>
         <div class="profile-container">
             <div class="profile-header">
                 <h1>My Profile</h1>
@@ -340,7 +349,7 @@ margin-right: auto;
                     <%-- KHU VỰC NÚT HÀNH ĐỘNG ĐÃ SỬA --%>
                     <div class="profile-actions">
                         <button type="button" class="button edit" id="editButton" onclick="toggleEditMode(true)">Edit Profile</button>
-                        <a href="index.jsp" class="button back" id="backButton" style="display: inline-block;">Back to Home</a> 
+                        <a href="home" class="button back" id="backButton" style="display: inline-block;">Back to Home</a> 
                         <button type="submit" class="button save" id="saveButton" style="display: none;">Save Changes</button>
                         <button type="button" class="button cancel" id="cancelButton" style="display: none;">Cancel</button>
                     </div>
