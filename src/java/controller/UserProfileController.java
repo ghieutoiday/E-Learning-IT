@@ -27,7 +27,15 @@ public class UserProfileController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         
-        int currentUserID = 1; // Tạm thời cố định userID = 1
+        // Kiểm tra quyền truy cập
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+        
+        int currentUserID = user.getUserID();
 
         User userProfile = userDAO.getUserByID(currentUserID);
 
