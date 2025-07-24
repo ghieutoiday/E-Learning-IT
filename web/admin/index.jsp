@@ -299,6 +299,12 @@
                             </a>
                         </li>
                         <li>
+                            <a href="${pageContext.request.contextPath}/coursecontroller" class="ttr-material-button">
+                                <span class="ttr-icon"><i class="ti-comments"></i></span>
+                                <span class="ttr-label">Subject List</span>
+                            </a>
+                        </li>
+                        <li>
                             <a href="${pageContext.request.contextPath}/quizcontroller" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-comments"></i></span>
                                 <span class="ttr-label">Quizzes List</span>
