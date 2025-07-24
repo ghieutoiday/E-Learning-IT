@@ -48,13 +48,13 @@ public class CourseController extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-//        UserDAO userDao = new UserDAO();
-//        User user = (User) session.getAttribute("user");
-////        int id = userDao.getRoleByID(user.getRole().getRoleID());
-//        if (user.getRoleID() == 5 && user.getRoleID() == 4) {
-//            response.sendRedirect("home");
-//            return;
-//        }
+        UserDAO userDao = new UserDAO();
+        User user = (User) session.getAttribute("loggedInUser");
+//        int id = userDao.getRoleByID(user.getRole().getRoleID());
+        if (user.getRoleID() == 5 && user.getRoleID() == 4) {
+            response.sendRedirect("home");
+            return;
+        }
 //        HttpSession session = request.getSession(false);
 //        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
 //        if (user == null) {
@@ -75,15 +75,6 @@ public class CourseController extends HttpServlet {
         String service = request.getParameter("service");
         String courseIdParam = request.getParameter("id");
         String pageSubjectList = request.getParameter("pageSubjectList");
-        
-        User currentUser = (User) session.getAttribute("loggedInUser"); 
-
-        // Kiểm tra xem currentUser có phải là Expert không
-        if (currentUser == null || currentUser.getRole().getRoleID() != 4) { 
-            request.setAttribute("errorMessage", "Bạn không có quyền thực hiện hành động này.");
-            response.sendRedirect("home"); 
-            return;
-        }
 
         if (action == null) {
             action = "view";
@@ -246,7 +237,7 @@ public class CourseController extends HttpServlet {
         int totalCourse;
 
         // Get the current user from the session
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("loggedInUser");
 
         // Check if user is logged in and has a role
         if (user != null && user.getRole() != null) {
@@ -462,15 +453,7 @@ public class CourseController extends HttpServlet {
         CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
 
         String action = request.getParameter("action");
-        
-        User currentUser = (User) session.getAttribute("loggedInUser"); 
 
-        // Kiểm tra xem currentUser có phải là Expert không
-        if (currentUser == null || currentUser.getRole().getRoleID() != 4) { 
-            request.setAttribute("errorMessage", "Bạn không có quyền thực hiện hành động này.");
-            response.sendRedirect("home"); 
-            return;
-        }
         if ("create".equals(action)) {
 
             try {
@@ -478,6 +461,7 @@ public class CourseController extends HttpServlet {
                 String courseName = request.getParameter("courseName");
                 String courseCategoryId = request.getParameter("courseCategory");
                 String description = request.getParameter("description");
+                String status = request.getParameter("status");
                 String ownerId = request.getParameter("owner");
                 String featureCourse = request.getParameter("feature");
                 int feature = (featureCourse != null) ? 1 : 0;
@@ -485,7 +469,7 @@ public class CourseController extends HttpServlet {
                 Course course = new Course();
                 course.setCourseName(courseName);
                 course.setDescription(description);
-                course.setStatus("Inactive");
+                course.setStatus(status);
                 course.setFeature(feature);
 
                 CourseCategory category = new CourseCategoryDAO().getCategoryById(Integer.parseInt(courseCategoryId));
