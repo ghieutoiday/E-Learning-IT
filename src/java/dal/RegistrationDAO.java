@@ -429,7 +429,6 @@ public class RegistrationDAO extends DBContext {
         return false;
     }
 
-    
     public boolean cancelRegistration(int registrationID) {
         String sql = "UPDATE Registration SET status = 'Cancelled' WHERE registrationID = ?";
         try (
@@ -443,7 +442,7 @@ public class RegistrationDAO extends DBContext {
         }
         return false;
     }
-    
+
     public boolean save(Registration registration) {
         String sql = "INSERT INTO Registration (userID, courseID, pricePackageID, totalCost, status, registrationTime) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -494,21 +493,47 @@ public class RegistrationDAO extends DBContext {
 
     //Lấy đơn đăng kí của user cho 1 course
     public Registration getRegistrationByUserAndCourse(int userId, int courseId) {
-        String sql = "SELECT * FROM Registration WHERE userID = ? AND courseID = ? AND status != 'Cancelled'";
+        String sql = "SELECT * FROM Registration WHERE userID = ? AND courseID = ? AND status NOT IN ('Cancelled')";
+        Registration registration = null;
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.setInt(2, courseId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    // Tận dụng lại hàm đã có để không phải viết lại code mapping
-                    return getRegistrationByRegistrationID(rs.getInt("registrationID"));
+                    User user = userDAO.getUserByID(rs.getInt("userID"));
+                    User lastUpdateBy = userDAO.getUserByID(rs.getInt("lastUpdateBy"));
+                    Course course = courseDAO.getCoureByCourseID(rs.getInt("courseID"));
+                    PricePackage pricePackage = pricePackageDAO.getPricePackageByPricePackageID(rs.getInt("pricePackageID"));
+                    double totalCost = rs.getDouble("totalCost");
+                    String status = rs.getString("status");
+                    Date registrationTime = rs.getDate("registrationTime");
+                    Date validFrom = rs.getDate("validFrom");
+                    Date validTo = rs.getDate("validTo");
+                    String note = rs.getString("note");
+
+                    registration = new Registration(
+                            rs.getInt("registrationID"),
+                            user,
+                            lastUpdateBy,
+                            course,
+                            pricePackage,
+                            totalCost,
+                            status,
+                            registrationTime,
+                            validFrom,
+                            validTo,
+                            note
+                    );
+                    System.out.println("Found existing registration for userId=" + userId + ", courseId=" + courseId + ", status=" + status);
+                } else {
+                    System.out.println("No registration found for userId=" + userId + ", courseId=" + courseId);
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Lỗi trong getRegistrationByUserAndCourse: " + e.getMessage());
+            System.err.println("Error in getRegistrationByUserAndCourse: " + e.getMessage());
             e.printStackTrace();
         }
-        return null;
+        return registration;
     }
 
     //Update gói 
@@ -528,8 +553,6 @@ public class RegistrationDAO extends DBContext {
             return false;
         }
     }
-    
-    
 
     public static void main(String[] args) {
         RegistrationDAO d = new RegistrationDAO();

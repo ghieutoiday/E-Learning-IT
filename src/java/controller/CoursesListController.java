@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpSession;
 import model.Course;
 import model.CourseCategory;
 import model.PricePackage;
+import model.User;
 
 @WebServlet(name = "CoursesListController", urlPatterns = { "/courseslist" })
 public class CoursesListController extends HttpServlet {
@@ -68,6 +69,22 @@ public class CoursesListController extends HttpServlet {
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("search", search);
         request.setAttribute("categoryId", categoryId);
+        
+        // Kiểm tra và xử lý khi nhấn "Registration"
+        String action = request.getParameter("action");
+        if ("register".equals(action)) {
+            courseId = Integer.parseInt(request.getParameter("courseId"));
+            HttpSession session = request.getSession();
+            User user = (User) session.getAttribute("loggedInUser");
+            if (user != null) {
+                // Đã đăng nhập, chuyển trực tiếp đến trang đăng ký với thông tin
+                response.sendRedirect(request.getContextPath() + "/showRegistration?courseId=" + courseId + "&mode=loggedIn");
+            } else {
+                // Chưa đăng nhập, chuyển đến trang đăng ký yêu cầu nhập thông tin
+                response.sendRedirect(request.getContextPath() + "/showRegistration?courseId=" + courseId + "&mode=guest");
+            }
+            return;
+        }
         
         //Lấy page để Chọn trang nào đc forward sang
         String pageforward = request.getParameter("pageforward");

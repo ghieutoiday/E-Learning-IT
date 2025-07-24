@@ -60,7 +60,7 @@
             <c:remove var="successMessage" scope="session" />
         </c:if>
         
-        <a href="index.jsp">Back to Homepage</a>
+        <a href="home">Back to Homepage</a>
     </div>
 </body>
 </html>

@@ -312,9 +312,7 @@
                                                 </a>
                                             </li>
                                             &nbsp;&nbsp;&nbsp;
-                                            <li><a href="registrationcontroller" class="btn-link customer-registration">
-                                                    <p>My Registrations</p>
-                                                </a>
+                                            <li><a href="courseslist?action=register&courseId=${course.courseID}" class="btn">Registration</a>   
                                             </li>
                                         </c:if>
                                     </ul>

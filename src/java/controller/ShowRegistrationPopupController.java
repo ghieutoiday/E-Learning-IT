@@ -25,24 +25,33 @@ public class ShowRegistrationPopupController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         int courseId = Integer.parseInt(request.getParameter("courseId"));
-        String mode = request.getParameter("mode");
-        
-        RegistrationDAO regDAO = new RegistrationDAO(); // Khởi tạo DAO
 
-        if ("loggedIn".equals(mode)) {
-            int currentUserId = 1; // Giả lập đã đăng nhập, fix cứng userId=1
+        RegistrationDAO regDAO = new RegistrationDAO();
+        User user = (User) request.getSession().getAttribute("loggedInUser");
+
+        if (user != null) {
+            request.setAttribute("mode", "loggedIn");
+            int currentUserId = user.getUserID();
             UserDAO userDAO = new UserDAO();
             User currentUser = userDAO.getUserByID(currentUserId);
             request.setAttribute("user", currentUser);
-            
-            // LOGIC MỚI: KIỂM TRA ĐƠN ĐĂNG KÝ ĐÃ TỒN TẠI
-            Registration existingReg = regDAO.getRegistrationByUserAndCourse(currentUserId, courseId);
-            if (existingReg != null) {
-                // Nếu tìm thấy, gửi thông tin đơn đăng ký này sang JSP
-                request.setAttribute("existingRegistration", existingReg);
+
+            try {
+                Registration existingReg = regDAO.getRegistrationByUserAndCourse(currentUserId, courseId);
+                if (existingReg != null) {
+                    request.setAttribute("existingRegistration", existingReg);
+                } else {
+                    System.out.println("No existing registration for userId=" + currentUserId + " and courseId=" + courseId);
+                    // Không cần set lỗi nếu không tìm thấy, vì đây là trường hợp hợp lệ
+                }
+            } catch (Exception e) {
+                System.err.println("Error fetching existing registration: " + e.getMessage());
+                request.setAttribute("errorMessage", "An error occurred while checking registration. Please try again.");
             }
+        } else {
+            request.setAttribute("mode", "guest");
         }
-        
+
         CourseDAO courseDAO = new CourseDAO();
         PricePackageDAO pricePackageDAO = new PricePackageDAO();
         Course course = courseDAO.getCourseByIdd(courseId);
@@ -50,8 +59,6 @@ public class ShowRegistrationPopupController extends HttpServlet {
 
         request.setAttribute("course", course);
         request.setAttribute("packages", packages);
-        request.setAttribute("mode", mode);
-
         request.getRequestDispatcher("register-course.jsp").forward(request, response);
     }
 }
