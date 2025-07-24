@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Date;
+
 public class Question {
 
     private int questionID;
@@ -11,8 +13,39 @@ public class Question {
     private String explanation;
     private int level;
     private String status;
+    private Date createDate;
+    private Date updateDate;
 
     public Question() {
+    }
+
+    public Question(int questionID, int courseID, int dimensionID, int typeQuestionID, String content, String media, String explanation, int level, String status, Date createDate, Date updateDate) {
+        this.questionID = questionID;
+        this.courseID = courseID;
+        this.dimensionID = dimensionID;
+        this.typeQuestionID = typeQuestionID;
+        this.content = content;
+        this.media = media;
+        this.explanation = explanation;
+        this.level = level;
+        this.status = status;
+        this.createDate = createDate;
+        this.updateDate = updateDate;
+    }
+    
+    
+
+    public Question(int courseID, int dimensionID, int typeQuestionID, String content, String media, String explanation, int level, String status, Date createDate, Date updateDate) {
+        this.courseID = courseID;
+        this.dimensionID = dimensionID;
+        this.typeQuestionID = typeQuestionID;
+        this.content = content;
+        this.media = media;
+        this.explanation = explanation;
+        this.level = level;
+        this.status = status;
+        this.createDate = createDate;
+        this.updateDate = updateDate;
     }
 
     public Question(int questionID, int courseID, int dimensionID, int typeQuestionID, String content, String media, String explanation, int level, String status) {
@@ -98,6 +131,31 @@ public class Question {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" + "questionID=" + questionID + ", courseID=" + courseID + ", dimensionID=" + dimensionID + ", typeQuestionID=" + typeQuestionID + ", content=" + content + ", media=" + media + ", explanation=" + explanation + ", level=" + level + ", status=" + status + ", createDate=" + createDate + ", updateDate=" + updateDate + '}';
+    }
+    
+    
+
+    
 
 }
 

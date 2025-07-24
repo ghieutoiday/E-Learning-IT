@@ -244,7 +244,7 @@ public class CourseController extends HttpServlet {
             int userRoleID = user.getRole().getRoleID();
             
 
-            if (userRoleID == 5) { // Admin role (display all courses)
+            if ( userRoleID != 4 ) { // Admin role (display all courses)
                 if (currentCategory.equals("allCategory") && currentStatus.equals("allStatus")) {
                     totalCourse = courseDao.getAllCourse().size();
                     courseList = courseDao.pagingCourse(indexPageSubjectList);
@@ -310,6 +310,7 @@ public class CourseController extends HttpServlet {
         } else { // No user in session or user has no role, perhaps show nothing or redirect
             totalCourse = 0;
             courseList = new java.util.ArrayList<>();
+            
             // Consider redirecting to login page or an error page here
         }
 
