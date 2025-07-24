@@ -139,6 +139,11 @@
         </style>
     </head>
     <body>
+        <c:if test="${not empty requestScope.errorMessage}">
+            <div style="padding: 15px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 5px; margin-bottom: 20px; text-align: center; font-weight: bold;">
+                ${requestScope.errorMessage}
+            </div>
+        </c:if>
         <div class="page-container">
             <div class="form-content">
                 <div class="form-header">
@@ -175,7 +180,6 @@
                                     </p>
                                 </div>
                                 <div class="plan-pricing">
-                                    <%-- THAY ĐỔI ĐỊNH DẠNG SANG ĐÔ LA --%>
                                     <fmt:formatNumber value="${pkg.salePrice}" type="currency" currencySymbol="$" maxFractionDigits="2"/>
                                 </div>
                             </div>
@@ -185,6 +189,7 @@
                             <h4>Your Information</h4>
                             <c:choose>
                                 <c:when test="${not empty user}">
+                                    <!-- Đã đăng nhập, hiển thị thông tin readonly -->
                                     <div class="form-group">
                                         <label>Full Name</label>
                                         <input type="text" value="${user.fullName}" readonly>
@@ -203,6 +208,7 @@
                                     </div>
                                 </c:when>
                                 <c:otherwise>
+                                    <!-- Chưa đăng nhập, yêu cầu nhập thông tin -->
                                     <div class="form-group">
                                         <label for="fullName">Your Name</label>
                                         <input type="text" id="fullName" name="fullName" value="${requestScope.input_fullName}" required>
@@ -247,7 +253,6 @@
                 document.querySelectorAll('.plan').forEach(p => p.classList.remove('selected'));
                 document.getElementById('plan-' + planId).classList.add('selected');
 
-                // THAY ĐỔI ĐỊNH DẠNG SANG ĐÔ LA
                 const formattedPrice = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(price);
                 document.getElementById('total-amount').innerText = formattedPrice;
             }
