@@ -519,12 +519,6 @@
                     <ul>
                         <li>
                             <a href="coursecontroller" class="ttr-material-button">
-                                <span class="ttr-icon"><i class="ti-home"></i></span>
-                                <span class="ttr-label">Dashboard</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="coursecontroller" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-book"></i></span>
                                 <span class="ttr-label">Subject List</span>
                             </a>
