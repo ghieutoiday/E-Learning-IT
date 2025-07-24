@@ -97,6 +97,19 @@
             .filter-form button:hover {
                 background-color: #0056b3;
             }
+            
+            .quizlist {
+                font-size: 14px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                height: 38px;
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                cursor: pointer;
+                padding: 8px 16px;
+            }
+            
             table {
                 width: 100%;
                 border-collapse: collapse;
@@ -340,7 +353,7 @@
                                         <option value="allStatus" <c:if test="${param.status == 'allStatus'}">selected</c:if>>All Status</option>
                                         <option value="active" <c:if test="${param.status == 'active'}">selected</c:if>>Active</option>
                                         <option value="inactive" <c:if test="${param.status == 'inactive'}">selected</c:if>>Inactive</option>
-                                    </select>
+                                        </select>
 
                                         <button type="button" onclick="window.location.href = 'coursecontroller?action=create'">Create</button>
                                     </form>
@@ -349,6 +362,11 @@
                                         <input type="hidden" name="action" value="filter"> <input type="text" name="search" placeholder="Search" value="${param.search}" onkeypress="if (event.key === 'Enter')
                                                     this.form.submit();">
                                 </form>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <button class="quizlist" type="button" onclick="window.location.href = 'quizcontroller'">Quizzes List</button>
                             </div>
 
                             <table>
