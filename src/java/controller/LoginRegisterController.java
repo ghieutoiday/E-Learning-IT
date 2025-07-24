@@ -110,7 +110,7 @@ public class LoginRegisterController extends HttpServlet {
                                     response.sendRedirect("coursecontroller");
                                     break;
                                 case 5:
-                                    response.sendRedirect("postcontroller");
+                                    response.sendRedirect(request.getContextPath() + "/admin/index.jsp");
                                     break;
                                 default:
                                     response.sendRedirect("home");
