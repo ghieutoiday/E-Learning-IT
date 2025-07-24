@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Course;
 import model.Lesson;
+import model.User;
 
 @WebServlet(name = "SubjectLessonController", urlPatterns = {"/subjectLesson"})
 public class SubjectLessonController extends HttpServlet {
@@ -20,7 +21,13 @@ public class SubjectLessonController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
-
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 5
+                && user.getRole().getRoleID() != 4) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
         if (action != null && action.equals("add")) {
             showAddLessonForm(request, response);
         } else if (action != null && (action.equals("deactivate") || action.equals("activate"))) {
@@ -161,7 +168,7 @@ public class SubjectLessonController extends HttpServlet {
 
             HttpSession session = request.getSession();
             session.setAttribute("successMessage", "New lesson '" + lessonName + "' has been added successfully!");
-            
+
             response.sendRedirect("subjectLesson?courseId=" + courseId);
 
         } catch (Exception e) {

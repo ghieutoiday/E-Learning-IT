@@ -8,10 +8,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.AdminLessonNote;
 import model.Course;
 import model.Lesson;
+import model.User;
 
 @WebServlet(name = "LessonDetailControllers", urlPatterns = {"/lessonDetails"})
 public class LessonDetailControllers extends HttpServlet {
@@ -21,40 +23,46 @@ public class LessonDetailControllers extends HttpServlet {
             throws ServletException, IOException {
         String lessonIdStr = request.getParameter("lessonId");
         String courseIdStr = request.getParameter("courseId");
-
-        try {
-        int courseId = Integer.parseInt(courseIdStr);
-        LessonDAO lessonDAO = LessonDAO.getInstance();
-        AdminNoteDAO noteDAO = AdminNoteDAO.getInstance();
-
-        List<Lesson> topics = lessonDAO.getAllSubjectTopicLesson(courseId);
-        request.setAttribute("topics", topics);
-        request.setAttribute("courseId", courseId);
-
-        Lesson lesson = new Lesson();
-        
-        if (lessonIdStr != null && !lessonIdStr.isEmpty()) {
-            int lessonId = Integer.parseInt(lessonIdStr);
-            lesson = lessonDAO.getLessonById(lessonId);
-            if (lesson == null || lesson.getCourse().getCourseID() != courseId) {
-                response.sendRedirect("errorPage.jsp?msg=Invalid-lesson-for-course");
-                return; 
-            }
-            List<AdminLessonNote> notes = noteDAO.getNotesByLessonId(lessonId);
-            request.setAttribute("notes", notes);
-        } else {
-            Course currentCourse = new Course();
-            currentCourse.setCourseID(courseId);
-            lesson.setCourse(currentCourse);
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 5
+                && user.getRole().getRoleID() != 4) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
         }
+        try {
+            int courseId = Integer.parseInt(courseIdStr);
+            LessonDAO lessonDAO = LessonDAO.getInstance();
+            AdminNoteDAO noteDAO = AdminNoteDAO.getInstance();
 
-        request.setAttribute("lesson", lesson);
-        request.getRequestDispatcher("lesson-details.jsp").forward(request, response);
+            List<Lesson> topics = lessonDAO.getAllSubjectTopicLesson(courseId);
+            request.setAttribute("topics", topics);
+            request.setAttribute("courseId", courseId);
 
-    } catch (NumberFormatException e) {
-        response.getWriter().println("Invalid ID format.");
-        e.printStackTrace();
-    }
+            Lesson lesson = new Lesson();
+
+            if (lessonIdStr != null && !lessonIdStr.isEmpty()) {
+                int lessonId = Integer.parseInt(lessonIdStr);
+                lesson = lessonDAO.getLessonById(lessonId);
+                if (lesson == null || lesson.getCourse().getCourseID() != courseId) {
+                    response.sendRedirect("errorPage.jsp?msg=Invalid-lesson-for-course");
+                    return;
+                }
+                List<AdminLessonNote> notes = noteDAO.getNotesByLessonId(lessonId);
+                request.setAttribute("notes", notes);
+            } else {
+                Course currentCourse = new Course();
+                currentCourse.setCourseID(courseId);
+                lesson.setCourse(currentCourse);
+            }
+
+            request.setAttribute("lesson", lesson);
+            request.getRequestDispatcher("lesson-details.jsp").forward(request, response);
+
+        } catch (NumberFormatException e) {
+            response.getWriter().println("Invalid ID format.");
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -103,7 +111,6 @@ public class LessonDetailControllers extends HttpServlet {
             } else {
                 lessonDAO.addLesson(lesson);
             }
-
 
             response.sendRedirect("subjectLesson?courseId=" + courseId);
 
