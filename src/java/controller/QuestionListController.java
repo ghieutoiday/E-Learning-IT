@@ -11,7 +11,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.HttpSession;
+import model.User;
 
 @WebServlet(name = "QuestionListController", urlPatterns = {"/questionList"})
 public class QuestionListController extends HttpServlet {
@@ -21,10 +22,16 @@ public class QuestionListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
-
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 5
+                && user.getRole().getRoleID() != 4) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
         QuestionDAO dao = new QuestionDAO();
 
         // 1. Lấy tham số
@@ -45,7 +52,7 @@ public class QuestionListController extends HttpServlet {
         List<Question> questions = dao.getFilteredQuestions(courseId, dimensionId, level, status, search, page, PAGE_SIZE);
         int totalQuestions = dao.getFilteredQuestionCount(courseId, dimensionId, level, status, search);
         int totalPages = (int) Math.ceil((double) totalQuestions / PAGE_SIZE);
-        
+
         List<Course> allCourses = dao.getAllCourses();
         List<SubjectDimension> allDimensions = dao.getAllDimensions();
 
@@ -55,13 +62,13 @@ public class QuestionListController extends HttpServlet {
         request.setAttribute("allDimensions", allDimensions);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("currentPage", page);
-        
+
         request.setAttribute("selectedCourseId", courseId);
         request.setAttribute("selectedDimensionId", dimensionId);
         request.setAttribute("selectedLevel", level);
         request.setAttribute("selectedStatus", status);
         request.setAttribute("searchValue", search);
-        
+
         // 5. Chuyển tiếp tới JSP
         request.getRequestDispatcher("question-list.jsp").forward(request, response);
     }
