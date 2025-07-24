@@ -1,50 +1,55 @@
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%
-    // Lấy user từ session
-    Object userObj = session.getAttribute("loggedInUser");
-    if (userObj != null) {
-        model.User user = (model.User) userObj;
-        int roleId = user.getRole().getRoleID();
-        if (roleId != 4 && roleId != 5) {
-            response.sendRedirect("/E-Learning-IT/home"); // hoặc "/home" nếu đã cấu hình route
-        }
-    } else {
-        response.sendRedirect("/E-Learning-IT/home"); // nếu chưa đăng nhập
-    }
-%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
 
 <!DOCTYPE html>
+
 <html lang="en">
     <head>
+        <!-- META ============================================= -->
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="keywords" content="" />
         <meta name="author" content="" />
         <meta name="robots" content="" />
 
+        <!-- DESCRIPTION -->
         <meta name="description" content="EduChamp : Education HTML Template" />
 
+        <!-- OG -->
         <meta property="og:title" content="EduChamp : Education HTML Template" />
         <meta property="og:description" content="EduChamp : Education HTML Template" />
         <meta property="og:image" content="" />
         <meta name="format-detection" content="telephone=no">
 
-        <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png" />
+        <!-- FAVICONS ICON ============================================= -->
+        <link rel="icon" href="../error-404.jsp" type="image/x-icon" />
+        <link rel="shortcut icon" type="image/x-icon" href="<%=request.getContextPath()%>/admin/assets/images/favicon.png" />
 
+        <!-- PAGE TITLE HERE ============================================= -->
         <title>Subject List</title>
 
+        <!-- MOBILE SPECIFIC ============================================= -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" type="text/css" href="assets/css/assets.css">
+        <!--[if lt IE 9]>
+        <script src="assets/js/html5shiv.min.js"></script>
+        <script src="assets/js/respond.min.js"></script>
+        <![endif]-->
 
-        <link rel="stylesheet" type="text/css" href="assets/css/typography.css">
+        <!-- All PLUGINS CSS ============================================= -->
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/assets.css">
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/vendors/calendar/fullcalendar.css">
 
-        <link rel="stylesheet" type="text/css" href="assets/css/shortcodes/shortcodes.css">
+        <!-- TYPOGRAPHY ============================================= -->
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/typography.css">
 
-        <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-        <link class="skin" rel="stylesheet" type="text/css" href="assets/css/color/color-1.css">
+        <!-- SHORTCODES ============================================= -->
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/shortcodes/shortcodes.css">
+
+        <!-- STYLESHEETS ============================================= -->
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/style.css">
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/dashboard.css">
+        <link class="skin" rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/color/color-1.css">
 
         <style>
             body {
@@ -57,19 +62,19 @@
                 width: 90%;
                 margin: 20px auto;
             }
-            /* Sử dụng flexbox để các form và input nằm cùng một hàng */
+            /* S? d?ng flexbox ?? c�c form v� input n?m c�ng m?t h�ng */
             .filter-search-container {
                 display: flex;
-                flex-wrap: wrap; /* Cho phép các mục xuống dòng nếu không đủ chỗ */
-                gap: 15px; /* Khoảng cách giữa các form */
+                flex-wrap: wrap; /* Cho ph�p c�c m?c xu?ng d�ng n?u kh�ng ?? ch? */
+                gap: 15px; /* Kho?ng c�ch gi?a c�c form */
                 margin-bottom: 20px;
-                align-items: center; /* Căn chỉnh theo chiều dọc */
+                align-items: center; /* C?n ch?nh theo chi?u d?c */
             }
 
             .filter-form, .search-form {
                 display: flex;
                 align-items: center;
-                gap: 15px; /* Khoảng cách giữa các phần tử trong mỗi form */
+                gap: 15px; /* Kho?ng c�ch gi?a c�c ph?n t? trong m?i form */
             }
 
             .filter-form select,
@@ -153,273 +158,531 @@
             .pagination a:hover {
                 background-color: #e9ecef;
             }
+
+            /* CSS b? sung t? file g?c */
+            .widget-box {
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                margin-top: -10px;
+            }
+            .top-bar {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 10px;
+                flex-wrap: nowrap;
+                margin-bottom: 15px;
+                padding-top: 0px;
+            }
+            .search-input {
+                flex: 1;
+                min-width: 50%;
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+            .btn-warning {
+                white-space: nowrap;
+                padding: 8px 19px;
+                font-size: 14px;
+                background-color: #f8c61b;
+                margin-left: 20px;
+            }
+            .sort-select {
+                width: auto;
+                padding: 6px 14px;
+                font-size: 14px;
+            }
+            .sort-by-select {
+                width: 100px;
+                text-align: center;
+            }
+            .filters {
+                display: flex;
+                gap: 70px;
+            }
+            .filters select {
+                padding: 8px 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                background-color: #fff;
+                cursor: pointer;
+                font-size: 14px;
+                color: #555;
+                text-align: center;
+                margin-left: 10px;
+                width: 150px;
+            }
+            .filters select option {
+                text-align: left;
+            }
+            .filters button {
+                white-space: nowrap;
+                padding: 8px 8px;
+                font-size: 14px;
+                background-color: #f8c61b;
+                margin-left: 15px;
+                gap: 15px;
+            }
+            table td {
+                vertical-align: middle;
+            }
+            table td img {
+                width: 50px;
+                height: 50px;
+                object-fit: cover;
+                border-radius: 4px;
+            }
+            .status {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+            }
+            .status .dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                display: inline-block;
+            }
+            .status .dot.active {
+                background-color: #28a745;
+            }
+            .status .dot.inactive {
+                background-color: #dc3545;
+            }
+            .action-buttons a {
+                text-decoration: none;
+                color: #007bff;
+                font-size: 14px;
+                margin-left: 5px;
+            }
+            .action-buttons a:hover {
+                text-decoration: underline;
+            }
+            .pagination-bx {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                margin-top: 20px;
+            }
+            .pagination-bx a, .pagination-bx span {
+                padding: 8px 12px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                text-decoration: none;
+                font-size: 14px;
+            }
+            .pagination-bx a {
+                color: #007bff;
+                background-color: #fff;
+            }
+            .pagination-bx span {
+                background-color: #007bff;
+                color: #fff;
+                border-color: #007bff;
+            }
+            .pagination-bx a:hover {
+                background-color: #f0f0f0;
+            }
+            .select {
+                display: block;
+            }
+            .option {
+                display: block;
+            }
+            .add-slider-btn {
+                margin-left: 915px;
+            }
+            .reset {
+                padding-left: 7px;
+                padding-right: 8px;
+            }
+            .search {
+                padding-left: 25px;
+                padding-right: 20px;
+                margin-left: 20px;
+            }
         </style>
     </head>
-    <body id="bg">
-        <div class="page-wraper">
-            <div id="loading-icon-bx"></div>
-            <header class="header rs-nav">
-                <div class="top-bar">
-                    <div class="container">
-                        <div class="row d-flex justify-content-between">
-                            <div class="topbar-left">
-                                <ul>
-                                    <li><a href="faq-1.jsp"><i class="fa fa-question-circle"></i>Ask a Question</a></li>
-                                    <li><a href="javascript:;"><i class="fa fa-envelope-o"></i>Support@website.com</a></li>
-                                </ul>
-                            </div>
-                            <div class="topbar-right">
-                                <ul>
-                                    <li>
-                                        <select class="header-lang-bx">
-                                            <option data-icon="flag flag-uk">English UK</option>
-                                            <option data-icon="flag flag-us">English US</option>
-                                        </select>
-                                    </li>
-                                    <li><a href="login.jsp">Login</a></li>
-                                    <li><a href="register.jsp">Register</a></li>
-                                </ul>
-                            </div>
-                        </div>
+    <body class="ttr-opened-sidebar ttr-pinned-sidebar">
+
+        <!-- Header -->
+        <header class="ttr-header">
+            <div class="ttr-header-wrapper">
+                <!--sidebar menu toggler start -->
+                <div class="ttr-toggle-sidebar ttr-material-button">
+                    <i class="ti-close ttr-open-icon"></i>
+                    <i class="ti-menu ttr-close-icon"></i>
+                </div>
+                <!--sidebar menu toggler end -->
+                <!--logo start -->
+                <div class="ttr-logo-box">
+                    <div>
+                        <a href="index.jsp" class="ttr-logo">
+                            <img alt="" class="ttr-logo-mobile"
+                                 src="assets/images/logo-mobile.png" width="30" height="30">
+                            <img alt="" class="ttr-logo-desktop"
+                                 src="assets/images/logo-white.png" width="160" height="27">
+                        </a>
                     </div>
                 </div>
-                <div class="sticky-header navbar-expand-lg">
-                    <div class="menu-bar clearfix">
-                        <div class="container clearfix">
-                            <div class="menu-logo">
-                                <a href="index.jsp"><img src="assets/images/logo.png" alt=""></a>
+                <!--logo end -->
+                <div class="ttr-header-menu">
+                    <!-- header left menu start -->
+                    <ul class="ttr-header-navigation">
+                        <li>
+                            <a href="home"
+                               class="ttr-material-button ttr-submenu-toggle">HOME</a>
+                        </li>
+                        <li>
+                            <a href="#" class="ttr-material-button ttr-submenu-toggle">QUICK
+                                MENU <i class="fa fa-angle-down"></i></a>
+                            <div class="ttr-header-submenu">
+                                <ul>
+                                    <li><a href="home">Our Sliders List</a></li>
+                                    <li><a href="event.jsp">New Event</a></li>
+                                    <li><a href="membership.jsp">Membership</a></li>
+                                </ul>
                             </div>
-                            <button class="navbar-toggler collapsed menuicon justify-content-end" type="button" data-toggle="collapse" data-target="#menuDropdown" aria-controls="menuDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </button>
-                            <div class="secondary-menu">
-                                <div class="secondary-inner">
+                        </li>
+                    </ul>
+                    <!-- header left menu end -->
+                </div>
+                <div class="ttr-header-right ttr-with-seperator">
+                    <!-- header right menu start -->
+                    <ul class="ttr-header-navigation">
+                        <li>
+                            <a href="#" class="ttr-material-button ttr-search-toggle"><i
+                                    class="fa fa-search"></i></a>
+                        </li>
+                        <li>
+                            <a href="#" class="ttr-material-button ttr-submenu-toggle"><i
+                                    class="fa fa-bell"></i></a>
+                            <div class="ttr-header-submenu noti-menu">
+                                <div class="ttr-notify-header">
+                                    <span class="ttr-notify-text-top">9 New</span>
+                                    <span class="ttr-notify-text">User Notifications</span>
+                                </div>
+                                <div class="noti-box-list">
                                     <ul>
-                                        <li><a href="javascript:;" class="btn-link"><i class="fa fa-facebook"></i></a></li>
-                                        <li><a href="javascript:;" class="btn-link"><i class="fa fa-google-plus"></i></a></li>
-                                        <li><a href="javascript:;" class="btn-link"><i class="fa fa-linkedin"></i></a></li>
-                                        <li class="search-btn"><button id="quik-search-btn" type="button" class="btn-link"><i class="fa fa-search"></i></button></li>
+                                        <li>
+                                            <span class="notification-icon dashbg-gray">
+                                                <i class="fa fa-check"></i>
+                                            </span>
+                                            <span class="notification-text">
+                                                <span>Sneha Jogi</span> sent you a message.
+                                            </span>
+                                            <span class="notification-time">
+                                                <a href="#" class="fa fa-close"></a>
+                                                <span> 02:14</span>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="notification-icon dashbg-yellow">
+                                                <i class="fa fa-shopping-cart"></i>
+                                            </span>
+                                            <span class="notification-text">
+                                                <a href="#">Your order is placed</a> sent you a
+                                                message.
+                                            </span>
+                                            <span class="notification-time">
+                                                <a href="#" class="fa fa-close"></a>
+                                                <span> 7 Min</span>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="notification-icon dashbg-red">
+                                                <i class="fa fa-bullhorn"></i>
+                                            </span>
+                                            <span class="notification-text">
+                                                <span>Your item is shipped</span> sent you a
+                                                message.
+                                            </span>
+                                            <span class="notification-time">
+                                                <a href="#" class="fa fa-close"></a>
+                                                <span> 2 May</span>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="notification-icon dashbg-green">
+                                                <i class="fa fa-comments-o"></i>
+                                            </span>
+                                            <span class="notification-text">
+                                                <a href="#">Sneha Jogi</a> sent you a message.
+                                            </span>
+                                            <span class="notification-time">
+                                                <a href="#" class="fa fa-close"></a>
+                                                <span> 14 July</span>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="notification-icon dashbg-primary">
+                                                <i class="fa fa-file-word-o"></i>
+                                            </span>
+                                            <span class="notification-text">
+                                                <span>Sneha Jogi</span> sent you a message.
+                                            </span>
+                                            <span class="notification-time">
+                                                <a href="#" class="fa fa-close"></a>
+                                                <span> 15 Min</span>
+                                            </span>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
-                            <div class="nav-search-bar">
-                                <form action="#">
-                                    <input name="search" value="" type="text" class="form-control" placeholder="Type to search">
-                                    <span><i class="ti-search"></i></span>
-                                </form>
-                                <span id="search-remove"><i class="ti-close"></i></span>
-                            </div>
-                            <div class="menu-links navbar-collapse collapse justify-content-start" id="menuDropdown">
-                                <div class="menu-logo">
-                                    <a href="index.jsp"><img src="assets/images/logo.png" alt=""></a>
-                                </div>
-                                <ul class="nav navbar-nav">
-                                    <li class="active"><a href="javascript:;">Home <i class="fa fa-chevron-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="index.jsp">Home 1</a></li>
-                                            <li><a href="index-2.jsp">Home 2</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="javascript:;">Pages <i class="fa fa-chevron-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="javascript:;">About<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="about-1.jsp">About 1</a></li>
-                                                    <li><a href="about-2.jsp">About 2</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="javascript:;">Event<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="event.jsp">Event</a></li>
-                                                    <li><a href="events-details.jsp">Events Details</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="javascript:;">FAQ's<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="faq-1.jsp">FAQ's 1</a></li>
-                                                    <li><a href="faq-2.jsp">FAQ's 2</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="javascript:;">Contact Us<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="contact-1.jsp">Contact Us 1</a></li>
-                                                    <li><a href="contact-2.jsp">Contact Us 2</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="portfolio.jsp">Portfolio</a></li>
-                                            <li><a href="profile.jsp">Profile</a></li>
-                                            <li><a href="membership.jsp">Membership</a></li>
-                                            <li><a href="error-404.jsp">404 Page</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="add-mega-menu"><a href="javascript:;">Our Courses <i class="fa fa-chevron-down"></i></a>
-                                        <ul class="sub-menu add-menu">
-                                            <li class="add-menu-left">
-                                                <h5 class="menu-adv-title">Our Courses</h5>
-                                                <ul>
-                                                    <li><a href="courses.jsp">Courses </a></li>
-                                                    <li><a href="courses-details.jsp">Courses Details</a></li>
-                                                    <li><a href="profile.jsp">Instructor Profile</a></li>
-                                                    <li><a href="event.jsp">Upcoming Event</a></li>
-                                                    <li><a href="membership.jsp">Membership</a></li>
-                                                </ul>
-                                            </li>
-                                            <li class="add-menu-right">
-                                                <img src="assets/images/adv/adv.jpg" alt=""/>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="javascript:;">Blog <i class="fa fa-chevron-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="blog-classic-grid.jsp">Blog Classic</a></li>
-                                            <li><a href="blog-classic-sidebar.jsp">Blog Classic Sidebar</a></li>
-                                            <li><a href="blog-list-sidebar.jsp">Blog List Sidebar</a></li>
-                                            <li><a href="blog-standard-sidebar.jsp">Blog Standard Sidebar</a></li>
-                                            <li><a href="blog-details.jsp">Blog Details</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="nav-dashboard"><a href="javascript:;">Dashboard <i class="fa fa-chevron-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="admin/index.jsp">Dashboard</a></li>
-                                            <li><a href="admin/add-listing.jsp">Add Listing</a></li>
-                                            <li><a href="admin/bookmark.jsp">Bookmark</a></li>
-                                            <li><a href="admin/postslist.jsp">Posts List</a></li>
-                                            <li><a href="admin/review.jsp">Review</a></li>
-                                            <li><a href="admin/teacher-profile.jsp">Teacher Profile</a></li>
-                                            <li><a href="admin/user-profile.jsp">User Profile</a></li>
-                                            <li><a href="coursecontroller">Subject List</a></li>
-                                            <li><a href="change-password.jsp">Change Password</a></li>
-                                            <li><a href="javascript:;">Calendar<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="admin/basic-calendar.jsp">Basic Calendar</a></li>
-                                                    <li><a href="admin/list-view-calendar.jsp">List View Calendar</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="javascript:;">Mailbox<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="admin/mailbox.jsp">Mailbox</a></li>
-                                                    <li><a href="admin/mailbox-compose.jsp">Compose</a></li>
-                                                    <li><a href="admin/mailbox-read.jsp">Mail Read</a></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
+                        </li>
+                        <li>
+                            <a href="#" class="ttr-material-button ttr-submenu-toggle"><span
+                                    class="ttr-user-avatar"><img alt=""
+                                                             src="assets/images/testimonials/pic3.jpg" width="32"
+                                                             height="32"></span></a>
+                            <div class="ttr-header-submenu">
+                                <ul>
+                                    <li><a href="user-profile.jsp">My profile</a></li>
+                                    <li><a href="list-view-calendar.jsp">Activity</a></li>
+                                    <li><a href="mailbox.jsp">Messages</a></li>
+                                    <li><a href="../login.jsp">Logout</a></li>
                                 </ul>
-                                <div class="nav-social-link">
-                                    <a href="javascript:;"><i class="fa fa-facebook"></i></a>
-                                    <a href="javascript:;"><i class="fa fa-google-plus"></i></a>
-                                    <a href="javascript:;"><i class="fa fa-linkedin"></i></a>
+                            </div>
+                        </li>
+                        <li class="ttr-hide-on-mobile">
+                            <a href="#" class="ttr-material-button"><i
+                                    class="ti-layout-grid3-alt"></i></a>
+                            <div class="ttr-header-submenu ttr-extra-menu">
+                                <a href="#">
+                                    <i class="fa fa-music"></i>
+                                    <span>Musics</span>
+                                </a>
+                                <a href="#">
+                                    <i class="fa fa-youtube-play"></i>
+                                    <span>Videos</span>
+                                </a>
+                                <a href="#">
+                                    <i class="fa fa-envelope"></i>
+                                    <span>Emails</span>
+                                </a>
+                                <a href="#">
+                                    <i class="fa fa-book"></i>
+                                    <span>Reports</span>
+                                </a>
+                                <a href="#">
+                                    <i class="fa fa-smile-o"></i>
+                                    <span>Persons</span>
+                                </a>
+                                <a href="#">
+                                    <i class="fa fa-picture-o"></i>
+                                    <span>Pictures</span>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- header right menu end -->
+                </div>
+                <!--header search panel start -->
+                <div class="ttr-search-bar">
+                    <form class="ttr-search-form">
+                        <div class="ttr-search-input-wrapper">
+                            <input type="text" name="qq" placeholder="search something..."
+                                   class="ttr-search-input">
+                            <button type="submit" name="search" class="ttr-search-submit"><i
+                                    class="ti-arrow-right"></i></button>
+                        </div>
+                        <span class="ttr-search-close ttr-search-toggle">
+                            <i class="ti-close"></i>
+                        </span>
+                    </form>
+                </div>
+                <!--header search panel end -->
+            </div>
+        </header>
+        <!-- header end -->
+        <!-- Left sidebar menu start -->
+        <div class="ttr-sidebar">
+            <div class="ttr-sidebar-wrapper content-scroll">
+                <!-- side menu logo start -->
+                <div class="ttr-sidebar-logo">
+                    <a href="#"><img alt="" src="assets/images/logo.png" width="122" height="27"></a>
+                    <div class="ttr-sidebar-toggle-button">
+                        <i class="ti-arrow-left"></i>
+                    </div>
+                </div>
+                <!-- side menu logo end -->
+                <!-- sidebar menu start -->
+                <nav class="ttr-sidebar-navi">
+                    <ul>
+                        <li>
+                            <a href="coursecontroller" class="ttr-material-button">
+                                <span class="ttr-icon"><i class="ti-home"></i></span>
+                                <span class="ttr-label">Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="coursecontroller" class="ttr-material-button">
+                                <span class="ttr-icon"><i class="ti-book"></i></span>
+                                <span class="ttr-label">Subject List</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="quizcontroller" class="ttr-material-button">
+                                <span class="ttr-icon"><i class="ti-comments"></i></span>
+                                <span class="ttr-label">Quizzes List</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="coursecontroller?action=create" class="ttr-material-button">
+                                <span class="ttr-icon"><i class="ti-layout-accordion-list"></i></span>
+                                <span class="ttr-label">Add Course</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="ttr-material-button">
+                                <span class="ttr-icon"><i class="ti-user"></i></span>
+                                <span class="ttr-label">My Profile</span>
+                                <span class="ttr-arrow-icon"><i class="fa fa-angle-down"></i></span>
+                            </a>
+                            <ul>
+                                <li>
+                                    <a href="user-profile.jsp" class="ttr-material-button"><span class="ttr-label">User Profile</span></a>
+                                </li>
+                                <li>
+                                    <a href="teacher-profile.jsp" class="ttr-material-button"><span class="ttr-label">Teacher Profile</span></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="ttr-seperate"></li>
+                    </ul>
+                    <!-- sidebar menu end -->
+                </nav>
+                <!-- sidebar menu end -->
+            </div>
+        </div>
+
+        <!-- Main container -->
+        <main class="ttr-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12 m-b30">
+                        <div class="widget-box">
+                            <div class="wc-title">
+                                <div class="db-breadcrumb">
+                                    <h4 class="breadcrumb-title" style="font-size: 24px;">Subject List</h4>
+                                    <ul class="db-breadcrumb-list">
+                                        �
+                                        <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
+                                        <li>Subject List</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="widget-inner">
+                                <div class="filter-search-container">
+                                    <form action="coursecontroller" method="get" class="filter-form">
+                                        <input type="hidden" name="action" value="filter">
+                                        <select name="category" onchange="this.form.submit()">
+                                            <option value="allCategory" ${param.category eq 'allCategory' ? 'selected' : ''}>All Categories</option>
+                                            <c:forEach var="i" items="${sessionScope.courseCategoryList}">
+                                                <option value="${i.courseCategoryName}" ${param.category == i.courseCategoryName ? 'selected' : ''}>${i.courseCategoryName}</option>
+                                            </c:forEach>
+                                        </select>
+                                        <select name="status" onchange="this.form.submit()">
+                                            <option value="allStatus" ${param.status eq 'allStatus' ? 'selected' : ''}>All Status</option>
+                                            <option value="active" ${param.status eq 'active' ? 'selected' : ''}>Active</option>
+                                            <option value="inactive" ${param.status eq 'inactive' ? 'selected' : ''}>Inactive</option>
+                                        </select>
+                                        
+                                    </form>
+                                    <form action="coursecontroller" method="post" class="search-form">
+                                        <input type="hidden" name="action" value="filter">
+                                        <input type="text" name="search" placeholder="Search" value="${param.search}" onkeypress="if (event.key === 'Enter') this.form.submit();">
+                                    </form>
+                                    
+                                </div>
+                                <div class="card-courses-list admin-courses">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Category</th>
+                                                <th>Number of Lesson</th>
+                                                <th>Owner</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <c:forEach var="i" items="${sessionScope.courseList}" varStatus="loop">
+                                                <tr>
+                                                    <td>${i.courseID}</td>
+                                                    <td>${i.courseName}</td>
+                                                    <td>${i.courseCategory}</td>
+                                                    <td>${i.numberOfLesson}</td>
+                                                    <td>${i.owner}</td>
+                                                    <td>${i.status}</td>
+                                                    <td class="action">
+                                                        <a href="coursecontroller?action=detail&service=overview&id=${i.courseID}">Details</a>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- Pagination -->
+                                <div class="pagination-bx rounded-sm gray clearfix">
+                                    <ul class="pagination">
+                                        <c:set var="baseQuery" value="action=view" />
+                                        <c:if test="${not empty param.search}"><c:set var="baseQuery" value="${baseQuery}&search=${param.search}" /></c:if>
+                                        <c:if test="${not empty param.category}"><c:set var="baseQuery" value="${baseQuery}&category=${param.category}" /></c:if>
+                                        <c:if test="${not empty param.status}"><c:set var="baseQuery" value="${baseQuery}&status=${param.status}" /></c:if>
+
+                                        <c:if test="${currentPage > 1}">
+                                            <li class="previous">
+                                                <a href="coursecontroller?${baseQuery}&pageSubjectList=${currentPage - 1}">
+                                                    <i class="ti-arrow-left"></i> Prev
+                                                </a>
+                                            </li>
+                                        </c:if>
+
+                                        <c:forEach begin="1" end="${sessionScope.endPage}" var="i">
+                                            <li class="${currentPage == i ? 'active' : ''}">
+                                                <a href="coursecontroller?${baseQuery}&pageSubjectList=${i}">${i}</a>
+                                            </li>
+                                        </c:forEach>
+
+                                        <c:if test="${currentPage < sessionScope.endPage}">
+                                            <li class="next">
+                                                <a href="coursecontroller?${baseQuery}&pageSubjectList=${currentPage + 1}">
+                                                    Next <i class="ti-arrow-right"></i>
+                                                </a>
+                                            </li>
+                                        </c:if>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </header>
-            <div class="page-content bg-white">
-                <div class="page-banner ovbl-dark" style="background-image:url(assets/images/banner/banner1.jpg);">
-                    <div class="container">
-                        <div class="page-banner-entry">
-                            <h1 class="text-white">Subject List</h1>
-                        </div>
-                    </div>
-                </div>
-                <div class="breadcrumb-row">
-                    <div class="container">
-                        <ul class="list-inline">
-                            <li><a href="index.jsp">Home</a></li>
-                            <li>Subject List</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="content-block">
-                    <div class="section-area section-sp1">
-                        <div class="container">
-                            <div class="filter-search-container">
-                                <form action="coursecontroller" method="get" class="filter-form">
-                                    <input type="hidden" name="action" value="filter">
-                                    <select name="category" onchange="this.form.submit()">
-                                        <option value="allCategory">All Categories</option>
-                                        <c:forEach var="i" items="${sessionScope.courseCategoryList}">
-                                            <option value="${i.courseCategoryName}"
-                                                    <c:if test="${param.category == i.courseCategoryName}">selected</c:if> >
-                                                ${i.courseCategoryName}
-                                            </option>
-                                        </c:forEach>
-                                    </select>
+        </main>
+        <div class="ttr-overlay"></div>
 
-                                    <select name="status" onchange="this.form.submit()">
-                                        <option value="allStatus" <c:if test="${param.status == 'allStatus'}">selected</c:if>>All Status</option>
-                                        <option value="active" <c:if test="${param.status == 'active'}">selected</c:if>>Active</option>
-                                        <option value="inactive" <c:if test="${param.status == 'inactive'}">selected</c:if>>Inactive</option>
-                                        </select>
+        <!-- External JavaScripts -->
+        <script src="<%=request.getContextPath()%>/admin/assets/js/jquery.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/magnific-popup/magnific-popup.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/counter/waypoints-min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/counter/counterup.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/imagesloaded/imagesloaded.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/masonry/masonry.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/masonry/filter.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/owl-carousel/owl.carousel.js"></script>
+        <script src='<%=request.getContextPath()%>/admin/assets/vendors/scroll/scrollbar.min.js'></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/js/functions.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/vendors/chart/chart.min.js"></script>
+        <script src="<%=request.getContextPath()%>/admin/assets/js/admin.js"></script>
 
-                                        <button type="button" onclick="window.location.href = 'coursecontroller?action=create'">Create</button>
-                                    </form>
-
-                                    <form action="coursecontroller" method="post" class="search-form">
-                                        <input type="hidden" name="action" value="filter"> <input type="text" name="search" placeholder="Search" value="${param.search}" onkeypress="if (event.key === 'Enter')
-                                                    this.form.submit();">
-                                </form>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <button class="quizlist" type="button" onclick="window.location.href = 'quizcontroller'">Quizzes List</button>
-                            </div>
-
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Category</th>
-                                        <th>Number of Lesson</th>
-                                        <th>Owner</th>
-                                        <th>Status</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <c:forEach var="i" items="${sessionScope.courseList}" >
-                                        <tr>
-                                            <td>${i.courseID}</td>
-                                            <td>${i.courseName}</td>
-                                            <td>${i.courseCategory}</td>
-                                            <td>${i.numberOfLesson}</td>
-                                            <td>${i.owner}</td>
-                                            <td>${i.status}</td>
-                                            <td class="action"><a href="coursecontroller?action=detail&service=overview&id=${i.courseID}"> Details </a></td>
-                                        </tr>
-                                    </c:forEach>
-                                </tbody>
-                            </table>
-
-                            <div class="pagination">
-                                <c:forEach begin="1" end="${sessionScope.endPage}" var="i">
-                                    <a href="coursecontroller?action=view&pageSubjectList=${i}" >${i} </a>
-                                </c:forEach>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <script src="assets/js/jquery.min.js"></script>
-            <script src="assets/vendors/bootstrap/js/popper.min.js"></script>
-            <script src="assets/vendors/bootstrap/js/bootstrap.min.js"></script>
-            <script src="assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
-            <script src="assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
-            <script src="assets/vendors/magnific-popup/magnific-popup.js"></script>
-            <script src="assets/vendors/counter/waypoints-min.js"></script>
-            <script src="assets/vendors/counter/counterup.min.js"></script>
-            <script src="assets/vendors/imagesloaded/imagesloaded.js"></script>
-            <script src="assets/vendors/masonry/masonry.js"></script>
-            <script src="assets/vendors/masonry/filter.js"></script>
-            <script src="assets/vendors/owl-carousel/owl.carousel.js"></script>
-            <script src="assets/js/functions.js"></script>
-            <script src="assets/js/contact.js"></script>
-            <script src='assets/vendors/switcher/switcher.js'></script>
-        </div>
     </body>
 </html>

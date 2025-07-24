@@ -1,4 +1,3 @@
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
 
@@ -24,7 +23,7 @@
 
         <!-- FAVICONS ICON ============================================= -->
         <link rel="icon" href="../error-404.jsp" type="image/x-icon" />
-        <link rel="shortcut icon" type="image/x-icon" href="<%=request.getContextPath()%>/admin/assets/images/favicon.png" />
+        <link rel="shortcut filter" type="image/x-icon" href="<%=request.getContextPath()%>/admin/assets/images/favicon.png" />
 
         <!-- PAGE TITLE HERE ============================================= -->
         <title>Quizzes List</title>
@@ -52,237 +51,263 @@
         <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/dashboard.css">
         <link class="skin" rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/assets/css/color/color-1.css">
 
-
         <style>
-            /* CSS */
             body {
                 font-family: Arial, sans-serif;
-                background-color: #f5f5f5;
                 margin: 0;
                 padding: 0;
+                background-color: #f4f4f9;
+            }
+            .container {
+                width: 85%;
+                margin: 15px auto;
+            }
+            /* S? d?ng flexbox ?? c�c form v� input n?m c�ng m?t h�ng */
+            .filter-search-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-bottom: 15px;
+                align-items: center;
             }
 
-            /* Container chính */
-            .container-fluid {
-                padding: 20px;
+            .filter-form, .search-form {
+                display: flex;
+                align-items: center;
+                gap: 10px;
             }
 
+            .filter-form select,
+            .search-form input[type="text"],
+            .filter-form button,
+            .search,
+            .reset {
+                padding: 6px;
+                font-size: 13px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                height: 32px;
+            }
+            .filter-form select {
+                width: 120px;
+            }
+            .search-form input[type="text"] {
+                width: 160px;
+            }
+            .filter-form button,
+            .search,
+            .reset {
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                cursor: pointer;
+                padding: 6px 12px;
+            }
+            .filter-form button:hover,
+            .search:hover,
+            .reset:hover {
+                background-color: #0056b3;
+            }
+            
+            .quizlist {
+                font-size: 13px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                height: 32px;
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                cursor: pointer;
+                padding: 6px 12px;
+            }
+            
+            table {
+                width: 95%;
+                border-collapse: collapse;
+                background-color: #fff;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+                border: 1px solid #ddd;
+                font-size: 13px;
+            }
+            th, td {
+                padding: 8px;
+                text-align: left;
+                border: 1px solid #ddd;
+            }
+            th {
+                background-color: #d9eaff;
+                font-weight: bold;
+            }
+            .action a {
+                color: #007bff;
+                text-decoration: none;
+            }
+            .action a:hover {
+                text-decoration: underline;
+            }
+            .pagination {
+                text-align: center;
+                margin-top: 15px;
+            }
+            .pagination a {
+                padding: 6px 10px;
+                margin: 0 4px;
+                text-decoration: none;
+                color: #007bff;
+                border: 1px solid #ddd;
+                border-radius: 3px;
+            }
+            .pagination a.active {
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+            }
+            .pagination a:hover {
+                background-color: #e9ecef;
+            }
+
+            /* CSS b? sung t? file g?c */
             .widget-box {
                 background-color: #fff;
-                border-radius: 8px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                padding: 20px;
-                margin-top: -10px
+                border-radius: 6px;
+                box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+                padding: 15px;
+                margin-top: -8px;
             }
             .top-bar {
                 display: flex;
                 align-items: center;
                 justify-content: flex-start;
-                gap: 10px;
+                gap: 8px;
                 flex-wrap: nowrap;
-                margin-bottom: 15px;
+                margin-bottom: 12px;
                 padding-top: 0px;
             }
-
             .search-input {
                 flex: 1;
-                min-width: 50%;
-                padding: 6px 12px;
-                font-size: 14px;
+                min-width: 40%;
+                padding: 5px 10px;
+                font-size: 13px;
             }
-
             .btn-warning {
                 white-space: nowrap;
-                padding: 8px 19px;
-                font-size: 14px;
-                background-color: #f8c61b;
-                margin-left: 20px;
+                padding: 6px 15px;
+                font-size: 13px;
+                background-color: #007bff;
+                margin-left: 15px;
+                color: #fff;
             }
-
+            .btn-warning:hover {
+                background-color: #0056b3;
+            }
             .sort-select {
                 width: auto;
-                padding: 6px 14px;
-                font-size: 14px;
+                padding: 5px 12px;
+                font-size: 13px;
             }
-
             .sort-by-select {
-                width: 100px;
+                width: 80px;
                 text-align: center;
             }
-
-            /* Bộ lọc */
             .filters {
                 display: flex;
-                gap: 70px;
+                gap: 50px;
             }
-
             .filters select {
-                padding: 8px 8px;
+                padding: 6px 6px;
                 border: 1px solid #ddd;
-                border-radius: 4px;
+                border-radius: 3px;
                 background-color: #fff;
                 cursor: pointer;
-                font-size: 14px;
+                font-size: 13px;
                 color: #555;
                 text-align: center;
-                margin-left: 10px;
-                width: 150px;
+                margin-left: 8px;
+                width: 120px;
             }
-
             .filters select option {
                 text-align: left;
             }
-
             .filters button {
                 white-space: nowrap;
-                padding: 8px 8px;
-                font-size: 14px;
-                background-color: #f8c61b;
-                margin-left: 15px;
-                gap: 15px;
+                padding: 6px 12px;
+                font-size: 13px;
+                background-color: #007bff;
+                margin-left: 12px;
+                color: #fff;
             }
-
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-bottom: 20px;
-                border: 1px solid #ddd;
+            .filters button:hover {
+                background-color: #0056b3;
             }
-
-            table th, table td {
-                padding: 12px;
-                text-align: center;
-                border: 1px solid #ddd;
-                font-size: 14px;
-            }
-
-            table th {
-                background-color: #f0f0f0;
-                font-weight: bold;
-                color: #555;
-            }
-
             table td {
                 vertical-align: middle;
             }
-
             table td img {
-                width: 50px;
-                height: 50px;
+                width: 40px;
+                height: 40px;
                 object-fit: cover;
-                border-radius: 4px;
+                border-radius: 3px;
             }
-
-            /* Trạng thái Active/Inactive */
             .status {
                 display: inline-flex;
                 align-items: center;
-                gap: 5px;
+                gap: 4px;
             }
-
             .status .dot {
-                width: 10px;
-                height: 10px;
+                width: 8px;
+                height: 8px;
                 border-radius: 50%;
                 display: inline-block;
             }
-
             .status .dot.active {
                 background-color: #28a745;
             }
-
             .status .dot.inactive {
                 background-color: #dc3545;
             }
-
-            /* Nút hành động */
             .action-buttons a {
                 text-decoration: none;
                 color: #007bff;
-                font-size: 14px;
-                margin-left: 5px;
+                font-size: 13px;
+                margin-left: 4px;
             }
-
             .action-buttons a:hover {
                 text-decoration: underline;
             }
-
-            /* Phân trang */
-            .pagination {
+            .pagination-bx {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                gap: 10px;
-                margin-top: 20px;
+                gap: 8px;
+                margin-top: 15px;
             }
-
-            .pagination a, .pagination span {
-                padding: 8px 12px;
+            .pagination-bx a, .pagination-bx span {
+                padding: 6px 10px;
                 border: 1px solid #ddd;
-                border-radius: 4px;
+                border-radius: 3px;
                 text-decoration: none;
-                font-size: 14px;
+                font-size: 13px;
             }
-
-            .pagination a {
+            .pagination-bx a {
                 color: #007bff;
                 background-color: #fff;
             }
-
-            .pagination span {
+            .pagination-bx span {
                 background-color: #007bff;
                 color: #fff;
                 border-color: #007bff;
             }
-
-            .pagination a:hover {
+            .pagination-bx a:hover {
                 background-color: #f0f0f0;
             }
-
             .select {
                 display: block;
             }
-
             .option {
                 display: block;
             }
-
             .add-slider-btn {
-                margin-left: 915px;
-            }
-
-            .reset {
-                padding-left: 7px;
-                padding-right: 8px;
-            }
-
-            .search {
-                padding-left: 25px;
-                padding-right: 20px;
-                margin-left: 20px;
-            }
-
-            .search-container {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                margin-bottom: 20px;
-            }
-
-            .filters {
-                display: flex;
-                gap: 10px;
-                margin-bottom: 20px;
-            }
-
-            .filters select {
-                padding: 8px;
-                min-width: 150px;
-            }
-
-            .btn-add-slider {
-                white-space: nowrap;
-                margin-right: 10px;
+                margin-left: 900px;
             }
         </style>
     </head>
@@ -493,60 +518,15 @@
                 <nav class="ttr-sidebar-navi">
                     <ul>
                         <li>
-                            <a href="admin/index.jsp" class="ttr-material-button">
+                            <a href="coursecontroller" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-home"></i></span>
                                 <span class="ttr-label">Dashboard</span>
                             </a>
                         </li>
                         <li>
-                            <a href="postcontroller" class="ttr-material-button">
+                            <a href="coursecontroller" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-book"></i></span>
-                                <span class="ttr-label">Posts List</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="slidercontroller" class="ttr-material-button">
-                                <span class="ttr-icon"><i class="ti-book"></i></span>
-                                <span class="ttr-label">Sliders List</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="ttr-material-button">
-                                <span class="ttr-icon"><i class="ti-email"></i></span>
-                                <span class="ttr-label">Mailbox</span>
-                                <span class="ttr-arrow-icon"><i class="fa fa-angle-down"></i></span>
-                            </a>
-                            <ul>
-                                <li>
-                                    <a href="mailbox.jsp" class="ttr-material-button"><span class="ttr-label">Mail Box</span></a>
-                                </li>
-                                <li>
-                                    <a href="mailbox-compose.jsp" class="ttr-material-button"><span class="ttr-label">Compose</span></a>
-                                </li>
-                                <li>
-                                    <a href="mailbox-read.jsp" class="ttr-material-button"><span class="ttr-label">Mail Read</span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#" class="ttr-material-button">
-                                <span class="ttr-icon"><i class="ti-calendar"></i></span>
-                                <span class="ttr-label">Calendar</span>
-                                <span class="ttr-arrow-icon"><i class="fa fa-angle-down"></i></span>
-                            </a>
-                            <ul>
-                                <li>
-                                    <a href="basic-calendar.jsp" class="ttr-material-button"><span class="ttr-label">Basic Calendar</span></a>
-                                </li>
-                                <li>
-                                    <a href="list-view-calendar.jsp" class="ttr-material-button"><span class="ttr-label">List View</span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="bookmark.jsp" class="ttr-material-button">
-                                <span class="ttr-icon"><i class="ti-bookmark-alt"></i></span>
-                                <span class="ttr-label">Bookmarks</span>
+                                <span class="ttr-label">Subject List</span>
                             </a>
                         </li>
                         <li>
@@ -556,9 +536,9 @@
                             </a>
                         </li>
                         <li>
-                            <a href="add-listing.jsp" class="ttr-material-button">
+                            <a href="coursecontroller?action=create" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-layout-accordion-list"></i></span>
-                                <span class="ttr-label">Add listing</span>
+                                <span class="ttr-label">Add Course</span>
                             </a>
                         </li>
                         <li>
@@ -594,7 +574,7 @@
                                 <div class="db-breadcrumb">
                                     <h4 class="breadcrumb-title" style="font-size: 24px;">Quizzes List</h4>
                                     <ul class="db-breadcrumb-list">
-                                        &nbsp;
+                                        �
                                         <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
                                         <li>Quizzes List</li>
                                     </ul>
@@ -605,7 +585,7 @@
 
                                     <div class="top-bar" style="width: 80%; display: flex; align-items: center; justify-content: flex-start; gap: 10px; flex-wrap: nowrap; margin-bottom: 15px; padding-top: 0px;">
                                         <input type="text" name="search" value="${param.search}" placeholder="Search by quiz name" class="search-input flex-grow-1" style="min-width: 50px; padding: 8px;" />
-                                        <button type="submit" class="btn btn-warning search">Search</button>
+                                        <button type="submit" class="search">Search</button>
 
                                         <select name="filterbysubject" class="sort-select">
                                             <option value="-1" ${param.filterbysubject eq '-1' ? 'selected' : ''}>All Subject</option>
@@ -620,8 +600,6 @@
                                                 <option value="${c}" ${param.quiztype == c ? 'selected' : ''}>${c}</option>
                                             </c:forEach>
                                         </select>
-
-
                                     </div>
 
                                     <div class="filters" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 20px; width: 100%;">
@@ -630,7 +608,7 @@
                                             <input type="number" name="rowsPerPage" value="${param.rowsPerPage != null ? param.rowsPerPage : 5}" min="1" class="form-control" style="height: 32px;width: 75px; margin-left: 10px; padding: 6px;" />
                                         </div>
 
-                                        <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center" style="margin-top: 10px;">
                                             <span>Choose column to hide: </span>
                                             <label style="margin-left: 15px;margin-top: 13px;font-weight: normal"><input type="checkbox" name="hideID" value="true" ${param.hideID == 'true' ? 'checked' : ''}> ID</label>
                                             <label style="margin-left: 15px;margin-top: 13px;font-weight: normal"><input type="checkbox" name="hideSubject" value="true" ${param.hideSubject == 'true' ? 'checked' : ''}> Subject</label>
@@ -642,45 +620,44 @@
                                         </div>
 
                                         <input type="hidden" name="page" value="1" />
-                                        <button type="submit" class="btn btn-warning">Apply Filters</button>
-                                        <a href="quizcontroller" class="btn btn-warning reset">Reset Filters</a>
+                                        <button type="submit" class="filters button">Apply Filters</button>
+                                        <a href="quizcontroller" class="reset">Reset Filters</a>
                                     </div>
                                 </form>
                             </div>
 
                             <div class="widget-inner">
                                 <div class="card-courses-list admin-courses">
-                                    <table border="1">
+                                    <table>
                                         <thead>
                                             <tr>
                                                 <c:if test="${param.hideID != 'true'}"><th>ID</th></c:if>
-                                                    <th>Quiz Name</th>
+                                                <th>Quiz Name</th>
                                                 <c:if test="${param.hideSubject != 'true'}"><th>Subject</th></c:if>
                                                 <c:if test="${param.hideLevel != 'true'}"><th>Level</th></c:if>
                                                 <c:if test="${param.hideNOQ != 'true'}"><th>Number of Question</th></c:if>
                                                 <c:if test="${param.hideDuration != 'true'}"><th>Duration</th></c:if>
                                                 <c:if test="${param.hidePassRate != 'true'}"><th>Pass Rate</th></c:if>
                                                 <c:if test="${param.hideQuizType != 'true'}"><th>Quiz Type</th></c:if>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                             <c:forEach var="a" items="${listAllQuiz}" varStatus="loop">
                                                 <tr>
                                                     <c:if test="${param.hideID != 'true'}"><td>${a.quizID}</td></c:if>
-                                                        <td>${a.name}</td>
+                                                    <td>${a.name}</td>
                                                     <c:if test="${param.hideSubject != 'true'}"><td>${a.course.courseName}</td></c:if>
                                                     <c:if test="${param.hideLevel != 'true'}"><td>${a.level}</td></c:if>
                                                     <c:if test="${param.hideNOQ != 'true'}"><td>${a.numberQuestions}</td></c:if>
                                                     <c:if test="${param.hideDuration != 'true'}"><td>${a.duration}</td></c:if>
                                                     <c:if test="${param.hidePassRate != 'true'}"><td>${a.passRate}</td></c:if>
                                                     <c:if test="${param.hideQuizType != 'true'}"><td>${a.quizType}</td></c:if>
-
-                                                        <td class="action-buttons">
-                                                            <a href="#">Edit</a>
-                                                            <a href="#">Delete</a>
-                                                        </td>
-                                                    </tr>
+                                                    <td class="action">
+                                                        <a href="#">Edit</a>
+                                                        <a href="#">Delete</a>
+                                                    </td>
+                                                </tr>
                                             </c:forEach>
                                         </tbody>
                                     </table>
