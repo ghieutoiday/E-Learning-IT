@@ -62,11 +62,11 @@
                 width: 90%;
                 margin: 20px auto;
             }
-            /* S? d?ng flexbox ?? c·c form v‡ input n?m c˘ng m?t h‡ng */
+            /* S? d?ng flexbox ?? c√°c form v√† input n?m c√πng m?t h√†ng */
             .filter-search-container {
                 display: flex;
-                flex-wrap: wrap; /* Cho phÈp c·c m?c xu?ng dÚng n?u khÙng ?? ch? */
-                gap: 15px; /* Kho?ng c·ch gi?a c·c form */
+                flex-wrap: wrap; /* Cho ph√©p c√°c m?c xu?ng d√≤ng n?u kh√¥ng ?? ch? */
+                gap: 15px; /* Kho?ng c√°ch gi?a c√°c form */
                 margin-bottom: 20px;
                 align-items: center; /* C?n ch?nh theo chi?u d?c */
             }
@@ -74,7 +74,7 @@
             .filter-form, .search-form {
                 display: flex;
                 align-items: center;
-                gap: 15px; /* Kho?ng c·ch gi?a c·c ph?n t? trong m?i form */
+                gap: 15px; /* Kho?ng c√°ch gi?a c√°c ph?n t? trong m?i form */
             }
 
             .filter-form select,
@@ -514,12 +514,6 @@
                     <ul>
                         <li>
                             <a href="coursecontroller" class="ttr-material-button">
-                                <span class="ttr-icon"><i class="ti-home"></i></span>
-                                <span class="ttr-label">Dashboard</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="coursecontroller" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-book"></i></span>
                                 <span class="ttr-label">Subject List</span>
                             </a>
@@ -569,7 +563,7 @@
                                 <div class="db-breadcrumb">
                                     <h4 class="breadcrumb-title" style="font-size: 24px;">Subject List</h4>
                                     <ul class="db-breadcrumb-list">
-                                        †
+                                        ¬†
                                         <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
                                         <li>Subject List</li>
                                     </ul>
