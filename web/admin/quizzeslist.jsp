@@ -62,7 +62,7 @@
                 width: 85%;
                 margin: 15px auto;
             }
-            /* S? d?ng flexbox ?? c�c form v� input n?m c�ng m?t h�ng */
+            /* Sử dụng flexbox để các form và input nằm cùng một hàng */
             .filter-search-container {
                 display: flex;
                 flex-wrap: wrap;
@@ -166,7 +166,7 @@
                 background-color: #e9ecef;
             }
 
-            /* CSS b? sung t? file g?c */
+            /* CSS bổ sung từ file gốc */
             .widget-box {
                 background-color: #fff;
                 border-radius: 6px;
@@ -574,7 +574,7 @@
                                 <div class="db-breadcrumb">
                                     <h4 class="breadcrumb-title" style="font-size: 24px;">Quizzes List</h4>
                                     <ul class="db-breadcrumb-list">
-                                        �
+                                         
                                         <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
                                         <li>Quizzes List</li>
                                     </ul>
