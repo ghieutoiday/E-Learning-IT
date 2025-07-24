@@ -525,6 +525,12 @@
                             </a>
                         </li>
                         <li>
+                            <a href="questionList" class="ttr-material-button">
+                                <span class="ttr-icon"><i class="ti-comments"></i></span>
+                                <span class="ttr-label">Question List</span>
+                            </a>
+                        </li>
+                        <li>
                             <a href="coursecontroller?action=create" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-layout-accordion-list"></i></span>
                                 <span class="ttr-label">Add Course</span>

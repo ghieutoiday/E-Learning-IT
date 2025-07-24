@@ -1,6 +1,5 @@
 package controller;
 
-import com.sun.jdi.connect.spi.Connection;
 import dal.AnswerOptionDAO;
 import dal.CourseDAO;
 import dal.QuestionDAO;
@@ -20,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Course;
-import model.SubjectDimension;
 import model.User;
 
 @WebServlet("/questioncontroller")
@@ -46,19 +43,18 @@ public class QuestionController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Chỉ forward đến JSP, không còn logic download ở đây
         String action = request.getParameter("action");
         HttpSession session = request.getSession();
-        User currentUser = (User) session.getAttribute("loggedInUser"); 
+        User currentUser = (User) session.getAttribute("loggedInUser");
 
-        // Kiểm tra xem currentUser có phải là Expert không
-        if (currentUser == null || currentUser.getRole().getRoleID() != 4) { 
+        // Kiểm tra quyền Expert
+        if (currentUser == null || currentUser.getRole().getRoleID() != 4) {
             request.setAttribute("errorMessage", "Bạn không có quyền thực hiện hành động này.");
-            response.sendRedirect("home"); 
+            response.sendRedirect("home");
             return;
         }
         if ("edit".equalsIgnoreCase(action)) {
-             String questionIDParam = request.getParameter("questionID");
+            String questionIDParam = request.getParameter("questionID");
             int questionID = Integer.parseInt(questionIDParam);
             Question question = questionDAO.getQuestionByQuestionID(questionID);
             request.setAttribute("question", question);
@@ -66,10 +62,9 @@ public class QuestionController extends HttpServlet {
             request.setAttribute("dimensionList", subjectDimensionDAO.getAllDistinctDimensionByName());
             request.setAttribute("answers", answerOptionDAO.getAnswersByQuestionId(questionID));
             request.getRequestDispatcher("Question-Detail.jsp").forward(request, response);
-
-        } else if ("import".equalsIgnoreCase(action) || action == null) {
-            // Đây là logic forward đến trang import nếu action là "import" hoặc không có action
-            request.getRequestDispatcher("/importQuestions.jsp").forward(request, response);
+        } else {
+            // Mặc định forward về questionList.jsp thay vì importQuestions.jsp
+            request.getRequestDispatcher("/questionList.jsp").forward(request, response);
         }
     }
 
@@ -78,17 +73,16 @@ public class QuestionController extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
         HttpSession session = request.getSession();
-        User currentUser = (User) session.getAttribute("loggedInUser"); 
+        User currentUser = (User) session.getAttribute("loggedInUser");
 
-        // Kiểm tra xem currentUser có phải là Expert không
-        if (currentUser == null || currentUser.getRole().getRoleID() != 4) { 
-            request.setAttribute("errorMessage", "Bạn không có quyền thực hiện hành động này.");
-            response.sendRedirect("home"); 
+        // Kiểm tra quyền Expert
+        if (currentUser == null || currentUser.getRole().getRoleID() != 4) {
+            response.sendRedirect("home");
             return;
         }
+
         if ("import".equals(action)) {
             Part filePart = request.getPart("file");
-            QuestionDAO questionDAO = new QuestionDAO();
             List<String> errors = new ArrayList<>();
             int successCount = 0;
 
@@ -109,11 +103,7 @@ public class QuestionController extends HttpServlet {
             }
 
             if (!errors.isEmpty()) {
-                request.setAttribute("successCount", successCount);
-                request.setAttribute("errors", errors);
-                request.setAttribute("courseId", courseID);
-                request.setAttribute("lessonId", (lessonIdParam != null && !lessonIdParam.isEmpty()) ? Integer.parseInt(lessonIdParam) : -1);
-                request.getRequestDispatcher("/importQuestions.jsp").forward(request, response);
+                response.sendRedirect("questionList");
                 return;
             }
 
@@ -126,83 +116,77 @@ public class QuestionController extends HttpServlet {
                     String headerLine = reader.readLine();
                     if (headerLine == null) {
                         errors.add("Tệp rỗng hoặc không có tiêu đề.");
-                        request.setAttribute("successCount", successCount);
-                        request.setAttribute("errors", errors);
-                        request.setAttribute("courseId", courseID);
-                        request.setAttribute("lessonId", (lessonIdParam != null && !lessonIdParam.isEmpty()) ? Integer.parseInt(lessonIdParam) : -1);
-                        request.getRequestDispatcher("/importQuestions.jsp").forward(request, response);
-                        return;
-                    }
+                    } else {
+                        String lineContent;
+                        while ((lineContent = reader.readLine()) != null) {
+                            try {
+                                String[] line = lineContent.split(DELIMITER);
 
-                    String lineContent;
-                    while ((lineContent = reader.readLine()) != null) {
-                        try {
-                            String[] line = lineContent.split(DELIMITER);
-
-                            if (line.length < 7) {
-                                errors.add("Dòng dữ liệu không đủ số cột (yêu cầu ít nhất 7 cột cơ bản, không bao gồm courseID và lessonID): " + lineContent);
-                                continue;
-                            }
-
-                            int dimensionID = Integer.parseInt(line[0].trim());
-                            int typeQuestionID = Integer.parseInt(line[1].trim());
-                            String content = line[2].trim();
-                            String media = line[3].trim().isEmpty() ? null : line[3].trim();
-                            String explanation = line[4].trim().isEmpty() ? null : line[4].trim();
-                            int level = Integer.parseInt(line[5].trim());
-                            String status = line[6].trim();
-
-                            if (!questionDAO.validateForeignKeys(courseID, dimensionID, typeQuestionID)) {
-                                errors.add("Khóa ngoại không hợp lệ cho câu hỏi: '" + content + "' (dimensionID: " + dimensionID + ", typeQuestionID: " + typeQuestionID + ", CourseID: " + courseID + "). Dòng: '" + lineContent + "'");
-                                continue;
-                            }
-
-                            if (!status.equals("Active") && !status.equals("Inactive")) {
-                                errors.add("Trạng thái không hợp lệ cho câu hỏi: '" + content + "' (Dòng: '" + lineContent + "'). Trạng thái phải là 'Active' hoặc 'Inactive'.");
-                                continue;
-                            }
-
-                            Question question = new Question(0, courseID, dimensionID, typeQuestionID, content,
-                                    media, explanation, level, status);
-
-                            List<AnswerOption> answerOptions = new ArrayList<>();
-                            for (int i = 7; i < line.length; i += 2) {
-                                if (i + 1 < line.length) {
-                                    String answerContent = line[i].trim();
-                                    boolean isCorrect = line[i + 1].trim().equals("1");
-                                    answerOptions.add(new AnswerOption(0, answerContent, isCorrect));
-                                } else {
-                                    errors.add("Dữ liệu đáp án không đầy đủ cho câu hỏi: '" + content + "' (Dòng: '" + lineContent + "'). Thiếu nội dung hoặc trạng thái đúng/sai của đáp án.");
-                                    break;
+                                if (line.length < 7) {
+                                    errors.add("Dòng dữ liệu không đủ số cột: " + lineContent);
+                                    continue;
                                 }
-                            }
 
-                            if (answerOptions.isEmpty()) {
-                                errors.add("Không có đáp án nào được cung cấp cho câu hỏi: '" + content + "' (Dòng: '" + lineContent + "')");
-                                continue;
-                            }
+                                int dimensionID = Integer.parseInt(line[0].trim());
+                                int typeQuestionID = Integer.parseInt(line[1].trim());
+                                String content = line[2].trim();
+                                String media = line[3].trim().isEmpty() ? null : line[3].trim();
+                                String explanation = line[4].trim().isEmpty() ? null : line[4].trim();
+                                int level = Integer.parseInt(line[5].trim());
+                                String status = line[6].trim();
 
-                            if (answerOptions.stream().noneMatch(AnswerOption::isCorrect)) {
-                                errors.add("Không có đáp án đúng nào được cung cấp cho câu hỏi: '" + content + "' (Dòng: '" + lineContent + "')");
-                                continue;
-                            }
+                                if (!questionDAO.validateForeignKeys(courseID, dimensionID, typeQuestionID)) {
+                                    errors.add("Khóa ngoại không hợp lệ cho câu hỏi: '" + content + "' (dimensionID: " + dimensionID + ", typeQuestionID: " + typeQuestionID + ", CourseID: " + courseID + ").");
+                                    continue;
+                                }
 
-                            int savedQuestionId = questionDAO.saveQuestion(question, answerOptions);
-                            if (savedQuestionId > 0) {
-                                successCount++;
-                            } else {
-                                errors.add("Lỗi không xác định khi lưu câu hỏi: '" + content + "' (Dòng: '" + lineContent + "') vào cơ sở dữ liệu.");
-                            }
+                                if (!status.equals("Active") && !status.equals("Inactive")) {
+                                    errors.add("Trạng thái không hợp lệ cho câu hỏi: '" + content + "'. Trạng thái phải là 'Active' hoặc 'Inactive'.");
+                                    continue;
+                                }
 
-                        } catch (NumberFormatException nfe) {
-                            errors.add("Lỗi định dạng số cho câu hỏi: '" + lineContent + "' - " + nfe.getMessage());
-                            LOGGER.log(Level.SEVERE, "Lỗi định dạng số khi xử lý dòng: " + lineContent, nfe);
-                        } catch (ArrayIndexOutOfBoundsException aiobe) {
-                            errors.add("Lỗi thiếu cột dữ liệu cho câu hỏi: '" + lineContent + "' - " + aiobe.getMessage());
-                            LOGGER.log(Level.SEVERE, "Lỗi thiếu cột khi xử lý dòng: " + lineContent, aiobe);
-                        } catch (Exception ex) {
-                            errors.add("Lỗi không xác định khi xử lý câu hỏi: '" + lineContent + "' - " + ex.getMessage());
-                            LOGGER.log(Level.SEVERE, "Lỗi khi xử lý dòng: " + lineContent, ex);
+                                Question question = new Question(0, courseID, dimensionID, typeQuestionID, content,
+                                        media, explanation, level, status);
+
+                                List<AnswerOption> answerOptions = new ArrayList<>();
+                                for (int i = 7; i < line.length; i += 2) {
+                                    if (i + 1 < line.length) {
+                                        String answerContent = line[i].trim();
+                                        boolean isCorrect = line[i + 1].trim().equals("1");
+                                        answerOptions.add(new AnswerOption(0, answerContent, isCorrect));
+                                    } else {
+                                        errors.add("Dữ liệu đáp án không đầy đủ cho câu hỏi: '" + content + "'.");
+                                        break;
+                                    }
+                                }
+
+                                if (answerOptions.isEmpty()) {
+                                    errors.add("Không có đáp án nào được cung cấp cho câu hỏi: '" + content + "'.");
+                                    continue;
+                                }
+
+                                if (answerOptions.stream().noneMatch(AnswerOption::isCorrect)) {
+                                    errors.add("Không có đáp án đúng nào được cung cấp cho câu hỏi: '" + content + "'.");
+                                    continue;
+                                }
+
+                                int savedQuestionId = questionDAO.saveQuestion(question, answerOptions);
+                                if (savedQuestionId > 0) {
+                                    successCount++;
+                                } else {
+                                    errors.add("Lỗi không xác định khi lưu câu hỏi: '" + content + "'.");
+                                }
+
+                            } catch (NumberFormatException nfe) {
+                                errors.add("Lỗi định dạng số cho câu hỏi: '" + lineContent + "' - " + nfe.getMessage());
+                                LOGGER.log(Level.SEVERE, "Lỗi định dạng số khi xử lý dòng: " + lineContent, nfe);
+                            } catch (ArrayIndexOutOfBoundsException aiobe) {
+                                errors.add("Lỗi thiếu cột dữ liệu cho câu hỏi: '" + lineContent + "' - " + aiobe.getMessage());
+                                LOGGER.log(Level.SEVERE, "Lỗi thiếu cột khi xử lý dòng: " + lineContent, aiobe);
+                            } catch (Exception ex) {
+                                errors.add("Lỗi không xác định khi xử lý câu hỏi: '" + lineContent + "' - " + ex.getMessage());
+                                LOGGER.log(Level.SEVERE, "Lỗi khi xử lý dòng: " + lineContent, ex);
+                            }
                         }
                     }
                 } catch (IOException ex) {
@@ -211,17 +195,9 @@ public class QuestionController extends HttpServlet {
                 }
             }
 
-            request.setAttribute("successCount", successCount);
-            request.setAttribute("errors", errors);
-            request.setAttribute("courseId", courseID);
-            request.setAttribute("lessonId", (lessonIdParam != null && !lessonIdParam.isEmpty()) ? Integer.parseInt(lessonIdParam) : -1);
-            try {
-                request.getRequestDispatcher("/importQuestions.jsp").forward(request, response);
-            } catch (ServletException | IOException ex) {
-                LOGGER.log(Level.SEVERE, "Lỗi khi chuyển hướng đến JSP", ex);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi khi chuyển hướng.");
-            }
-        } else if ("edit".equalsIgnoreCase(action)) { 
+            // Redirect về questionList bất kể thành công hay lỗi
+            response.sendRedirect("questionList");
+        } else if ("edit".equalsIgnoreCase(action)) {
             String questionIDStr = request.getParameter("questionID");
             String courseIDStr = request.getParameter("courseID");
             String dimensionIDStr = request.getParameter("dimensionID");
@@ -268,18 +244,13 @@ public class QuestionController extends HttpServlet {
             }
 
             if (!hasCorrectAnswer && answerContents != null && answerContents.length > 0) {
-                request.setAttribute("errorMessage", "Phải có ít nhất một đáp án đúng được chọn.");
-                request.setAttribute("question", questionDAO.getQuestionByQuestionID(questionID));
-                request.setAttribute("courseList", courseDAO.getAllDistinctCourseByName());
-                request.setAttribute("dimensionList", subjectDimensionDAO.getAllDistinctDimensionByName());
-                request.setAttribute("answers", answerOptionDAO.getAnswersByQuestionId(questionID));
-                request.getRequestDispatcher("Question-Detail.jsp").forward(request, response);
+                session.setAttribute("errorMessage", "Phải có ít nhất một đáp án đúng được chọn.");
+                response.sendRedirect("questioncontroller?action=edit&questionID=" + questionIDStr);
                 return;
             }
-            
+
             session.setAttribute("successMessage", "Question updated successfully!");
             response.sendRedirect("questioncontroller?action=edit&questionID=" + questionIDStr);
         }
-
     }
 }
