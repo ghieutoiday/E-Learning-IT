@@ -14,28 +14,37 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import model.AdminLessonNote;
+import model.User;
 
 @WebServlet(name = "AdminNoteController", urlPatterns = {"/adminNote"})
 @MultipartConfig(
-    fileSizeThreshold = 1024 * 1024 * 2,  // 2MB
-    maxFileSize = 1024 * 1024 * 10, // 10MB
-    maxRequestSize = 1024 * 1024 * 50 // 50MB
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10, // 10MB
+        maxRequestSize = 1024 * 1024 * 50 // 50MB
 )
 public class AdminNoteController extends HttpServlet {
-    
+
     private static final String UPLOAD_DIR = "uploads/admin_notes";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         request.setCharacterEncoding("UTF-8");
-        
+
         try {
             int lessonId = Integer.parseInt(request.getParameter("lessonId"));
             int courseId = Integer.parseInt(request.getParameter("courseId"));
             String action = request.getParameter("action");
-            int adminId = 27;
+            HttpSession session = request.getSession(false); // Lấy session, không tạo mới
+
+            User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+            if (user == null || user.getRole() == null || user.getRole().getRoleID() != 5
+                    && user.getRole().getRoleID() != 4) {
+                response.sendRedirect(request.getContextPath() + "/home");
+                return;
+            }
+            int adminId = user.getUserID();
 
             if ("add_note".equals(action)) {
                 String noteContent = request.getParameter("noteContent");
@@ -43,14 +52,13 @@ public class AdminNoteController extends HttpServlet {
                 Collection<Part> imageParts = request.getParts().stream()
                         .filter(part -> "images".equals(part.getName()) && part.getSize() > 0)
                         .collect(Collectors.toList());
-                
+
                 String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
-                
+
                 AdminLessonNote note = new AdminLessonNote(0, lessonId, noteContent, adminId, null, null);
-                
+
                 AdminNoteDAO.getInstance().addNoteWithMedia(note, imageParts, videoLinks, uploadPath);
-            } 
-            else if ("delete_note".equals(action)) {
+            } else if ("delete_note".equals(action)) {
                 int noteId = Integer.parseInt(request.getParameter("noteId"));
                 AdminNoteDAO.getInstance().deleteNote(noteId);
             }
