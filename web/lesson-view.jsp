@@ -569,7 +569,7 @@
     <div class="ttr-sidebar">
         <div class="ttr-sidebar-wrapper content-scroll">
             <div class="ttr-sidebar-logo">
-                <a href="index.jsp"><img alt="" src="admin/assets/images/course-content.png" width="150" height="37"></a>
+                <a href="home"><img alt="" src="admin/assets/images/course-content.png" width="150" height="37"></a>
                 <div class="ttr-sidebar-toggle-button"><i class="ti-arrow-left"></i></div>
             </div>
             <nav class="ttr-sidebar-navi">

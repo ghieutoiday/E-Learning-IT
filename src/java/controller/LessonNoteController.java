@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
@@ -37,9 +38,18 @@ public class LessonNoteController extends HttpServlet {
             String noteId = request.getParameter("noteId");
             String lessonID = request.getParameter("lessonId"); // Sử dụng lessonID
             String courseID = request.getParameter("courseID");
-            Integer userId = 5; // Lấy từ session
 
-            if (noteId == null || lessonID == null || userId == null) {
+            HttpSession session = request.getSession(false);
+
+            if (session == null || session.getAttribute("user") == null) {
+                response.sendRedirect("/home"); // Yêu cầu đăng nhập
+                return;
+            }
+
+            User user = (User) session.getAttribute("user");
+            int userId = user.getUserID();
+
+            if (noteId == null || lessonID == null) {
                 request.setAttribute("errorMessage", "Thiếu thông tin cần thiết.");
                 response.sendRedirect(request.getContextPath() + "/lessonviewcontroller");
                 return;
@@ -105,13 +115,15 @@ public class LessonNoteController extends HttpServlet {
         String lessonID = request.getParameter("lessonId"); // Lưu ý: doPost dùng lessonId, cần đồng nhất
         String noteId = request.getParameter("noteId");
         String courseID = request.getParameter("courseID");
-        Integer userId = 5;
-
-        if (userId == null) {
-            request.setAttribute("errorMessage", "Người dùng chưa đăng nhập.");
-            response.sendRedirect(request.getContextPath() + "/lessonviewcontroller?lessonID=" + lessonID + "&courseID=" + courseID);
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 5
+                && user.getRole().getRoleID() != 4) {
+            response.sendRedirect(request.getContextPath() + "/home");
             return;
         }
+
+        int userId = user.getUserID();
 
         if ("delete".equals(action)) {
             try {
@@ -130,7 +142,6 @@ public class LessonNoteController extends HttpServlet {
             UserDAO userDAO = new UserDAO();
             LessonDAO lessonDAO = LessonDAO.getInstance();
 
-            User user = userDAO.getUserByID(userId);
             int lessonIdInt = Integer.parseInt(lessonID);
             Lesson lesson = lessonDAO.getLessonByLessonID(lessonIdInt);
 

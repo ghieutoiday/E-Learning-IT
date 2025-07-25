@@ -368,10 +368,7 @@
                                                 <input class="form-check-input" type="checkbox" id="hide-id" data-column="id" checked>
                                                 <label class="form-check-label" for="hide-id">ID</label>
                                             </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="hide-type" data-column="type" checked>
-                                                <label class="form-check-label" for="hide-type">Setting Name</label>
-                                            </div>
+                                 
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" id="hide-value" data-column="value" checked>
                                                 <label class="form-check-label" for="hide-value">Value</label>
