@@ -339,6 +339,7 @@
 
 
                                             <!--My Course / My Registration-->
+                                            <c:if test="${sessionScope.loggedInUser ne null}">
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             <li><a href="mycoursecontroller" class="btn-link customer-course"
                                                    style="color:white">
@@ -349,6 +350,7 @@
                                                    class="btn-link customer-registration" style="color:white">
                                                     <p>My Registrations</p>
                                                 </a></li>
+                                            </c:if>
                                                 <c:if test="${sessionScope.loggedInUser.role.roleID != null}">
                                                 <li class="user-profile-dropdown" style="position: relative; display: inline-block; margin-left: 10px;">
                                                     <a href="javascript:void(0);" style="color: white;" onclick="toggleDropdown()">
