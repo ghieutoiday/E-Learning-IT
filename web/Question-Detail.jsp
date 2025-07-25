@@ -426,7 +426,7 @@
                             <input type="hidden" name="questionID" value="${question.questionID}">
                             <input type="hidden" name="dimensionID" value="${question.dimensionID}">
 
-                            <%-- Hiển thị thông báo thành công từ session --%>
+                            <%-- thông báo thành công --%>
                             <c:if test="${not empty sessionScope.successMessage}">
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                                     ${sessionScope.successMessage}
@@ -435,7 +435,7 @@
                                 <c:remove var="successMessage" scope="session"/> <%-- Xóa thông báo khỏi session sau khi hiển thị --%>
                             </c:if>
 
-                            <%-- Thông báo lỗi "Phải có ít nhất một đáp án đúng được chọn." (từ requestScope) --%>
+                            <%-- Thông báo lỗi --%>
                             <c:if test="${not empty requestScope.errorMessage}">
                                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                                     ${requestScope.errorMessage}
