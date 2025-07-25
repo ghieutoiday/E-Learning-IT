@@ -1,4 +1,3 @@
-```jsp
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -387,7 +386,7 @@
                     <div class="container">
                         <div class="d-flex align-items-stretch">
                             <div class="pt-logo mr-auto">
-                                <a href="index.jsp"><img src="<%=request.getContextPath()%>/admin/assets/images/logo-white.png" alt=""/></a>
+                                <a href="home"><img src="assets/images/logowhite1.png" alt=""></a>
                             </div>
                             <div class="pt-social-link">
                                 <ul class="list-inline m-a0">
@@ -511,4 +510,3 @@
         <script src="<%=request.getContextPath()%>/admin/assets/js/admin.js"></script>
     </body>
 </html>
-```
