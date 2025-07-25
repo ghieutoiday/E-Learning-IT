@@ -470,7 +470,7 @@ public class CourseController extends HttpServlet {
                 Course course = new Course();
                 course.setCourseName(courseName);
                 course.setDescription(description);
-                course.setStatus(status);
+                course.setStatus("Inactive");
                 course.setFeature(feature);
 
                 CourseCategory category = new CourseCategoryDAO().getCategoryById(Integer.parseInt(courseCategoryId));
