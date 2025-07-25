@@ -99,7 +99,7 @@ public class QuizController extends HttpServlet {
                     request.setAttribute("listAllQuizType", listQuizType);
 
                     request.getRequestDispatcher("/admin/quizzeslist.jsp").forward(request, response);
-
+ 
                     break;
                 default:
                     throw new AssertionError();
