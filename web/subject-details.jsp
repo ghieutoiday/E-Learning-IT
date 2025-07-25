@@ -208,13 +208,8 @@
                             <div class="topbar-right">
                                 <ul>
                                     <li>
-                                        <select class="header-lang-bx">
-                                            <option data-icon="flag flag-uk">English UK</option>
-                                            <option data-icon="flag flag-us">English US</option>
-                                        </select>
                                     </li>
-                                    <li><a href="login.jsp">Login</a></li>
-                                    <li><a href="register.jsp">Register</a></li>
+                                    <li><a href="logout">Log out</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -224,7 +219,7 @@
                     <div class="menu-bar clearfix">
                         <div class="container clearfix">
                             <div class="menu-logo">
-                                <a href="index.jsp"><img src="assets/images/logo.png" alt=""></a>
+                                <a href="coursecontroller"><img src="assets/images/logo.png" alt=""></a>
                             </div>
                             <button class="navbar-toggler collapsed menuicon justify-content-end" type="button" data-toggle="collapse" data-target="#menuDropdown" aria-controls="menuDropdown" aria-expanded="false" aria-label="Toggle navigation">
                                 <span></span>
@@ -234,17 +229,13 @@
                             <div class="secondary-menu">
                                 <div class="secondary-inner">
                                     <ul>
-                                        <li><a href="javascript:;" class="btn-link"><i class="fa fa-facebook"></i></a></li>
-                                        <li><a href="javascript:;" class="btn-link"><i class="fa fa-google-plus"></i></a></li>
-                                        <li><a href="javascript:;" class="btn-link"><i class="fa fa-linkedin"></i></a></li>
-                                        <li class="search-btn"><button id="quik-search-btn" type="button" class="btn-link"><i class="fa fa-search"></i></button></li>
+
                                     </ul>
                                 </div>
                             </div>
                             <div class="nav-search-bar">
                                 <form action="#">
-                                    <input name="search" value="" type="text" class="form-control" placeholder="Type to search">
-                                    <span><i class="ti-search"></i></span>
+
                                 </form>
                                 <span id="search-remove"><i class="ti-close"></i></span>
                             </div>
@@ -253,102 +244,12 @@
                                     <a href="index.jsp"><img src="assets/images/logo.png" alt=""></a>
                                 </div>
                                 <ul class="nav navbar-nav">	
-                                    <li class="active"><a href="javascript:;">Home <i class="fa fa-chevron-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="index.jsp">Home 1</a></li>
-                                            <li><a href="index-2.jsp">Home 2</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="javascript:;">Pages <i class="fa fa-chevron-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="javascript:;">About<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="about-1.jsp">About 1</a></li>
-                                                    <li><a href="about-2.jsp">About 2</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="javascript:;">Event<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="event.jsp">Event</a></li>
-                                                    <li><a href="events-details.jsp">Events Details</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="javascript:;">FAQ's<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="faq-1.jsp">FAQ's 1</a></li>
-                                                    <li><a href="faq-2.jsp">FAQ's 2</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="javascript:;">Contact Us<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="contact-1.jsp">Contact Us 1</a></li>
-                                                    <li><a href="contact-2.jsp">Contact Us 2</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="portfolio.jsp">Portfolio</a></li>
-                                            <li><a href="profile.jsp">Profile</a></li>
-                                            <li><a href="membership.jsp">Membership</a></li>
-                                            <li><a href="error-404.jsp">404 Page</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="add-mega-menu"><a href="javascript:;">Our Courses <i class="fa fa-chevron-down"></i></a>
-                                        <ul class="sub-menu add-menu">
-                                            <li class="add-menu-left">
-                                                <h5 class="menu-adv-title">Our Courses</h5>
-                                                <ul>
-                                                    <li><a href="courses.jsp">Courses </a></li>
-                                                    <li><a href="courses-details.jsp">Courses Details</a></li>
-                                                    <li><a href="profile.jsp">Instructor Profile</a></li>
-                                                    <li><a href="event.jsp">Upcoming Event</a></li>
-                                                    <li><a href="membership.jsp">Membership</a></li>
-                                                </ul>
-                                            </li>
-                                            <li class="add-menu-right">
-                                                <img src="assets/images/adv/adv.jpg" alt=""/>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="javascript:;">Blog <i class="fa fa-chevron-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="blog-classic-grid.jsp">Blog Classic</a></li>
-                                            <li><a href="blog-classic-sidebar.jsp">Blog Classic Sidebar</a></li>
-                                            <li><a href="blog-list-sidebar.jsp">Blog List Sidebar</a></li>
-                                            <li><a href="blog-standard-sidebar.jsp">Blog Standard Sidebar</a></li>
-                                            <li><a href="blog-details.jsp">Blog Details</a></li>
-                                        </ul>
-                                    </li>
                                     <li class="nav-dashboard"><a href="javascript:;">Dashboard <i class="fa fa-chevron-down"></i></a>
                                         <ul class="sub-menu">
-                                            <li><a href="admin/index.jsp">Dashboard</a></li>
-                                            <li><a href="admin/add-listing.jsp">Add Listing</a></li>
-                                            <li><a href="admin/bookmark.jsp">Bookmark</a></li>
-                                            <li><a href="admin/postslist.jsp">Posts List</a></li>
-                                            <li><a href="admin/review.jsp">Review</a></li>
-                                            <li><a href="admin/teacher-profile.jsp">Teacher Profile</a></li>
-                                            <li><a href="admin/user-profile.jsp">User Profile</a></li>
-                                            <li><a href="coursecontroller">Subject List</a></li>
-                                            <li><a href="change-password.jsp">Change Password</a></li>
-                                            <li><a href="javascript:;">Calendar<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="admin/basic-calendar.jsp">Basic Calendar</a></li>
-                                                    <li><a href="admin/list-view-calendar.jsp">List View Calendar</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="javascript:;">Mailbox<i class="fa fa-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="admin/mailbox.jsp">Mailbox</a></li>
-                                                    <li><a href="admin/mailbox-compose.jsp">Compose</a></li>
-                                                    <li><a href="admin/mailbox-read.jsp">Mail Read</a></li>
-                                                </ul>
-                                            </li>
+                                            <li><a href="coursecontroller">Dashboard</a></li>
                                         </ul>
                                     </li>
                                 </ul>
-                                <div class="nav-social-link">
-                                    <a href="javascript:;"><i class="fa fa-facebook"></i></a>
-                                    <a href="javascript:;"><i class="fa fa-google-plus"></i></a>
-                                    <a href="javascript:;"><i class="fa fa-linkedin"></i></a>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -412,8 +313,9 @@
                                                         Featured Subject <input type="checkbox" name="featuredSubject" value="1" <c:if test="${sessionScope.courseDetail.feature == 1}">checked</c:if>>
                                                         </label>
                                                         <label>
-                                                            Number of Lessons
+                                                            <a href="subjectLesson?courseId=${sessionScope.courseDetail.courseID}"> View Details Lesson</a>
                                                             <input type="number" name="numberOfLessons" min="1" value="${sessionScope.courseDetail.numberOfLesson}" readonly>
+                                                            
                                                     </label>
                                                 </div>
                                                 <div class="form-group">

@@ -65,7 +65,7 @@ public class CourseController extends HttpServlet {
 //        if (user == null || user.getRoleID() == 4 || user.getRoleID() == 5 ) {
 //            response.sendRedirect(request.getContextPath() + "/login.jsp");
 //            return;
-//        }
+//        } 
 
         CourseDAO courseDao = new CourseDAO();
         CourseCategoryDAO courseCategoryDao = new CourseCategoryDAO();
@@ -123,9 +123,9 @@ public class CourseController extends HttpServlet {
             case "create":
                 // Chuyển sang form tạo mới khóa học
                 List<CourseCategory> courseCategoryList = courseCategoryDao.getAllCategory();
-                List<User> userListIds = new UserDAO().getUsersByIDs(25, 26);
+                List<User> roleIDUsers = new UserDAO().getUsersByRoleID(4);
                 request.setAttribute("courseCategoryList", courseCategoryList);
-                request.setAttribute("UserListIds", userListIds);
+                request.setAttribute("UserListIds", roleIDUsers);
                 request.getRequestDispatcher("new-subject.jsp").forward(request, response);
                 break;
             default:

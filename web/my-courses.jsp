@@ -282,7 +282,7 @@
 
 
                                                     <c:if test="${a.totalCompletedLesson == 0}">
-                                                        <a href="#">START COURSE</a>
+                                                        <a href="lessonviewcontroller?courseID=${a.course.courseID}">START COURSE</a>
                                                     </c:if>
                                                     <c:if test="${a.totalCompletedLesson != 0}">
                                                         Complete&nbsp;:&nbsp;

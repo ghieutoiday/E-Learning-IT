@@ -63,7 +63,7 @@ public class QuestionController extends HttpServlet {
             request.setAttribute("answers", answerOptionDAO.getAnswersByQuestionId(questionID));
             request.getRequestDispatcher("Question-Detail.jsp").forward(request, response);
         } else {
-            // Mặc định forward về questionList.jsp thay vì importQuestions.jsp
+            // Mặc định forward về questionList.jsp thay vì questionList.jsp
             request.getRequestDispatcher("/questionList.jsp").forward(request, response);
         }
     }
@@ -217,12 +217,14 @@ public class QuestionController extends HttpServlet {
 
             questionDAO.updateQuestion(question);
             answerOptionDAO.deleteAnswersByQuestionId(questionID);
-
+            
+            // --- Lấy danh sách đáp án mới từ form
             String[] answerContents = request.getParameterValues("answerOptionContent");
             String correctAnswerIndexStr = request.getParameter("correctAnswerIndex");
 
             boolean hasCorrectAnswer = false;
-
+            
+            // --- Duyệt tất cả đáp án người dùng nhập
             if (answerContents != null) {
                 for (int i = 0; i < answerContents.length; i++) {
                     String answerContent = answerContents[i];
@@ -244,12 +246,12 @@ public class QuestionController extends HttpServlet {
             }
 
             if (!hasCorrectAnswer && answerContents != null && answerContents.length > 0) {
-                session.setAttribute("errorMessage", "Phải có ít nhất một đáp án đúng được chọn.");
+                request.setAttribute("errorMessage", "Phải có ít nhất một đáp án đúng được chọn.");
                 response.sendRedirect("questioncontroller?action=edit&questionID=" + questionIDStr);
                 return;
             }
 
-            session.setAttribute("successMessage", "Question updated successfully!");
+            request.setAttribute("successMessage", "Question updated successfully!");
             response.sendRedirect("questioncontroller?action=edit&questionID=" + questionIDStr);
         }
     }

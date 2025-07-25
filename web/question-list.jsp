@@ -300,7 +300,7 @@
                     </div>
                     <div class="modal-body">
                         <form action="questioncontroller" method="post" enctype="multipart/form-data">
-                            <input type="hidden" name="courseIdParam" value="${param.courseId != null ? param.courseId : 1}" />
+                            <input type="hidden" name="courseIdParam" value="${selectedCourseId}" />
                             <input type="hidden" name="lessonIdParam" value="${param.lessonId != null ? param.lessonId : 4}" />
                             <div class="form-group">
                                 <label for="file">Chọn file TXT hoặc CSV để import:</label>

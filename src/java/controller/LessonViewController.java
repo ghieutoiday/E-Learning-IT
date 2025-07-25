@@ -38,22 +38,22 @@ public class LessonViewController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         // Kiểm tra quyền truy cập
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
-        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 1) {
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 5
+                && user.getRole().getRoleID() != 4) {
             response.sendRedirect(request.getContextPath() + "/home");
             return;
         }
-        
+
         int userID = user.getUserID();
-        
+
         //Lấy courseID
         String courseID_raw = request.getParameter("courseID");
         int courseID = -1;
-        
-        
+
         try {
             courseID = Integer.parseInt(courseID_raw);
             //Lấy course đưa sang JSP để mỗi lần chuyển bài học
@@ -63,12 +63,12 @@ public class LessonViewController extends HttpServlet {
         } catch (NumberFormatException e) {
             System.out.println(e.getMessage());
         }
-        
+
         String form = request.getParameter("form");
         if (form != null && "form".equals(form)) {
             request.setAttribute("form", "form");
         }
-        
+
         //Lấy 2 tham số này để hiển thị trên tranh tiến độ
         int completedLessons = LessonDAO.getInstance().getTotalNumberOfCompletedLessonInCourse(userID, courseID);
         int totalLessons = LessonDAO.getInstance().getAllSubLessonsByCourseIDOrdered(courseID).size();
@@ -103,19 +103,18 @@ public class LessonViewController extends HttpServlet {
                 request.setAttribute("errorMessage", "Lesson not found");
                 request.getRequestDispatcher("lesson-view.jsp").forward(request, response);
                 return;
-            } else if (lesson.getType().equalsIgnoreCase("Lesson")){
+            } else if (lesson.getType().equalsIgnoreCase("Lesson")) {
                 request.setAttribute("chooseLesson", lesson);
-            }else if (lesson.getType().equalsIgnoreCase("Quiz")){
+            } else if (lesson.getType().equalsIgnoreCase("Quiz")) {
                 //Lấy thông tin bài Quiz để in ra QuizLesson Form 1
                 Quiz quizChoose = QuizDAO.getInstance().getQuizByLessonID(lessonID);
                 request.setAttribute("chooseLesson", lesson);
                 request.setAttribute("quizChoose", quizChoose);
-                
+
                 //Lấy thông tin bài Quiz để in ra QuizLesson Form 2
                 QuizLessonDTO quizLessonDTO = QuizLessonDTO_DAO.getInstance().getQuizLessonDTOByUserIdAndQuizId(userID, quizChoose.getQuizID());
                 request.setAttribute("quizLessonDTO", quizLessonDTO);
             }
-            
 
             UserLessonProgress progress = UserLessonProgressDAO.getInstance().getUserLessonProgressByUserAndLesson(userID, lessonID);
             boolean isLessonCompleted = (progress != null && "Completed".equals(progress.getStatus()));
@@ -159,7 +158,6 @@ public class LessonViewController extends HttpServlet {
             request.getRequestDispatcher("lesson-view.jsp").forward(request, response);
             return;
         }
-        
 
         request.getRequestDispatcher("lesson-view.jsp").forward(request, response);
     }
@@ -168,6 +166,14 @@ public class LessonViewController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
+            response.getWriter().write("Error: User not logged in.");
+            return;
+        }
+        User user = (User) session.getAttribute("user");
+        int userId = user.getUserID();
         try {
             if ("startVideo".equals(action)) {
                 handleStartVideoRequest(request, response);
@@ -197,9 +203,16 @@ public class LessonViewController extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 5
+                && user.getRole().getRoleID() != 4) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+        int userID = user.getUserID();
         try {
-            int userID = 5;
+
             int lessonID = Integer.parseInt(lessonID_raw);
             Lesson lesson = LessonDAO.getInstance().getLessonByLessonID(lessonID);
 
@@ -242,7 +255,15 @@ public class LessonViewController extends HttpServlet {
         }
 
         try {
-            int userID = 5;
+            HttpSession session = request.getSession(false);
+            User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+            if (user == null || user.getRole() == null || user.getRole().getRoleID() != 5
+                    && user.getRole().getRoleID() != 4) {
+                response.sendRedirect(request.getContextPath() + "/home");
+                return;
+            }
+            int userID = user.getUserID();
+
             int lessonID = Integer.parseInt(lessonID_raw);
             Lesson lesson = LessonDAO.getInstance().getLessonByLessonID(lessonID);
 
@@ -280,9 +301,20 @@ public class LessonViewController extends HttpServlet {
         response.setContentType("text/plain;charset=UTF-8");
         String lessonID_raw = request.getParameter("lessonID");
         String courseID_raw = request.getParameter("courseID");
-        int userID = 5;
+
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 5
+                && user.getRole().getRoleID() != 4) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+        int userID = user.getUserID();
+        
+       
 
         try {
+            int courseID = Integer.parseInt(courseID_raw);
             int lessonID = Integer.parseInt(lessonID_raw);
             int courseID = Integer.parseInt(courseID_raw);
             UserLessonProgress progress = UserLessonProgressDAO.getInstance().getUserLessonProgressByUserAndLesson(userID, lessonID);

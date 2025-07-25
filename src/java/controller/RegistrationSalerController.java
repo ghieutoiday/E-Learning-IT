@@ -52,17 +52,17 @@ public class RegistrationSalerController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute("loggedInUser");
 
         // Kiểm tra xem người dùng đã đăng nhập chưa và có phải là Saler không
         if (currentUser == null || currentUser.getRole() == null || currentUser.getRole().getRoleID() != 3) {
             request.setAttribute("errorMessage", "Bạn không có quyền truy cập trang này.");
-            response.sendRedirect("home"); 
-            return; 
+            response.sendRedirect("home");
+            return;
         }
-        
+
         String action = request.getParameter("action");
 
         if ("detail".equals(action)) {
@@ -82,22 +82,14 @@ public class RegistrationSalerController extends HttpServlet {
         if ("edit".equals(action)) {
             String registrationIDParam = request.getParameter("registrationID");
             if (registrationIDParam != null && !registrationIDParam.isEmpty()) {
-                try {
-                    int registrationID = Integer.parseInt(registrationIDParam);
-                    Registration Saler = registrationDAO.getRegistrationByRegistrationID(registrationID);
-                    if (Saler != null) {
-                        request.setAttribute("Saler", Saler);
-                        request.setAttribute("courseList", courseDAO.getAllDistinctCourseByName());
-                        request.setAttribute("packageList", pricePackageDAO.getAllDistinctPricePackagesByName());
-                        request.getRequestDispatcher("registration-edit-saler.jsp").forward(request, response);
-                        return;
-                    }
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                    request.setAttribute("errorMessage", "ID đăng ký không hợp lệ.");
-                    request.getRequestDispatcher("registrationsalercontroller?action=view").forward(request, response);
-                    return;
-                }
+                int registrationID = Integer.parseInt(registrationIDParam);
+                Registration Saler = registrationDAO.getRegistrationByRegistrationID(registrationID);
+                request.setAttribute("Saler", Saler);
+                request.setAttribute("courseList", courseDAO.getAllDistinctCourseByName());
+                request.setAttribute("packageList", pricePackageDAO.getAllDistinctPricePackagesByName());
+                request.getRequestDispatcher("registration-edit-saler.jsp").forward(request, response);
+                return;
+
             }
         }
         if ("new".equals(action)) {
@@ -159,12 +151,12 @@ public class RegistrationSalerController extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
         HttpSession session = request.getSession();
-        User currentUser = (User) session.getAttribute("loggedInUser"); 
+        User currentUser = (User) session.getAttribute("loggedInUser");
 
         // Kiểm tra xem currentUser có phải là Saler không
-        if (currentUser == null || currentUser.getRole().getRoleID() != 3) { 
-            request.setAttribute("errorMessage", "Bạn không có quyền thực hiện hành động này.");
-            response.sendRedirect("home"); 
+        if (currentUser == null || currentUser.getRole().getRoleID() != 3) {
+            session.setAttribute("errorMessage", "Bạn không có quyền thực hiện hành động này.");
+            response.sendRedirect("home");
             return;
         }
         if ("edit".equals(action)) {
@@ -188,19 +180,6 @@ public class RegistrationSalerController extends HttpServlet {
             Date validTo = null;
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            try {
-                if (validFromStr != null && !validFromStr.isEmpty()) {
-                    validFrom = sdf.parse(validFromStr);
-                }
-                if (validToStr != null && !validToStr.isEmpty()) {
-                    validTo = sdf.parse(validToStr);
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-                request.setAttribute("errorMessage", "Lỗi: Định dạng ngày tháng không hợp lệ.");
-                request.getRequestDispatcher("registration-edit-saler.jsp").forward(request, response);
-                return;
-            }
 
             int registrationID = -1;
             int courseID = -1;
@@ -210,30 +189,6 @@ public class RegistrationSalerController extends HttpServlet {
             double parsedSalePrice = 0.0;
 
             try {
-                if (registrationIDStr == null || registrationIDStr.trim().isEmpty()) {
-                    throw new NumberFormatException("Thiếu registrationID.");
-                } else {
-                    registrationID = Integer.parseInt(registrationIDStr);
-                }
-
-                if (courseIDStr == null || courseIDStr.trim().isEmpty()) {
-                    throw new NumberFormatException("Thiếu courseID.");
-                } else {
-                    courseID = Integer.parseInt(courseIDStr);
-                }
-
-                if (pricePackageIDStr == null || pricePackageIDStr.trim().isEmpty()) {
-                    throw new NumberFormatException("Thiếu pricePackageID.");
-                } else {
-                    pricePackageID = Integer.parseInt(pricePackageIDStr);
-                }
-
-                if (userIDStr == null || userIDStr.trim().isEmpty()) {
-                    throw new NumberFormatException("Thiếu userID.");
-                } else {
-                    userID = Integer.parseInt(userIDStr);
-                }
-
                 if (listPriceStr != null && !listPriceStr.trim().isEmpty()) {
                     parsedListPrice = Double.parseDouble(listPriceStr);
                 }
@@ -243,10 +198,10 @@ public class RegistrationSalerController extends HttpServlet {
                 }
             } catch (NumberFormatException e) {
                 e.printStackTrace();
-                request.setAttribute("errorMessage", "Lỗi: Một số ID hoặc giá trị không hợp lệ.");
+                request.setAttribute("errorMessage", "Lỗi: Giá trị không hợp lệ.");
                 request.setAttribute("courseList", courseDAO.getAllDistinctCourseByName());
                 request.setAttribute("packageList", pricePackageDAO.getAllDistinctPricePackagesByName());
-                request.getRequestDispatcher("registration-edit-saler.jsp").forward(request, response);
+                request.getRequestDispatcher("registrationsalercontroller?action=edit&registrationID=" + registrationIDStr).forward(request, response);
                 return;
             }
 
@@ -256,17 +211,13 @@ public class RegistrationSalerController extends HttpServlet {
             try {
                 // Lấy thông tin Registration cũ trước khi cập nhật
                 Registration oldRegistration = registrationDAO.getRegistrationByRegistrationID(registrationID);
-                if (oldRegistration != null) {
-                    oldStatus = oldRegistration.getStatus();
-                    // Lấy email từ User liên quan đến oldRegistration
-                    User userLinkedToOldReg = userDAO.getUserByID(oldRegistration.getUser().getUserID());
-                    if (userLinkedToOldReg != null) {
-                        recipientEmail = userLinkedToOldReg.getEmail();
-                    }
-                }
+                oldStatus = oldRegistration.getStatus();
+                // Lấy email từ User liên quan đến oldRegistration
+                User userLinkedToOldReg = userDAO.getUserByID(oldRegistration.getUser().getUserID());
+                recipientEmail = userLinkedToOldReg.getEmail();
 
                 Registration registration = new Registration();
-                registration.setRegistrationID(registrationID);
+                registration.setRegistrationID(Integer.parseInt(registrationIDStr));
                 registration.setValidFrom(validFrom);
                 registration.setValidTo(validTo);
                 registration.setStatus(status);
@@ -278,14 +229,14 @@ public class RegistrationSalerController extends HttpServlet {
                 boolean registrationUpdated = registrationDAO.updateRegistration(registration);
 
                 PricePackage pricePackage = new PricePackage();
-                pricePackage.setPricePackageID(pricePackageID);
+                pricePackage.setPricePackageID(Integer.parseInt(pricePackageIDStr));
                 pricePackage.setName(name);
                 pricePackage.setListPrice(Double.parseDouble(listPriceStr));
                 pricePackage.setSalePrice(Double.parseDouble(salePriceStr));
                 pricePackageDAO.updatePricePackageRegistration(pricePackage);
 
                 User user = new User();
-                user.setUserID(userID);
+                user.setUserID(Integer.parseInt(userIDStr));
                 user.setFullName(fullName);
                 user.setGender(gender);
                 user.setEmail(email);
@@ -302,11 +253,11 @@ public class RegistrationSalerController extends HttpServlet {
                         String content = "Hello " + fullName + ",<br><br>"
                                 + "We would like to inform you that your course registration (ID: " + registrationID + ") has been successfully paid.<br>"
                                 + "Please access the following link to log in: <br>"
-                                + "<a href=\"http://localhost:9999/E-Learning-Merge-Ver2-Update/login.jsp\">Click here to log in</a>.<br><br>"
+                                + "<a href=\"http://localhost:9999/E-Learning-IT/home\">Click here to log in</a>.<br><br>"
                                 + "Sincerely,<br>"
                                 + "E-Learning Team.";
                         try {
-                            // tiến hàng gửi mail
+                            // tiến hành gửi mail
                             EmailUtil.sendEmail(recipientEmail, subject, content);
                         } catch (jakarta.mail.MessagingException e) {
                             e.printStackTrace();
@@ -327,11 +278,11 @@ public class RegistrationSalerController extends HttpServlet {
             } catch (Exception e) { // Bắt các lỗi DAO
                 e.printStackTrace();
                 request.setAttribute("errorMessage", "Đã xảy ra lỗi hệ thống khi cập nhật đăng ký.");
-                request.getRequestDispatcher("registration-edit-saler.jsp").forward(request, response);
+                request.getRequestDispatcher("registrationsalercontroller?action=edit&registrationID=" + registrationIDStr).forward(request, response);
             }
         } else if ("new".equals(action)) {
-            User user = (User) session.getAttribute("user");
-            
+            User user = (User) session.getAttribute("loggedInUser");
+
             String courseIDStr = request.getParameter("courseID");
             String packageName = request.getParameter("packageName");
             String listPriceStr = request.getParameter("listPrice");
@@ -411,7 +362,7 @@ public class RegistrationSalerController extends HttpServlet {
 
             } catch (NumberFormatException e) {
                 session.setAttribute("errorMessage", "Lỗi định dạng số (Course ID, List Price, Sale Price) không hợp lệ.");
-                e.printStackTrace(); // In lỗi để debug
+                e.printStackTrace(); 
                 request.setAttribute("courseList", courseDAO.getAllDistinctCourseByName());
                 request.setAttribute("packageList", pricePackageDAO.getAllDistinctPricePackagesByName());
                 request.getRequestDispatcher("registration-addnew-saler.jsp").forward(request, response);
@@ -431,7 +382,7 @@ public class RegistrationSalerController extends HttpServlet {
             if (existingUser != null) {
                 userRegistration = existingUser;
             } else {
-                
+
                 // Email chưa tồn tại. Tạo User mới
                 User newUser = new User();
                 newUser.setFullName(fullName);
@@ -439,7 +390,7 @@ public class RegistrationSalerController extends HttpServlet {
                 newUser.setEmail(email);
                 newUser.setMobile(mobile);
                 String rawPassword = PasswordGenerator.generateRandomPassword(10); // Sinh mật khẩu ngẫu nhiên 10 ký tự
-                String hashedPassword = BCrypt.hashpw(rawPassword, BCrypt.gensalt()); 
+                String hashedPassword = BCrypt.hashpw(rawPassword, BCrypt.gensalt());
                 newUser.setPassword(hashedPassword);
 
                 int newUserID = userDAO.addNewUser(newUser);
@@ -512,7 +463,7 @@ public class RegistrationSalerController extends HttpServlet {
                                     + "Welcome! You have successfully registered for the course <b>" + addedRegistration.getCourse().getCourseName() + "</b>.<br>"
                                     + "Your account has been activated. Please log in with your email: <b>" + recipientEmail + "</b> and your password is: <b>" + newPassword + "</b>.<br><br>"
                                     + "Please access the following link to log in: <br>"
-                                    + "<a href=\"http://localhost:9999/E-Learning-Merge-Ver2-Update/login.jsp\">Click here to log in</a>" + "</b>.<br>" 
+                                    + "<a href=\"http://localhost:9999/E-Learning-IT/home\">Click here to log in</a>" + "</b>.<br>"
                                     + "You should change your password for security.<br><br>"
                                     + "Sincerely,<br>"
                                     + "E-Learning Team.";

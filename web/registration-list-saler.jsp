@@ -273,7 +273,7 @@
                             <a href="#" class="ttr-material-button ttr-submenu-toggle"><span class="ttr-user-avatar"><img alt="" src="<%=request.getContextPath()%>/admin/assets/images/testimonials/pic3.jpg" width="32" height="32"></span></a>
                             <div class="ttr-header-submenu">
                                 <ul>
-                                    <li><a href="user-profile.jsp">My profile</a></li>
+                                    <li><a href="userProfileController">My profile</a></li>
                                     <c:if test="${sessionScope.loggedInUser ne null}">
                                     <li><a href="logout">Logout</a></li>
                                     </c:if>
@@ -517,7 +517,7 @@
                         <div class="container">
                             <div class="d-flex align-items-stretch">
                                 <div class="pt-logo mr-auto">
-                                    <a href="index.jsp"><img src="<%=request.getContextPath()%>/admin/assets/images/logo-white.png" alt=""/></a>
+                                    <a href="home"><img src="assets/images/logowhite1.png" alt=""></a>
                                 </div>
                                 <div class="pt-social-link">
                                     <ul class="list-inline m-a0">
@@ -542,12 +542,7 @@
                                     <div class="subscribe-form m-b20">
                                         <form class="subscription-form" action="http://educhamp.themetrades.com/demo/assets/script/mailchamp.php" method="post">
                                             <div class="ajax-message"></div>
-                                            <div class="input-group">
-                                                <input name="email" required="required" class="form-control" placeholder="Your Email Address" type="email">
-                                                <span class="input-group-btn">
-                                                    <button name="submit" value="Submit" type="submit" class="btn"><i class="fa fa-arrow-right"></i></button>
-                                                </span>
-                                            </div>
+                                            
                                         </form>
                                     </div>
                                 </div>

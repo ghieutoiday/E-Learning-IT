@@ -320,7 +320,7 @@
                 <!--logo start -->
                 <div class="ttr-logo-box">
                     <div>
-                        <a href="index.jsp" class="ttr-logo">
+                        <a href="coursecontroller" class="ttr-logo">
                             <img alt="" class="ttr-logo-mobile"
                                  src="assets/images/logo-mobile.png" width="30" height="30">
                             <img alt="" class="ttr-logo-desktop"
@@ -331,107 +331,16 @@
                 <!--logo end -->
                 <div class="ttr-header-menu">
                     <!-- header left menu start -->
-                    <ul class="ttr-header-navigation">
-                        <li>
-                            <a href="home"
-                               class="ttr-material-button ttr-submenu-toggle">HOME</a>
-                        </li>
-                        <li>
-                            <a href="#" class="ttr-material-button ttr-submenu-toggle">QUICK
-                                MENU <i class="fa fa-angle-down"></i></a>
-                            <div class="ttr-header-submenu">
-                                <ul>
-                                    <li><a href="home">Our Sliders List</a></li>
-                                    <li><a href="event.jsp">New Event</a></li>
-                                    <li><a href="membership.jsp">Membership</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                    </ul>
                     <!-- header left menu end -->
                 </div>
                 <div class="ttr-header-right ttr-with-seperator">
                     <!-- header right menu start -->
                     <ul class="ttr-header-navigation">
                         <li>
-                            <a href="#" class="ttr-material-button ttr-search-toggle"><i
-                                    class="fa fa-search"></i></a>
+                            
                         </li>
                         <li>
-                            <a href="#" class="ttr-material-button ttr-submenu-toggle"><i
-                                    class="fa fa-bell"></i></a>
-                            <div class="ttr-header-submenu noti-menu">
-                                <div class="ttr-notify-header">
-                                    <span class="ttr-notify-text-top">9 New</span>
-                                    <span class="ttr-notify-text">User Notifications</span>
-                                </div>
-                                <div class="noti-box-list">
-                                    <ul>
-                                        <li>
-                                            <span class="notification-icon dashbg-gray">
-                                                <i class="fa fa-check"></i>
-                                            </span>
-                                            <span class="notification-text">
-                                                <span>Sneha Jogi</span> sent you a message.
-                                            </span>
-                                            <span class="notification-time">
-                                                <a href="#" class="fa fa-close"></a>
-                                                <span> 02:14</span>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="notification-icon dashbg-yellow">
-                                                <i class="fa fa-shopping-cart"></i>
-                                            </span>
-                                            <span class="notification-text">
-                                                <a href="#">Your order is placed</a> sent you a
-                                                message.
-                                            </span>
-                                            <span class="notification-time">
-                                                <a href="#" class="fa fa-close"></a>
-                                                <span> 7 Min</span>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="notification-icon dashbg-red">
-                                                <i class="fa fa-bullhorn"></i>
-                                            </span>
-                                            <span class="notification-text">
-                                                <span>Your item is shipped</span> sent you a
-                                                message.
-                                            </span>
-                                            <span class="notification-time">
-                                                <a href="#" class="fa fa-close"></a>
-                                                <span> 2 May</span>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="notification-icon dashbg-green">
-                                                <i class="fa fa-comments-o"></i>
-                                            </span>
-                                            <span class="notification-text">
-                                                <a href="#">Sneha Jogi</a> sent you a message.
-                                            </span>
-                                            <span class="notification-time">
-                                                <a href="#" class="fa fa-close"></a>
-                                                <span> 14 July</span>
-                                            </span>
-                                        </li>
-                                        <li>
-                                            <span class="notification-icon dashbg-primary">
-                                                <i class="fa fa-file-word-o"></i>
-                                            </span>
-                                            <span class="notification-text">
-                                                <span>Sneha Jogi</span> sent you a message.
-                                            </span>
-                                            <span class="notification-time">
-                                                <a href="#" class="fa fa-close"></a>
-                                                <span> 15 Min</span>
-                                            </span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+                            
                         </li>
                         <li>
                             <a href="#" class="ttr-material-button ttr-submenu-toggle"><span
@@ -440,41 +349,9 @@
                                                              height="32"></span></a>
                             <div class="ttr-header-submenu">
                                 <ul>
-                                    <li><a href="user-profile.jsp">My profile</a></li>
-                                    <li><a href="list-view-calendar.jsp">Activity</a></li>
-                                    <li><a href="mailbox.jsp">Messages</a></li>
-                                    <li><a href="../login.jsp">Logout</a></li>
+                                    <li><a href="userProfileController">My profile</a></li>
+                                    <li><a href="logout">Logout</a></li>
                                 </ul>
-                            </div>
-                        </li>
-                        <li class="ttr-hide-on-mobile">
-                            <a href="#" class="ttr-material-button"><i
-                                    class="ti-layout-grid3-alt"></i></a>
-                            <div class="ttr-header-submenu ttr-extra-menu">
-                                <a href="#">
-                                    <i class="fa fa-music"></i>
-                                    <span>Musics</span>
-                                </a>
-                                <a href="#">
-                                    <i class="fa fa-youtube-play"></i>
-                                    <span>Videos</span>
-                                </a>
-                                <a href="#">
-                                    <i class="fa fa-envelope"></i>
-                                    <span>Emails</span>
-                                </a>
-                                <a href="#">
-                                    <i class="fa fa-book"></i>
-                                    <span>Reports</span>
-                                </a>
-                                <a href="#">
-                                    <i class="fa fa-smile-o"></i>
-                                    <span>Persons</span>
-                                </a>
-                                <a href="#">
-                                    <i class="fa fa-picture-o"></i>
-                                    <span>Pictures</span>
-                                </a>
                             </div>
                         </li>
                     </ul>
@@ -536,21 +413,6 @@
                                 <span class="ttr-label">Add Course</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="#" class="ttr-material-button">
-                                <span class="ttr-icon"><i class="ti-user"></i></span>
-                                <span class="ttr-label">My Profile</span>
-                                <span class="ttr-arrow-icon"><i class="fa fa-angle-down"></i></span>
-                            </a>
-                            <ul>
-                                <li>
-                                    <a href="user-profile.jsp" class="ttr-material-button"><span class="ttr-label">User Profile</span></a>
-                                </li>
-                                <li>
-                                    <a href="teacher-profile.jsp" class="ttr-material-button"><span class="ttr-label">Teacher Profile</span></a>
-                                </li>
-                            </ul>
-                        </li>
                         <li class="ttr-seperate"></li>
                     </ul>
                     <!-- sidebar menu end -->
@@ -569,7 +431,6 @@
                                 <div class="db-breadcrumb">
                                     <h4 class="breadcrumb-title" style="font-size: 24px;">Subject List</h4>
                                     <ul class="db-breadcrumb-list">
-                                         
                                         <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
                                         <li>Subject List</li>
                                     </ul>

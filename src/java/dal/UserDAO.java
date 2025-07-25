@@ -146,7 +146,7 @@ public class UserDAO extends DBContext {
 
         return user;
     }
-    
+
     //Hàm getUserByEmailByLogin Của thịnh
     public User getUserByEmailByLogin(String email) {
         User user = null;
@@ -554,6 +554,7 @@ public class UserDAO extends DBContext {
             System.out.println("Error in updateUser: " + e.getMessage());
         }
     }
+
     // cho Registration
     public int addNewUser(User user) {
         String sql = "INSERT INTO [User] (fullName, email, password, gender, mobile, roleID, status) "
@@ -599,7 +600,7 @@ public class UserDAO extends DBContext {
 
         return generatedUserId;
     }
-    
+
     // cho Register
     public int addNewUserRegister(User user) {
         String sql = "INSERT INTO [User] (fullName, email, password, gender, mobile, roleID, status) "
@@ -645,7 +646,7 @@ public class UserDAO extends DBContext {
 
         return generatedUserId;
     }
-    
+
     // Phương thức cập nhật trạng thái người dùng
     public boolean updateUserStatus(int userId, String status) {
         String sql = "UPDATE [User] SET status = ? WHERE userId = ?";
@@ -665,13 +666,12 @@ public class UserDAO extends DBContext {
     }
 
     //GetUser by IDs của thịnh
-    public List<User> getUsersByIDs(int id1, int id2) {
+    public List<User> getUsersByRoleID(int roleID) {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM [User] WHERE userID IN (?, ?)";
+        String sql = "SELECT * FROM [User] WHERE roleID = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id1);
-            ps.setInt(2, id2);
+            ps.setInt(1, roleID);
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -690,8 +690,9 @@ public class UserDAO extends DBContext {
                 users.add(user);
             }
         } catch (SQLException e) {
-            System.out.println("Error in getUsersByIDs: " + e.getMessage());
+            System.out.println("Error in getUsersByRoleID: " + e.getMessage());
         }
+
         return users;
     }
 
@@ -787,6 +788,5 @@ public class UserDAO extends DBContext {
         }
         return null;
     }
-    
 
 }
