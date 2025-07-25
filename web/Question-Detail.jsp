@@ -512,7 +512,7 @@
 
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary">Save Question</button>
-                                <a href="listQuestions.jsp" class="btn btn-secondary">Cancel</a>
+                                <a href="questionList" class="btn btn-secondary">Back List</a>
                             </div>
                         </form>
                     </div>
