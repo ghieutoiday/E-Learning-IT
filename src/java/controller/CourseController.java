@@ -462,7 +462,6 @@ public class CourseController extends HttpServlet {
                 String courseName = request.getParameter("courseName");
                 String courseCategoryId = request.getParameter("courseCategory");
                 String description = request.getParameter("description");
-                String status = request.getParameter("status");
                 String ownerId = request.getParameter("owner");
                 String featureCourse = request.getParameter("feature");
                 int feature = (featureCourse != null) ? 1 : 0;
