@@ -254,8 +254,10 @@
         </style>
     </head>
     <body class="ttr-opened-sidebar ttr-pinned-sidebar">
+
         <!-- Header -->
         <header class="ttr-header">
+
             <div class="ttr-header-wrapper">
                 <div class="ttr-toggle-sidebar ttr-material-button">
                     <i class="ti-close ttr-open-icon"></i>
@@ -412,6 +414,7 @@
         </div>
         <!-- Main container -->
         <main class="ttr-wrapper">
+
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12 m-b30">
@@ -425,31 +428,127 @@
                                     </ul>
                                 </div>
                             </div>
+                            <div class="header-section">
+
+                                <h1>All Users</h1>
+                                <button id="toggleAddUserFormBtn" class="action-button">Add New User</button>
+                            </div>
+                            <%-- Display Success/Error Messages --%>
+                            <c:if test="${not empty pageSuccessMessage}">
+                                <div class="message success-message">${pageSuccessMessage}</div>
+                            </c:if>
+                            <c:if test="${not empty pageErrorMessage}">
+                                <div class="message error-message">${pageErrorMessage}</div>
+                            </c:if>
+
+                            <%-- Add User Form Container (initially hidden) --%>
+                            <div id="addUserFormContainer" class="add-user-form-container" style="display: ${showAddUserFormOnErrorForJSP == true ? 'block' : 'none'};">
+                                <h2>Add New User</h2>
+                                <form action="userController" method="POST">
+                                    <input type="hidden" name="formAction" value="addUser">
+                                    <%-- Include current query string to maintain filter/sort/page state after redirect --%>
+                                    <input type="hidden" name="currentQueryString" value="${pageContext.request.queryString != null ? pageContext.request.queryString.replaceAll('&?formAction=addUser','').replaceAll('formAction=addUser&?','') : ''}">
+
+                                    <div class="form-row">
+                                        <div>
+                                            <label for="newUser_fullName">Full Name*:</label>
+                                            <input type="text" id="newUser_fullName" name="newUser_fullName" value="${sessionScope.input_newUser_fullName != null ? sessionScope.input_newUser_fullName : ''}" required>
+                                        </div>
+                                        <div>
+                                            <label for="newUser_email">Email*:</label>
+                                            <input type="email" id="newUser_email" name="newUser_email" value="${sessionScope.input_newUser_email != null ? sessionScope.input_newUser_email : ''}" required>
+                                        </div>
+                                    </div>
+
+                                    <label for="newUser_password">Password*:</label>
+                                    <input type="password" id="newUser_password" name="newUser_password" required>
+
+                                    <div class="form-row">
+                                        <div>
+                                            <label for="newUser_gender">Gender:</label>
+                                            <select id="newUser_gender" name="newUser_gender">
+                                                <option value="Male" ${sessionScope.input_newUser_gender == 'Male' ? 'selected' : ''}>Male</option>
+                                                <option value="Female" ${sessionScope.input_newUser_gender == 'Female' ? 'selected' : ''}>Female</option>
+                                                <option value="Other" ${sessionScope.input_newUser_gender == 'Other' ? 'selected' : ''}>Other</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="newUser_mobile">Mobile:</label>
+                                            <input type="text" id="newUser_mobile" name="newUser_mobile" value="${sessionScope.input_newUser_mobile != null ? sessionScope.input_newUser_mobile : ''}">
+                                        </div>
+                                    </div>
+
+                                    <label for="newUser_address">Address:</label>
+                                    <input type="text" id="newUser_address" name="newUser_address" value="${sessionScope.input_newUser_address != null ? sessionScope.input_newUser_address : ''}">
+
+                                    <div class="form-row">
+                                        <div>
+                                            <label for="newUser_roleID">Role*:</label>
+                                            <select id="newUser_roleID" name="newUser_roleID" required>
+                                                <option value="">-- Select Role --</option>
+                                                <c:forEach var="role" items="${rolesList}">
+                                                    <option value="${role.roleID}" ${sessionScope.input_newUser_roleID == role.roleID ? 'selected' : ''}>
+                                                        ${role.roleName}
+                                                    </option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="newUser_status">Status:</label>
+                                            <select id="newUser_status" name="newUser_status">
+                                                <option value="Active" ${sessionScope.input_newUser_status == 'Active' ? 'selected' : ''}>Active</option>
+                                                <option value="Inactive" ${sessionScope.input_newUser_status == 'Inactive' ? 'selected' : ''}>Inactive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <%-- Avatar is excluded as per requirement --%>
+                                    <%-- <label for="newUser_avatar">Avatar URL:</label> --%>
+                                    <%-- <input type="text" id="newUser_avatar" name="newUser_avatar" value="${sessionScope.input_newUser_avatar != null ? sessionScope.input_newUser_avatar : ''}"> --%>
+
+                                    <button type="submit">Submit New User</button>
+                                </form>
+                            </div>
+                            <script>
+                                document.getElementById('toggleAddUserFormBtn').addEventListener('click', function () {
+                                    var formContainer = document.getElementById('addUserFormContainer');
+                                    if (formContainer.style.display === 'none' || formContainer.style.display === '') {
+                                        formContainer.style.display = 'block';
+                                        this.textContent = 'Cancel Adding User';
+                                    } else {
+                                        formContainer.style.display = 'none';
+                                        this.textContent = 'Add New User';
+                                    }
+                                });
+                            </script>
                             <div class="widget-inner">
                                 <div class="filter-search-container">
                                     <form action="userController" method="GET" class="filter-form">
+                                        <input type="text" name="search" placeholder="Search by name, email, mobile"
+                                               value="${searchValue != null ? searchValue : ''}">
+
                                         <select name="gender">
                                             <option value="all" ${genderFilter == null || genderFilter == 'all' ? 'selected' : ''}>All Genders</option>
                                             <option value="Male" ${genderFilter == 'Male' ? 'selected' : ''}>Male</option>
                                             <option value="Female" ${genderFilter == 'Female' ? 'selected' : ''}>Female</option>
                                         </select>
+
                                         <select name="roleID">
-                                            <option value="" ${roleIDFilter == null || roleIDFilter == '' ? 'selected' : ''}>All Roles</option>
+                                            <option value="" ${roleIDFilter == null || roleIDFilter == '' ? 'selected' : ''}>All Roles</option> <%-- Ensure empty value for "All Roles" matches controller logic --%>
                                             <c:forEach var="role" items="${rolesList}">
                                                 <option value="${role.roleID}" ${roleIDFilter != null && roleIDFilter == role.roleID ? 'selected' : ''}>
                                                     ${role.roleName}
                                                 </option>
                                             </c:forEach>
                                         </select>
+
                                         <select name="status">
                                             <option value="all" ${statusFilter == null || statusFilter == 'all' ? 'selected' : ''}>All Statuses</option>
                                             <option value="Active" ${statusFilter == 'Active' ? 'selected' : ''}>Active</option>
                                             <option value="Inactive" ${statusFilter == 'Inactive' ? 'selected' : ''}>Inactive</option>
                                         </select>
+
                                         <button type="submit">Apply Filter</button>
-                                    </form>
-                                    <form action="userController" method="GET" class="search-form">
-                                        <input type="text" name="search" placeholder="Search by name, email, mobile" value="${searchValue != null ? searchValue : ''}" onkeypress="if (event.key === 'Enter') this.form.submit();">
                                     </form>
                                 </div>
                                 <div class="card-courses-list admin-courses">
@@ -612,14 +711,33 @@
         <script src="<%=request.getContextPath()%>/admin/assets/vendors/chart/chart.min.js"></script>
         <script src="<%=request.getContextPath()%>/admin/assets/js/admin.js"></script>
         <script>
-            document.getElementById('toggleAddUserFormBtn').addEventListener('click', function () {
-                var formContainer = document.getElementById('addUserFormContainer');
-                if (formContainer.style.display === 'none' || formContainer.style.display === '') {
-                    formContainer.style.display = 'block';
-                    this.textContent = 'Cancel Adding User';
-                } else {
-                    formContainer.style.display = 'none';
-                    this.textContent = 'Add New User';
+                                            document.getElementById('toggleAddUserFormBtn').addEventListener('click', function () {
+                                                var formContainer = document.getElementById('addUserFormContainer');
+                                                if (formContainer.style.display === 'none' || formContainer.style.display === '') {
+                                                    formContainer.style.display = 'block';
+                                                    this.textContent = 'Cancel Adding User';
+                                                } else {
+                                                    formContainer.style.display = 'none';
+                                                    this.textContent = 'Add New User';
+                                                }
+                                            });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Đoạn script này có thể cần hoặc không tùy thuộc vào file mới của bạn
+                // Nếu bạn muốn có nút "Add New User" để bật/tắt form, hãy giữ lại nó.
+                var toggleBtn = document.getElementById('toggleAddUserFormBtn');
+                if (toggleBtn) {
+                    toggleBtn.addEventListener('click', function () {
+                        var formContainer = document.getElementById('addUserFormContainer');
+                        if (formContainer.style.display === 'none' || formContainer.style.display === '') {
+                            formContainer.style.display = 'block';
+                            this.textContent = 'Cancel Adding User';
+                        } else {
+                            formContainer.style.display = 'none';
+                            this.textContent = 'Add New User';
+                        }
+                    });
                 }
             });
         </script>
