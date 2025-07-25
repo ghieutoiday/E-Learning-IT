@@ -42,8 +42,7 @@ public class LessonViewController extends HttpServlet {
         // Kiểm tra quyền truy cập
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
-        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 5
-                && user.getRole().getRoleID() != 4) {
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 1) {
             response.sendRedirect(request.getContextPath() + "/home");
             return;
         }
@@ -167,12 +166,11 @@ public class LessonViewController extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
-            response.getWriter().write("Error: User not logged in.");
+        User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 1) {
+            response.sendRedirect(request.getContextPath() + "/home");
             return;
         }
-        User user = (User) session.getAttribute("user");
         int userId = user.getUserID();
         try {
             if ("startVideo".equals(action)) {
@@ -205,8 +203,7 @@ public class LessonViewController extends HttpServlet {
         }
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
-        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 5
-                && user.getRole().getRoleID() != 4) {
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 1) {
             response.sendRedirect(request.getContextPath() + "/home");
             return;
         }
@@ -257,8 +254,7 @@ public class LessonViewController extends HttpServlet {
         try {
             HttpSession session = request.getSession(false);
             User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
-            if (user == null || user.getRole() == null || user.getRole().getRoleID() != 5
-                    && user.getRole().getRoleID() != 4) {
+            if (user == null || user.getRole() == null || user.getRole().getRoleID() != 1) {
                 response.sendRedirect(request.getContextPath() + "/home");
                 return;
             }
@@ -304,19 +300,15 @@ public class LessonViewController extends HttpServlet {
 
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
-        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 5
-                && user.getRole().getRoleID() != 4) {
+        if (user == null || user.getRole() == null || user.getRole().getRoleID() != 1) {
             response.sendRedirect(request.getContextPath() + "/home");
             return;
         }
         int userID = user.getUserID();
-        
-       
 
         try {
             int courseID = Integer.parseInt(courseID_raw);
             int lessonID = Integer.parseInt(lessonID_raw);
-            int courseID = Integer.parseInt(courseID_raw);
             UserLessonProgress progress = UserLessonProgressDAO.getInstance().getUserLessonProgressByUserAndLesson(userID, lessonID);
             boolean isLessonCompleted = (progress != null && "Completed".equals(progress.getStatus()));
             int completedLessons = LessonDAO.getInstance().getTotalNumberOfCompletedLessonInCourse(userID, courseID);
