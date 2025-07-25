@@ -405,12 +405,7 @@
                                     <div class="subscribe-form m-b20">
                                         <form class="subscription-form" action="http://educhamp.themetrades.com/demo/assets/script/mailchamp.php" method="post">
                                             <div class="ajax-message"></div>
-                                            <div class="input-group">
-                                                <input name="email" required="required" class="form-control" placeholder="Your Email Address" type="email">
-                                                <span class="input-group-btn">
-                                                    <button name="submit" value="Submit" type="submit" class="btn"><i class="fa fa-arrow-right"></i></button>
-                                                </span>
-                                            </div>
+                                            
                                         </form>
                                     </div>
                                 </div>
