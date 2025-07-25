@@ -301,6 +301,7 @@ public class LessonViewController extends HttpServlet {
         response.setContentType("text/plain;charset=UTF-8");
         String lessonID_raw = request.getParameter("lessonID");
         String courseID_raw = request.getParameter("courseID");
+
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
         if (user == null || user.getRole() == null || user.getRole().getRoleID() != 5
@@ -315,6 +316,7 @@ public class LessonViewController extends HttpServlet {
         try {
             int courseID = Integer.parseInt(courseID_raw);
             int lessonID = Integer.parseInt(lessonID_raw);
+            int courseID = Integer.parseInt(courseID_raw);
             UserLessonProgress progress = UserLessonProgressDAO.getInstance().getUserLessonProgressByUserAndLesson(userID, lessonID);
             boolean isLessonCompleted = (progress != null && "Completed".equals(progress.getStatus()));
             int completedLessons = LessonDAO.getInstance().getTotalNumberOfCompletedLessonInCourse(userID, courseID);

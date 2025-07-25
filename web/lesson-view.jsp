@@ -1241,7 +1241,6 @@
                         });
                     }
                 });
-
                 var player;
                 var lessonId = ${b.lessonID != null ? b.lessonID : 0};
                 var courseId = ${b.course.courseID != null ? b.course.courseID : 0};
