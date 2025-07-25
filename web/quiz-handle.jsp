@@ -407,7 +407,7 @@
             function submitExam() {
                 hidePopup();
                 //alert("Exam submitted! Redirecting to Quiz Result screen."); // Simulate submission
-                window.location.href = "lessonviewcontroller?lessonID=" + encodeURIComponent("${lessonID}") + "&courseId=" + encodeURIComponent("${courseID}") + "&form=form";
+                window.location.href = "lessonviewcontroller?lessonID=" + encodeURIComponent("${lessonID}") + "&courseID=" + encodeURIComponent("${courseID}") + "&form=form";
             }
 
             // Add event listeners to tabs after DOM is loaded

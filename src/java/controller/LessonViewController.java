@@ -279,11 +279,12 @@ public class LessonViewController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/plain;charset=UTF-8");
         String lessonID_raw = request.getParameter("lessonID");
+        String courseID_raw = request.getParameter("courseID");
         int userID = 5;
-        int courseID = 4;
 
         try {
             int lessonID = Integer.parseInt(lessonID_raw);
+            int courseID = Integer.parseInt(courseID_raw);
             UserLessonProgress progress = UserLessonProgressDAO.getInstance().getUserLessonProgressByUserAndLesson(userID, lessonID);
             boolean isLessonCompleted = (progress != null && "Completed".equals(progress.getStatus()));
             int completedLessons = LessonDAO.getInstance().getTotalNumberOfCompletedLessonInCourse(userID, courseID);

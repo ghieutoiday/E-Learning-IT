@@ -1241,9 +1241,9 @@
                         });
                     }
                 });
-
                 var player;
                 var lessonId = ${b.lessonID != null ? b.lessonID : 0};
+                var courseId = ${b.course.courseID != null ? b.course.courseID : 0};
                 var lessonDuration = ${b.duration != null ? b.duration : 0};
                 var threshold = lessonDuration * 0.05;
                 var hasStarted = false;
@@ -1376,7 +1376,8 @@
                                         type: 'POST',
                                         data: {
                                             action: 'checkProgress',
-                                            lessonID: lessonId
+                                            lessonID: lessonId,
+                                            courseID: courseId
                                         },
                                         success: function(response) {
                                             console.log('Check progress AJAX success:', response);
