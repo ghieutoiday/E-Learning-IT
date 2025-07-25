@@ -358,20 +358,26 @@ public class RegistrationDAO extends DBContext {
                 + "[courseID] = ?, "
                 + "[status] = ?, "
                 + "[validFrom] = ?, "
-                + "[validTo] = ? ,"
+                + "[validTo] = ?, "
                 + "[note] = ? "
                 + "WHERE [registrationID] = ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, registration.getCourse().getCourseID());
             st.setString(2, registration.getStatus());
-            st.setDate(3, new java.sql.Date(registration.getValidFrom().getTime()));
-            st.setDate(4, new java.sql.Date(registration.getValidTo().getTime()));
+
+            // Xử lý null cho validFrom và validTo
+            Date validFrom = registration.getValidFrom();
+            Date validTo = registration.getValidTo();
+
+            st.setDate(3, validFrom == null ? null : new java.sql.Date(validFrom.getTime()));
+            st.setDate(4, validTo == null ? null : new java.sql.Date(validTo.getTime()));
+
             st.setString(5, registration.getNote());
             st.setInt(6, registration.getRegistrationID());
 
             int rowsAffected = st.executeUpdate();
-            return rowsAffected > 0; // trả về true nếu có ít nhất 1 dòng được cập nhật
+            return rowsAffected > 0;
         } catch (SQLException e) {
             System.out.println("Error in updateRegistration: " + e.getMessage());
             return false;
