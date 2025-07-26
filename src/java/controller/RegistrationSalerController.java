@@ -296,7 +296,7 @@ public class RegistrationSalerController extends HttpServlet {
                         String content = "Hello " + fullName + ",<br><br>"
                                 + "We would like to inform you that your course registration (ID: " + registrationID + ") has been successfully paid.<br>"
                                 + "Please access the following link to log in: <br>"
-                                + "<a href=\"http://localhost:9999/E-Learning-Merge-Ver2-Update/login.jsp\">Click here to log in</a>.<br><br>"
+                                + "<a href=\"http://localhost:9999/E-Learning-IT/home\">Click here to log in</a>.<br><br>"
                                 + "Sincerely,<br>"
                                 + "E-Learning Team.";
                         try {
